@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Muscles</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../styles/style.css" type="text/css">
+    <style>
+        body {
+            background-image: url("https://images2.alphacoders.com/608/thumb-1920-608038.jpg");
+            background-attachment: fixed;
+        }
+        h5{
+            color: #bdcad4;
+        }
+    </style>
+
+</head>
+<body>
+<header th:insert="parts/header::header"></header>
+<p>Muscles</p>
+<p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
+<div class="container" >
+    <div class="row">
+        <div th:each="el :${allMuscles}" class="col-lg-4 col-md-12" >
+
+            <div class="card mb-4 shadow-sm">
+                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
+                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
+                     role="img" aria-label="Placeholder: Thumbnail"><title th:text="${el.getName()}"/>
+                    <rect width="100%" height="100%" fill="#55595c"></rect>
+                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="${el.getName()}"/>
+                </svg>
+                <div class="card-body" style="background: #C0C0C0">
+
+                    <p class="card-text" th:text="${el.getName()}"></p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+
+                            <form th:action="'/muscles/'+${el.getId()}">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                            </form>
+                            <form method="post" th:action="'/muscles/'+${el.getId()}+'/delete'">
+                                <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white">
+    <h5 >Добавить мышцу</h5>
+    <form method="post" action="/muscles/add">
+        <div style="display:inline-block">
+
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Группа мышц</span>
+                </div>
+                <input type="hidden" th:value="${currentMuscleGroup.getId()}" name="groupId">
+                <input type="text" name="muscleGroup" class="form-control"
+                       th:value=" ${currentMuscleGroup.getName()}"
+                       aria-describedby="basic-addon3" readonly>
+            </div>
+  <div class="input-group mb-2 ">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Название мышц</span>
+                </div>
+                <input type="text" name="muscleName" class="form-control"
+                       aria-describedby="basic-addon3" placeholder="..." required>
+            </div>
+      <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Информация о мышцах</span>
+                </div>
+                <textarea class="form-control " name="muscle_info" aria-label="With textarea"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-secondary mb-1">Add muscle</button>
+        </div>
+    </form>
+</div>
+
+
+<footer th:insert="parts/footer::footer"></footer>
+</body>
+</html>
