@@ -64,6 +64,14 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>2.3.4.RELEASE</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -9,7 +9,8 @@
             background-image: url("https://images2.alphacoders.com/608/thumb-1920-608038.jpg");
             background-attachment: fixed;
         }
-        h2{
+
+        h2 {
             color: #bdcad4;
         }
     </style>
@@ -21,64 +22,117 @@
 
 <div class="container">
     <div class="row">
-        <!--        //-->
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
-                     role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="Все"/>
-                </svg>
-                <div class="card-body" style="background: #C0C0C0">
 
-                    <p class="card-text" th:text="Все"></p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <form method="get" th:action="'/muscleGroups/all'">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                            </form>
+
+        <!--        //-->
+        <!--        //all -->
+        <!--        <div class="col-md-4">-->
+        <!--            <div class="card mb-4 shadow-sm">-->
+        <!--                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"-->
+        <!--                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"-->
+        <!--                     role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title>-->
+        <!--                    <rect width="100%" height="100%" fill="#55595c"></rect>-->
+        <!--                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="Все"/>-->
+        <!--                </svg>-->
+        <!--                <div class="card-body" style="background: #C0C0C0">-->
+
+        <!--                    <p class="card-text" th:text="Все"></p>-->
+        <!--                    <div class="d-flex justify-content-between align-items-center">-->
+        <!--                        <div class="btn-group">-->
+        <!--                            <form method="get" th:action="'/muscleGroups/all'">-->
+        <!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>-->
+        <!--                            </form>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+        <!--        ///?-->
+        <div class="col-lg-4 col-md-12">
+            <div class="card mb-4 shadow-sm">
+
+                <div class="card">
+                    <img th:src="@{../images/muscles/back/backPreview.jpg}" class="card-img-top"
+                         alt="All"
+                         align="center" style="background: #55595c" height="225">
+                    <div class="card-body" style="background: #C0C0C0">
+                        <p class="card-text">All</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+
+                                <form action="/muscles">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <!--        //-->
-        <div th:each="el :${allMusclesGroup}" class="col-md-4">
-
+        <div th:each="el :${allMusclesGroup}" class="col-lg-4 col-md-12">
             <div class="card mb-4 shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
-                     role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="${el.getName()}"/>
-<!--                    <img s-->
-                </svg>
-<!--                <img class="img-thumbnail" src="../images/muscles/back/backPreview.jpg">-->
-                <div class="card-body" style="background: #C0C0C0">
 
-                    <p class="card-text" th:text="${el.getName()}"></p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <form method="get" th:action="'/muscleGroups/'+${el.getId()}">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                            </form>
-                            <form method="post" th:action="'/muscleGroups/'+${el.getId()}+'/delete'">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
-                            </form>
+                <div class="card">
+                    <img th:src="@{../images/muscles/back/backPreview.jpg}" class="card-img-top"
+                         th:alt="${el.getName()}"
+                         align="center" style="background: #55595c" height="225">
+                    <div class="card-body" style="background: #C0C0C0">
+                        <p class="card-text" th:text="${el.getName()}+'('+${el.getMuscleSet().size()}+')'">
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <form th:action="'/muscleGroups/'+${el.getId()}">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                </form>
+                                <form method="post" th:action="'/muscleGroups/'+${el.getId()}+'/delete'">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!--        <div th:each="el :${allMusclesGroup}" class="col-md-4">-->
+
+        <!--            <div class="card mb-4 shadow-sm">-->
+        <!--                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"-->
+        <!--                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"-->
+        <!--                     role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title>-->
+        <!--                    <rect width="100%" height="100%" fill="#55595c" ></rect>-->
+        <!--&lt;!&ndash;                    <image height="100%" width="100%" th:href="CuSYrHBVJN0.jpg" ></image>&ndash;&gt;-->
+        <!--                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="${el.getName()}"/>-->
+        <!--&lt;!&ndash;                    <img s&ndash;&gt;-->
+        <!--                </svg>-->
+        <!--                <img class="img-thumbnail" src="../images/muscles/back/backPreview.jpg">-->
+        <!--&lt;!&ndash;                <div class="card-body" style="background: #C0C0C0">&ndash;&gt;-->
+
+        <!--                    <p class="card-text" th:text="${el.getName()}"></p>-->
+        <!--                    <div class="d-flex justify-content-between align-items-center">-->
+        <!--                        <div class="btn-group">-->
+        <!--                            <form method="get" th:action="'/muscleGroups/'+${el.getId()}">-->
+        <!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>-->
+        <!--                            </form>-->
+        <!--                            <form method="post" th:action="'/muscleGroups/'+${el.getId()}+'/delete'">-->
+        <!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
+        <!--                            </form>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
 
     </div>
 </div>
 </div>
 
 
+<!--//add muscle group-->
 <div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white">
-    <h5 >Добавить группу мышц</h5>
+    <h5>Добавить группу мышц</h5>
     <form method="post" action="/muscleGroups/add">
         <div style="display:inline-block">
             <div class="input-group mb-2">
@@ -87,6 +141,7 @@
                 </div>
                 <input type="text" name="muscleGroup" class="form-control"
                        aria-describedby="basic-addon3" placeholder="..." required>
+
             </div>
             <button type="submit" class="btn btn-secondary mb-1">Add muscle group</button>
         </div>

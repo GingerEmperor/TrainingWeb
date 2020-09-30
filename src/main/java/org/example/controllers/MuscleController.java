@@ -2,15 +2,12 @@ package org.example.controllers;
 
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
-import org.example.repository.MuscleGroupRepository;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/muscles")
@@ -42,6 +39,8 @@ public class MuscleController {
         MuscleGroup currentMuscleGroup=muscleGroupService.findByName(muscleGroup);
         if(currentMuscleGroup==null ){
             throw new RuntimeException("Такой группы мышц не существует");
+
+
         }
             currentMuscle= muscleService.addMuscle(currentMuscleGroup, muscleName, info);
             muscleGroupService.addMusclesIntoGroup(currentMuscle,currentMuscleGroup);

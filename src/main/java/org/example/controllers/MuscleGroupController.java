@@ -10,6 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 @Controller
 @RequestMapping("/muscleGroups")
@@ -56,10 +59,16 @@ public class MuscleGroupController {
     @PostMapping("/{id}/delete")
     public String deleteMuscleGroup(@PathVariable(name = "id") Long muscleGroupId) {
         MuscleGroup muscleGroupToDelete = muscleGroupService.findMuscleGroupById(muscleGroupId);
-        if (muscleGroupToDelete == null)
+        if (muscleGroupToDelete == null) {
             throw new RuntimeException("Невозможно удалить. Такой группы нет");
-        if(!muscleGroupToDelete.getMuscleSet().isEmpty())
-            throw new RuntimeException("Невозможно удалить. Очистите группу");
+//            return "redirect:/muscleGroups";
+        }
+        if(!muscleGroupToDelete.getMuscleSet().isEmpty()) {
+//            throw new RuntimeException("Невозможно удалить. Очистите группу");
+            Logger logger=Logger.getAnonymousLogger();
+            logger.log(Level.WARNING,"Невозможно удалить. Очистите группу");
+            return "redirect:/muscleGroups";
+        }
         muscleGroupService.deleteMuscleGroup(muscleGroupToDelete);
         return "redirect:/muscleGroups";
     }

@@ -47,7 +47,9 @@ public class MuscleGroupService {
         if (muscleGroup.isPresent())
             return muscleGroup.get();
         else
-            throw new RuntimeException("Нет такой группы мышц");
+            System.out.println("Нет такой группы мышц");
+//            throw new RuntimeException("Нет такой группы мышц");
+        return null;
     }
 
     public boolean deleteMuscleGroup(MuscleGroup muscleGroup){
