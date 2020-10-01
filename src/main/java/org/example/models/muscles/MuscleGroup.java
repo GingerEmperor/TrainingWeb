@@ -12,6 +12,7 @@ public class MuscleGroup {
     private String name;
 
     @OneToMany
+    @JoinColumn(name = "muscle_id")
     Set<Muscle> muscleSet;
 
     public Long getId() {
