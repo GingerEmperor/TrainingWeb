@@ -13,6 +13,8 @@ public class Muscle {
     @Lob
     private String info;
 
+    private String image;
+
     @ManyToOne
     private MuscleGroup muscleGroup;
 
