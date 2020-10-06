@@ -1,60 +1,10 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Muscles</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../styles/style.css" type="text/css">
-    <style>
-        body {
-            /*background-color: #000000;*/
-            background-image: url("https://images2.alphacoders.com/608/thumb-1920-608038.jpg");
-            background-attachment: fixed;
-        }
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"><head th:insert="common/commonHead::commonHead"></head>
+<head th:insert="common/commonHead::commonHead"></head>
 
-        h5 {
-            color: #bdcad4;
-        }
-    </style>
-
-</head>
 <body>
 <header th:insert="parts/header::header"></header>
 <p>Muscles</p>
-
-<div sec:
-<!--<p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>-->
-<!--<div class="container">-->
-<!--    <div class="row">-->
-<!--        <div th:each="el :${allMuscles}" class="col-lg-4 col-md-12">-->
-
-<!--            <div class="card mb-4 shadow-sm">-->
-<!--                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"-->
-<!--                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"-->
-<!--                     role="img" aria-label="Placeholder: Thumbnail">-->
-<!--                    <rect width="100%" height="100%" fill="#55595c"></rect>-->
-<!--                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="${el.getName()}"/>-->
-<!--                </svg>-->
-<!--                <div class="card-body" style="background: #C0C0C0">-->
-
-<!--                    <p class="card-text" th:text="${el.getName()}"></p>-->
-<!--                    <div class="d-flex justify-content-between align-items-center">-->
-<!--                        <div class="btn-group">-->
-
-<!--                            <form th:action="'/muscles/'+${el.getId()}">-->
-<!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>-->
-<!--                            </form>-->
-<!--                            <form method="post" th:action="'/muscles/'+${el.getId()}+'/delete'">-->
-<!--                                <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">-->
-<!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
-<!--                            </form>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 
 <!--//-->
 <p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
@@ -68,7 +18,7 @@
                          th:alt="${el.getName()}"
                          align="center" style="background: #55595c" height="225">
                     <div class="card-body" style="background: #C0C0C0">
-                        <p class="card-text" th:text="${el.getName()}"></p>
+                        <p class="card-text text-dark" th:text="${el.getName()}"></p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
 
