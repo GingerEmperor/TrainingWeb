@@ -1,22 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <!--    <link rel="stylesheet" href="../styles/style.css" type="text/css">-->
+<head th:insert="common/commonHead::commonHead"></head>
 
-    <style>
-        body {
-            background-image: url("https://images2.alphacoders.com/608/thumb-1920-608038.jpg");
-            background-attachment: fixed;
-        }
-
-        p {
-            color: #acbcc7;
-        }
-    </style>
-</head>
 <body>
 <header th:insert="parts/header::header"></header>
 

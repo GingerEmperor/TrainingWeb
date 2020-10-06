@@ -1,22 +1,9 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../styles/style.css" type="text/css">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-    <style>
-        body {
-            background-image: url("https://images2.alphacoders.com/608/thumb-1920-608038.jpg");
-            background-attachment: fixed;
-        }
+<head th:insert="common/commonHead::commonHead"></head>
 
-        p {
-            color: #acbcc7;
-        }
-    </style>
-</head>
 <body>
 <header th:insert="parts/header::header"></header>
 <div class="container mt-5">
@@ -35,17 +22,19 @@
     <br/>
     <a th:href="@{/logout}">LogOut</a>
 
-<!--    <form>-->
-<!--        <div class="form-group">-->
-<!--            <label for="inputDate">Введите дату:</label>-->
-<!--            <input type="date" class="form-control">-->
-<!--        </div>-->
-<!--    </form>-->
 
-
+    <div sec:authorize="hasAuthority('USER')">Text visible to user.</div>
+<!--    <div th:if="${#strings.contains(#authentication.principal,'USER')}">Text visible to user.</div>-->
+    <div th:if="${#strings.contains(#authentication.principal,'ADMIN')}">Text visible to admin.</div>
+<!--    <div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>-->
+    <div sec:authorize="isAuthenticated()">
+        Text visible only to authenticated users.
+    </div>
+    <div>
+        Text visible to every users.
+    </div>
 
 </div>
-
 
 
 <footer th:insert="parts/footer::footer"></footer>

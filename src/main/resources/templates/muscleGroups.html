@@ -1,21 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Muscles</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <style>
-        body {
-            background-image: url("https://images2.alphacoders.com/608/thumb-1920-608038.jpg");
-            background-attachment: fixed;
-        }
-
-        h2 {
-            color: #bdcad4;
-        }
-    </style>
-
-</head>
+<head th:insert="common/commonHead::commonHead"></head>
 <body>
 <header th:insert="parts/header::header"></header>
 <p>Muscle Groups</p>
@@ -24,31 +9,6 @@
     <div class="row">
 
 
-        <!--        //-->
-        <!--        //all -->
-        <!--        <div class="col-md-4">-->
-        <!--            <div class="card mb-4 shadow-sm">-->
-        <!--                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"-->
-        <!--                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"-->
-        <!--                     role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title>-->
-        <!--                    <rect width="100%" height="100%" fill="#55595c"></rect>-->
-        <!--                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="Все"/>-->
-        <!--                </svg>-->
-        <!--                <div class="card-body" style="background: #C0C0C0">-->
-
-        <!--                    <p class="card-text" th:text="Все"></p>-->
-        <!--                    <div class="d-flex justify-content-between align-items-center">-->
-        <!--                        <div class="btn-group">-->
-        <!--                            <form method="get" th:action="'/muscleGroups/all'">-->
-        <!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>-->
-        <!--                            </form>-->
-        <!--                        </div>-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-
-        <!--        ///?-->
         <div class="col-lg-4 col-md-12">
             <div class="card mb-4 shadow-sm">
 
@@ -57,7 +17,7 @@
                          alt="All"
                          align="center" style="background: #55595c" height="225">
                     <div class="card-body" style="background: #C0C0C0">
-                        <p class="card-text">All</p>
+                        <p class="card-text text-dark">All</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
 
@@ -79,7 +39,7 @@
                          th:alt="${el.getName()}"
                          align="center" style="background: #55595c" height="225">
                     <div class="card-body" style="background: #C0C0C0">
-                        <p class="card-text" th:text="${el.getName()}+'('+${el.getMuscleSet().size()}+')'">
+                        <p class="card-text text-dark" th:text="${el.getName()}+'('+${el.getMuscleSet().size()}+')'">
                         </p>
 
                         <div class="d-flex justify-content-between align-items-center">
@@ -96,34 +56,7 @@
                 </div>
             </div>
         </div>
-        <!--        <div th:each="el :${allMusclesGroup}" class="col-md-4">-->
 
-        <!--            <div class="card mb-4 shadow-sm">-->
-        <!--                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"-->
-        <!--                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"-->
-        <!--                     role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title>-->
-        <!--                    <rect width="100%" height="100%" fill="#55595c" ></rect>-->
-        <!--&lt;!&ndash;                    <image height="100%" width="100%" th:href="CuSYrHBVJN0.jpg" ></image>&ndash;&gt;-->
-        <!--                    <text x="45%" y="50%" fill="#eceeef" dy=".3em" th:text="${el.getName()}"/>-->
-        <!--&lt;!&ndash;                    <img s&ndash;&gt;-->
-        <!--                </svg>-->
-        <!--                <img class="img-thumbnail" src="../images/muscles/back/backPreview.jpg">-->
-        <!--&lt;!&ndash;                <div class="card-body" style="background: #C0C0C0">&ndash;&gt;-->
-
-        <!--                    <p class="card-text" th:text="${el.getName()}"></p>-->
-        <!--                    <div class="d-flex justify-content-between align-items-center">-->
-        <!--                        <div class="btn-group">-->
-        <!--                            <form method="get" th:action="'/muscleGroups/'+${el.getId()}">-->
-        <!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>-->
-        <!--                            </form>-->
-        <!--                            <form method="post" th:action="'/muscleGroups/'+${el.getId()}+'/delete'">-->
-        <!--                                <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
-        <!--                            </form>-->
-        <!--                        </div>-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
 
     </div>
 </div>

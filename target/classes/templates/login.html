@@ -1,20 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Login</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-
-    <style>
-        body {
-            background-image: url("https://images2.alphacoders.com/608/thumb-1920-608038.jpg");
-            background-attachment: fixed;
-        }
-        p {
-            color: #acbcc7;
-        }
-    </style>
-</head>
+<head th:insert="common/commonHead::commonHead"></head>
 <body>
 
 <header th:insert="parts/header::header"></header>
@@ -51,7 +37,7 @@
 <!--<link rel="stylesheet" type="text/css" href="../styles/style.css">-->
 
 
-<div class="container mt-5">
+<div class="container mt-5" sec:authorize="!isAuthenticated()">
     <div class="d-flex justify-content-center h-100">
         <div class="card">
             <div class="card-header">
@@ -97,6 +83,12 @@
     </div>
 </div>
 
+
+<!--<div class="container mt-5" sec:authorize="isAuthenticated()">-->
+<!--    <div class="d-flex justify-content-center">-->
+<!--        <a href="/">Main</a>-->
+<!--    </div>-->
+<!--</div>-->
 
 </body>
 </html>

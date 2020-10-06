@@ -39,8 +39,6 @@ public class MuscleController {
         MuscleGroup currentMuscleGroup=muscleGroupService.findByName(muscleGroup);
         if(currentMuscleGroup==null ){
             throw new RuntimeException("Такой группы мышц не существует");
-
-
         }
             currentMuscle= muscleService.addMuscle(currentMuscleGroup, muscleName, info);
             muscleGroupService.addMusclesIntoGroup(currentMuscle,currentMuscleGroup);
