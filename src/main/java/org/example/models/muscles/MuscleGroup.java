@@ -3,6 +3,11 @@ package org.example.models.muscles;
 import javax.persistence.*;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 public class MuscleGroup {
     @Id
@@ -11,31 +16,10 @@ public class MuscleGroup {
 
     private String name;
 
+    private String image;
+
     @OneToMany
     @JoinColumn(name = "muscle_id")
     Set<Muscle> muscleSet;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Muscle> getMuscleSet() {
-        return muscleSet;
-    }
-
-    public void setMuscleSet(Set<Muscle> muscleSet) {
-        this.muscleSet = muscleSet;
-    }
 }
