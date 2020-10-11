@@ -5,11 +5,17 @@ import org.example.models.muscles.MuscleGroup;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +27,9 @@ public class MuscleGroupController {
     MuscleGroupService muscleGroupService;
     @Autowired
     MuscleService muscleService;
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @GetMapping()
     public String showAllMusclesGroup(Model model) {
@@ -45,14 +54,35 @@ public class MuscleGroupController {
     }
 
     @PostMapping("/add")
-    public String addMuscleGroup(@RequestParam(name = "muscleGroup") String muscleGroup) {
+    public String addMuscleGroup(@RequestParam(name = "muscleGroup") String muscleGroup,
+        @RequestParam(name = "file") MultipartFile file
+    ) throws IOException {
+
+
         if (muscleGroup.isEmpty())
             return "redirect:/";
         MuscleGroup currentMuscleGroup = muscleGroupService.findByName(muscleGroup);
         if (currentMuscleGroup != null) {
             throw new RuntimeException("Такая мышечная группа уже есть");
         }
-        muscleGroupService.createNewMuscleGroup(muscleGroup);
+///
+        if(file!=null && !file.getOriginalFilename().isEmpty()) {////////////
+            File uploadDir = new File(uploadPath);
+
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            System.out.println(file.getName());
+            System.out.println(file.getOriginalFilename());
+            final String uuidFile = UUID.randomUUID().toString();
+            final String resultFileName =muscleGroup+"-"+ uuidFile + "." + file.getOriginalFilename();
+
+            file.transferTo(new File(uploadPath + "/" + resultFileName));
+            muscleGroupService.createNewMuscleGroup(muscleGroup,resultFileName);
+        }else {
+            muscleGroupService.createNewMuscleGroup(muscleGroup);
+        }
         return "redirect:/muscleGroups";
     }
 

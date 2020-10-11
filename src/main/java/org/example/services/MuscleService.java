@@ -29,6 +29,16 @@ public class MuscleService {
         return muscle;
     }
 
+    public Muscle addMuscle(MuscleGroup group, String name, String info,String image){
+        Muscle muscle=new Muscle();
+        muscle.setMuscleGroup(group);
+        muscle.setName(name);
+        muscle.setInfo(info);
+        muscle.setImage(image);
+        muscleRepository.save(muscle);
+        return muscle;
+    }
+
     public Muscle findById(long id){
         Optional<Muscle> muscle=muscleRepository.findById(id);
         if(muscle.isPresent()) {

@@ -32,6 +32,14 @@ public class MuscleGroupService {
         return true;
     }
 
+    public boolean createNewMuscleGroup(String name,String image){
+        MuscleGroup muscleGroup=new MuscleGroup();
+        muscleGroup.setName(name);
+        muscleGroup.setImage(image);
+        muscleGroupRepository.save(muscleGroup);
+        return true;
+    }
+
     public boolean addMusclesIntoGroup(Muscle muscle, MuscleGroup muscleGroup){
         muscleGroup.getMuscleSet().add(muscle);
         muscleGroupRepository.save(muscleGroup);
