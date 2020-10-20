@@ -9,33 +9,16 @@
 <div class="container mt-5">
     <p>Fitness App</p>
     <p th:text="'Hello, ' + ${name} + '!'"/>
-
-    <!--    <a href="/freeWeight">Свободные веса</a>-->
-    <!--    </br>-->
-    <!--    <a href="">Дома</a>-->
-    <!--    </br>-->
-    <!--    <a href="">Тренировка на улице</a>-->
-
-    <a href="/muscles"> Мышцы </a>
-    <a href="/login"> LogIn</a>
-    <!--    <a href="/logout"> LogOut</a>-->
-    <br/>
-    <a th:href="@{/logout}">LogOut</a>
-
-
-    <div sec:authorize="hasAuthority('USER')">Text visible to user.</div>
-<!--    <div th:if="${#strings.contains(#authentication.principal,'USER')}">Text visible to user.</div>-->
-    <div th:if="${#strings.contains(#authentication.principal,'ADMIN')}">Text visible to admin.</div>
-<!--    <div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>-->
-    <div sec:authorize="isAuthenticated()">
-        Text visible only to authenticated users.
-    </div>
-    <div>
-        Text visible to every users.
-    </div>
-
 </div>
 
+<div id="carousel_1" class="carousel slide">
+    <a href="#carousel_1" class="left carousel-control" data-slide="prev"></a>
+    <a href="#carousel_1" class="right carousel-control" data-slide="next"></a>
+</div>
+<div id="carousel_2" class="carousel slide">
+    <a href="#carousel_2" class="left carousel-control" data-slide="prev"></a>
+    <a href="#carousel_2" class="right carousel-control" data-slide="next"></a>
+</div>
 
 <footer th:insert="parts/footer::footer"></footer>
 </body>

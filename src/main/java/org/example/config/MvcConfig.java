@@ -12,6 +12,9 @@ public class MvcConfig implements WebMvcConfigurer {
     @Value("${upload.path}")
     private String uploadPath;
 
+    @Value("${upload.exercisePath}")
+    private String uploadExercisePath;
+
     public void addViewControllers(ViewControllerRegistry registry) {
         //        registry.addViewController("/home").setViewName("home");
         ////        registry.addViewController("/").setViewName("home");
@@ -22,6 +25,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/img/**")
-                .addResourceLocations("file://" + uploadPath + "/");
+                .addResourceLocations("file://" + uploadPath + "/")
+                .addResourceLocations("file://" +uploadExercisePath+"/");
     }
 }

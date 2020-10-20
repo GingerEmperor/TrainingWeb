@@ -6,6 +6,7 @@
 <body>
 <header th:insert="parts/header::header"></header>
 <p>Muscles</p>
+<a href="/muscles/csv">MusclesCSV</a>
 
 <!--//-->
 <p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>

@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -41,7 +40,7 @@ public class MuscleGroupController {
     @GetMapping("/{id}")
     public String showMusclesByGroupId(@PathVariable Long id,
                                        Model model) {
-        MuscleGroup currentMuscleGroup = muscleGroupService.findMuscleGroupById(id);
+        MuscleGroup currentMuscleGroup = muscleGroupService.findById(id);
         Set<Muscle> muscles = muscleService.findAllByMuscleGroup(currentMuscleGroup);
         model.addAttribute("allMuscles", muscles);
         model.addAttribute("currentMuscleGroup",currentMuscleGroup);
@@ -88,7 +87,7 @@ public class MuscleGroupController {
 
     @PostMapping("/{id}/delete")
     public String deleteMuscleGroup(@PathVariable(name = "id") Long muscleGroupId) {
-        MuscleGroup muscleGroupToDelete = muscleGroupService.findMuscleGroupById(muscleGroupId);
+        MuscleGroup muscleGroupToDelete = muscleGroupService.findById(muscleGroupId);
         if (muscleGroupToDelete == null) {
             throw new RuntimeException("Невозможно удалить. Такой группы нет");
 //            return "redirect:/muscleGroups";

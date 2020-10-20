@@ -50,7 +50,7 @@ public class MuscleGroupService {
         return muscleGroupRepository.findAll();
     }
 
-    public MuscleGroup findMuscleGroupById(Long id){
+    public MuscleGroup findById(Long id){
         Optional<MuscleGroup> muscleGroup=muscleGroupRepository.findById(id);
         if (muscleGroup.isPresent())
             return muscleGroup.get();
