@@ -1,6 +1,5 @@
 package org.example.config;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,6 +15,7 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Autowired
     private DataSource dataSource;
 
@@ -24,19 +24,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/","/registration").permitAll()
-                    .anyRequest().authenticated()
+                .antMatchers("/", "/registration").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-//                    .defaultSuccessUrl("/")
-                    .permitAll()
+                .formLogin()
+                .loginPage("/login")
+                //                    .defaultSuccessUrl("/")
+                .permitAll()
                 .and()
-                    .logout()
-                    .permitAll();
-//        http
-//                .authorizeRequests()
-//                .anyRequest().permitAll();
+                .logout()
+                .permitAll();
+        //        http
+        //                .authorizeRequests()
+        //                .anyRequest().permitAll();
     }
 
     @Override
@@ -44,7 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance())
+                // language=SQL
                 .usersByUsernameQuery("SELECT username, password, active FROM usr WHERE username=?")
+                // language=SQL
                 .authoritiesByUsernameQuery("SELECT u.username, ur.roles " +
                         "FROM usr u INNER JOIN user_role ur ON u.id=ur.user_id " +
                         "WHERE u.username=?");

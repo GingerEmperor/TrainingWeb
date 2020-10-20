@@ -12,7 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -24,6 +28,9 @@ public class MuscleController {
 
     @Autowired
     MuscleGroupService muscleGroupService;
+
+    // @Autowired
+    // CSVService csvService;
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -91,4 +98,18 @@ public class MuscleController {
         muscleService.deleteMuscleById(id);
         return "redirect:/muscleGroups/" + groupId;
     }
+
+    // @PostMapping("/all/toCSV")//TODO write to CSV
+    // public String allMusclesToCSV(){
+    //     System.out.println();
+    //     // csvService.writeToCsvFile(muscleService.findAll().stream().,",");
+    // }
+
+    // @GetMapping("/csv")
+    // public String allMusclesToCSV(){
+    //     System.out.println();
+    //     Iterable<Muscle> muscles=muscleService.findAll();
+    //     muscles.forEach(System.out::println);
+    //     return "redirect:/";
+    // }
 }
