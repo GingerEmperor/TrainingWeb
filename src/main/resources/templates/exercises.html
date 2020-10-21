@@ -6,25 +6,27 @@
 <p>Exercises</p>
 
 <div class="container">
-    <div th:each="el :${allExercises}" class="col-lg-4 col-md-12">
-        <div class="card mb-4 shadow-sm">
+    <div class="row">
+        <div th:each="el :${allExercises}" class="col-lg-4 col-md-12">
+            <div class="card mb-4 shadow-sm">
 
-            <div class="card">
-                <img th:src="${'/img/'+el.getImage()}" class="card-img-top"
-                     th:alt="${el.getTitle()}"
-                     align="center" style="background: #55595c" height="225">
-                <div class="card-body" style="background: #C0C0C0">
-                    <p class="card-text text-dark" th:text="${el.getTitle()}">
-                    </p>
+                <div class="card">
+                    <img th:src="${'/img/'+el.getImage()}" class="card-img-top"
+                         th:alt="${el.getTitle()}"
+                         align="center" style="background: #55595c" height="225">
+                    <div class="card-body" style="background: #C0C0C0">
+                        <p class="card-text text-dark" th:text="${el.getTitle()}">
+                        </p>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <form th:action="'/exercises/'+${el.getId()}">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                            </form>
-                            <form method="post" th:action="'/exercixes/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
-                            </form>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <form th:action="'/exercises/'+${el.getId()}">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                </form>
+                                <form method="post" th:action="'/exercixes/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -37,7 +39,6 @@
 </div>
 </div>
 
-<!--//TODO DEV to make adding exercise-->
 <!--//add exercise button-->
 <div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white" sec:authorize="hasAuthority('ADMIN')">
     <h5>Добавить упражнение</h5>

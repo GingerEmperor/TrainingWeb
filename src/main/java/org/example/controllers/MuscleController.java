@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.example.exeptions.FileCanNotSaveException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
+import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +21,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping("/muscles")
+@RequiredArgsConstructor
 public class MuscleController {
 
-    @Autowired
-    MuscleService muscleService;
+    private final MuscleService muscleService;
 
-    @Autowired
-    MuscleGroupService muscleGroupService;
+    private final MuscleGroupService muscleGroupService;
+
+    private final GlobalService globalService;
 
     // @Autowired
     // CSVService csvService;
@@ -60,24 +65,18 @@ public class MuscleController {
             throw new RuntimeException("Такой группы мышц не существует");
         }
 
-        if(file!=null && !file.getOriginalFilename().isEmpty()){////////////
-            File uploadDir=new File(uploadPath);
+        try {
+            currentMuscle = muscleService.createMuscle(
+                    currentMuscleGroup, muscleName, info,
+                    globalService.saveImgToPathWithPrefixName(file, uploadPath, muscleName)
+            );
+        } catch (FileCanNotSaveException e) {
+            currentMuscle = muscleService.createMuscle(
+                    currentMuscleGroup, muscleName, info
+            );
 
-            if(!uploadDir.exists()){
-                uploadDir.mkdir();
-            }
-
-            System.out.println(file.getName());
-            System.out.println(file.getOriginalFilename());
-            final String uuidFile = UUID.randomUUID().toString();
-            final String resultFileName = currentMuscleGroup.getName()+"_"+muscleName+"-"+uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath+"/"+ resultFileName));
-
-            currentMuscle = muscleService.addMuscle(currentMuscleGroup, muscleName, info, resultFileName);
-        }else {
-            currentMuscle = muscleService.addMuscle(currentMuscleGroup, muscleName, info);
         }
+        muscleService.save(currentMuscle);
         muscleGroupService.addMusclesIntoGroup(currentMuscle, currentMuscleGroup);
 
         return "redirect:/muscleGroups/" + groupId;
