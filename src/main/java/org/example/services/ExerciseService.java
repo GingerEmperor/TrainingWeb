@@ -40,14 +40,8 @@ public class ExerciseService {
             String image
     ) {
 
-        Exercise exercise = new Exercise();
-        exercise.setTitle(title);
-        exercise.setPrimaryWorkingMuscles(primaryMuscles);
-        exercise.setSecondWorkingMuscles(secondaryMuscles);
-        exercise.setInfo(exerciseInfo);
-        exercise.setEquipmentNeed(equipment);
+        Exercise exercise = createNewExercise(title, primaryMuscles, secondaryMuscles, exerciseInfo, equipment);
         exercise.setImage(image);
-        exerciseRepository.save(exercise);
         return exercise;
     }
 
@@ -64,11 +58,14 @@ public class ExerciseService {
         exercise.setSecondWorkingMuscles(secondaryMuscleSet);
         exercise.setInfo(exerciseInfo);
         exercise.setEquipmentNeed(equipment);
-        exerciseRepository.save(exercise);
         return exercise;
     }
 
     public Exercise findByTitle(final String exerciseTitle) {
         return exerciseRepository.findByTitle(exerciseTitle);
+    }
+
+    public void save(Exercise exercise){
+        exerciseRepository.save(exercise);
     }
 }

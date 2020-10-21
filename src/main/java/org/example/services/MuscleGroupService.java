@@ -25,19 +25,16 @@ public class MuscleGroupService {
 //        return muscleGroupRepository.findByName(name);
     }
 
-    public boolean createNewMuscleGroup(String name){
+    public MuscleGroup createNewMuscleGroup(String name){
         MuscleGroup muscleGroup=new MuscleGroup();
         muscleGroup.setName(name);
-        muscleGroupRepository.save(muscleGroup);
-        return true;
+        return muscleGroup;
     }
 
-    public boolean createNewMuscleGroup(String name,String image){
-        MuscleGroup muscleGroup=new MuscleGroup();
-        muscleGroup.setName(name);
+    public MuscleGroup createNewMuscleGroup(String name,String image){
+        MuscleGroup muscleGroup=createNewMuscleGroup(name);
         muscleGroup.setImage(image);
-        muscleGroupRepository.save(muscleGroup);
-        return true;
+        return muscleGroup;
     }
 
     public boolean addMusclesIntoGroup(Muscle muscle, MuscleGroup muscleGroup){
@@ -65,4 +62,7 @@ public class MuscleGroupService {
         return true;
     }
 
+    public void save(final MuscleGroup muscleGroup) {
+        muscleGroupRepository.save(muscleGroup);
+    }
 }

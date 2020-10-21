@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.example.models.enums.Equipment;
@@ -21,10 +22,10 @@ public class Exercise {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany
+    @ManyToMany
     private Set<Muscle> primaryWorkingMuscles;
 
-    @OneToMany
+    @ManyToMany
     private Set<Muscle> secondWorkingMuscles;
 
     private String title;

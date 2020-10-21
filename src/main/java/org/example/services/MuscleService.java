@@ -20,23 +20,22 @@ public class MuscleService {
     }
     public Muscle findByName(String name){return muscleRepository.findByName(name);}
 
-    public Muscle addMuscle(MuscleGroup group, String name, String info){
+    public Muscle createMuscle(MuscleGroup group, String name, String info){
         Muscle muscle=new Muscle();
         muscle.setMuscleGroup(group);
         muscle.setName(name);
         muscle.setInfo(info);
-        muscleRepository.save(muscle);
         return muscle;
     }
 
-    public Muscle addMuscle(MuscleGroup group, String name, String info,String image){
-        Muscle muscle=new Muscle();
-        muscle.setMuscleGroup(group);
-        muscle.setName(name);
-        muscle.setInfo(info);
+    public Muscle createMuscle(MuscleGroup group, String name, String info,String image){
+        Muscle muscle= createMuscle(group, name, info);
         muscle.setImage(image);
-        muscleRepository.save(muscle);
         return muscle;
+    }
+
+    public void save(Muscle muscle){
+        muscleRepository.save(muscle);
     }
 
     public Muscle findById(long id){

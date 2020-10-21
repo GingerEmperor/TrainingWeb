@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.example.exeptions.FileCanNotSaveException;
 import org.example.models.Exercise;
 import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.services.ExerciseService;
+import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +40,8 @@ public class ExerciseController {
     private final MuscleService muscleService;
 
     private final MuscleGroupService muscleGroupService;
+
+    private final GlobalService globalService;
 
     @Value("${upload.exercisePath}")
     private String uploadPath;
@@ -104,8 +108,8 @@ public class ExerciseController {
             @RequestParam(name = "secondaryMuscles") String secondaryMuscles,
             @RequestParam(name = "equipment") Equipment equipment,
             @RequestParam(name = "exerciseInfo") String exerciseInfo,
-            @RequestParam(name = "previewImg") MultipartFile previewImg,
-            Model model) throws IOException {
+            @RequestParam(name = "previewImg") MultipartFile previewImg
+    ) throws IOException {
 
 
         Exercise currentExercise=exerciseService.findByTitle(exerciseTitle);
@@ -125,25 +129,17 @@ public class ExerciseController {
             secondaryMuscleSet.add(muscleService.findById(Long.parseLong(secIds[i])));
         }
 
-        if(previewImg!=null && !previewImg.getOriginalFilename().isEmpty()) {////////////
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            final String uuidFile = UUID.randomUUID().toString();
-            final String resultFileName =exerciseTitle+"-"+ uuidFile + "." + previewImg.getOriginalFilename();
-
-            previewImg.transferTo(new File(uploadPath + "/" + resultFileName));
+        try {
             currentExercise = exerciseService.createNewExercise(
                     exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
-                    exerciseInfo, equipment, resultFileName);
-        }else {
+                    exerciseInfo, equipment,
+                    globalService.saveImgToPathWithPrefixName(previewImg,uploadPath,exerciseTitle));
+        }catch (FileCanNotSaveException e){
             currentExercise = exerciseService.createNewExercise(
                     exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
                     exerciseInfo, equipment);
         }
+        exerciseService.save(currentExercise);
         return "redirect:/exercises";
 
     }
