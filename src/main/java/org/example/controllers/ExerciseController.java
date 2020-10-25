@@ -1,14 +1,15 @@
 package org.example.controllers;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.models.Exercise;
@@ -47,11 +48,54 @@ public class ExerciseController {
     private String uploadPath;
 
     @GetMapping()
-    public String showAll(Model model) {
-        Iterable<Exercise> allExercises = exerciseService.findAll();
-        model.addAttribute("allExercises", allExercises);
-
+    public String showAllByAlphabeticalOrder(Model model){
+        List<Exercise> allExercises=exerciseService.findAll();
+        Collections.sort(allExercises, Comparator.comparing(Exercise::getTitle));//sort alphabetical
+        model.addAttribute("allExercises",allExercises);
         return "exercises";
+    }
+
+    @GetMapping("/byEquipmentNeed")//TODO to add frontend link for this
+    public String showAllByEquipmentNeed(Model model){
+        List<Exercise> allExercises=exerciseService.findAll();
+        Collections.sort(allExercises, Comparator.comparing(Exercise::getEquipmentNeed));//sort alphabetical
+        // Collections.sort(allExercises, (o1, o2) -> );//sort alphabetical
+        model.addAttribute("allExercises",allExercises);
+        return "exercises";
+    }
+
+    @GetMapping("/all")//TODO for debug
+    public String showAll(Model model){
+        Iterable<Exercise> allExercises=exerciseService.findAll();
+        model.addAttribute("allExercises",allExercises);
+        return "exercises";
+    }
+
+
+
+    @GetMapping("/byMuscleGroups")//TODO to add frontend link for this
+    public String showAllByMuscleGroups(Model model) {
+
+        //TODO maybe use Map<MuscleGroup,Set<Exercises>>
+        Map<MuscleGroup, Set<Exercise>> muscleGroupExerciseMap = new HashMap<>();
+        MuscleGroup muscleGroup = new MuscleGroup();
+        for (MuscleGroup mG : muscleGroupService.findAll()) {
+            Set<Exercise> exercisesByMuscleGroup = exerciseService.findAllByPrimaryWorkingMuscleGroup(mG);
+            muscleGroupExerciseMap.put(mG, exercisesByMuscleGroup);
+        }
+
+        muscleGroupExerciseMap.keySet().forEach(muscleGroup1 -> System.out.println(muscleGroup1.getName()));
+        System.out.println("================");
+        for (Set<Exercise> e : muscleGroupExerciseMap.values()) {
+            e.stream().forEach(exercise -> System.out.println(exercise.getTitle()));
+            System.out.println("-----");
+        }
+        return null;
+        //
+        // Iterable<Exercise> allExercises = exerciseService.findAll();
+        // model.addAttribute("allExercises", allExercises);
+
+        // return "exercises";
     }
 
     @GetMapping("/add")
@@ -66,27 +110,29 @@ public class ExerciseController {
 
     @PostMapping("/add/attributes")
     public String addExercisesTest(
-            @RequestParam(required = false, name = "exerciseTitle") String exerciseTitle,
-            @RequestParam(required = false, name = "primaryMuscleGroup") String primaryMuscleIdArr,
+            @RequestParam(required = true, name = "exerciseTitle") String exerciseTitle,
+            @RequestParam(required = true, name = "primaryMuscleGroup") String primaryMuscleIdArr,
             @RequestParam(required = false, name = "secondaryMuscleGroup") String secondMuscleIdArr,
-            @RequestParam(required = false, name = "equipment") Equipment equipment,
+            @RequestParam(required = true, name = "equipment") Equipment equipment,
             Model model) {
 
         List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
         List<MuscleGroup> secondaryMuscleGroups = new ArrayList<>();
 
         String[] primIds = primaryMuscleIdArr.split(",");
-        String[] secIds = secondMuscleIdArr.split(",");
-        for (int i = 0; i < primIds.length; i++) {
-            primaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(primIds[i])));
+        for (final String primId : primIds) {
+            primaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(primId)));
         }
         List<Muscle> primaryMuscles = new ArrayList<>();
         for (MuscleGroup mG : primaryMuscleGroups) {
             primaryMuscles.addAll(mG.getMuscleSet());
         }
 
-        for (int i = 0; i < secIds.length; i++) {
-            secondaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(secIds[i])));
+        if (secondMuscleIdArr != null) {
+            String[] secIds = secondMuscleIdArr.split(",");
+            for (final String secId : secIds) {
+                secondaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(secId)));
+            }
         }
         List<Muscle> secondaryMuscles = new ArrayList<>();
         for (MuscleGroup mG : secondaryMuscleGroups) {
@@ -104,37 +150,38 @@ public class ExerciseController {
     @PostMapping("/add")
     public String addExercisesToDB(
             @RequestParam(name = "exerciseTitle") String exerciseTitle,
-            @RequestParam(name = "primaryMuscles") String primaryMuscles,
-            @RequestParam(name = "secondaryMuscles") String secondaryMuscles,
+            @RequestParam(name = "primaryMuscles") String primaryMusclesIdArr,
+            @RequestParam(name = "secondaryMuscles", required = false) String secondaryMusclesIdArr,
             @RequestParam(name = "equipment") Equipment equipment,
             @RequestParam(name = "exerciseInfo") String exerciseInfo,
             @RequestParam(name = "previewImg") MultipartFile previewImg
     ) throws IOException {
 
-
-        Exercise currentExercise=exerciseService.findByTitle(exerciseTitle);
+        Exercise currentExercise = exerciseService.findByTitle(exerciseTitle);
         if (currentExercise != null) {
             throw new RuntimeException("Такое упраднение уже есть");
         }
         Set<Muscle> primaryMuscleSet = new HashSet<>();
         Set<Muscle> secondaryMuscleSet = new HashSet<>();
 
-        String[] primIds = primaryMuscles.split(",");
-        String[] secIds = secondaryMuscles.split(",");
-        for (int i = 0; i < primIds.length; i++) {
-            primaryMuscleSet.add(muscleService.findById(Long.parseLong(primIds[i])));
+        String[] primIds = primaryMusclesIdArr.split(",");
+        for (final String primId : primIds) {
+            primaryMuscleSet.add(muscleService.findById(Long.parseLong(primId)));
         }
 
-        for (int i = 0; i < secIds.length; i++) {
-            secondaryMuscleSet.add(muscleService.findById(Long.parseLong(secIds[i])));
+        if (secondaryMusclesIdArr != null) {
+            String[] secIds = secondaryMusclesIdArr.split(",");
+            for (final String secId : secIds) {
+                secondaryMuscleSet.add(muscleService.findById(Long.parseLong(secId)));
+            }
         }
 
         try {
             currentExercise = exerciseService.createNewExercise(
                     exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
                     exerciseInfo, equipment,
-                    globalService.saveImgToPathWithPrefixName(previewImg,uploadPath,exerciseTitle));
-        }catch (FileCanNotSaveException e){
+                    globalService.saveImgToPathWithPrefixName(previewImg, uploadPath, exerciseTitle));
+        } catch (FileCanNotSaveException e) {
             currentExercise = exerciseService.createNewExercise(
                     exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
                     exerciseInfo, equipment);

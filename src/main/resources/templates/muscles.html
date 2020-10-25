@@ -1,85 +1,80 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:insert="common/commonHead::commonHead"></head>
-<head th:insert="common/commonHead::commonHead"></head>
 
 <body>
 <header th:insert="parts/header::header"></header>
-<p>Muscles</p>
-<a href="/muscles/csv">MusclesCSV</a>
+    <p>Muscles</p>
+    <a href="/muscles/csv">MusclesCSV</a>
 
-<!--//-->
-<p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
-<div class="container">
-    <div class="row">
-        <div th:each="el :${allMuscles}" class="col-lg-4 col-md-12">
-            <div class="card mb-4 shadow-sm">
+    <!--//-->
+    <p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
+    <div class="container">
+        <div th:each="muscleGroup:${muscleGroups}" class="row mt-5 mb-5" style="border-style: solid">
+            <h4 th:text="${muscleGroup.getName()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
+            <div th:each="el:${muscleGroup.getMuscleSet()}" class="col-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card">
+                        <img th:src="${'/img/'+el.getImage()}" class="card-img-top"
+                             th:alt="${el.getName()}"
+                             align="center" style="background: #55595c" height="225">
+                        <div class="card-body" style="background: #C0C0C0">
+                            <p class="card-text text-dark" th:text="${el.getName()}"></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
 
-                <div class="card">
-                    <img th:src="${'/img/'+el.getImage()}" class="card-img-top"
-                         th:alt="${el.getName()}"
-                         align="center" style="background: #55595c" height="225">
-                    <div class="card-body" style="background: #C0C0C0">
-                        <p class="card-text text-dark" th:text="${el.getName()}"></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-
-                                <form th:action="'/muscles/'+${el.getId()}">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                                </form>
-                                <form method="post" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                                    <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
-                                </form>
+                                    <form th:action="'/muscles/'+${el.getId()}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </form>
+                                    <form method="post" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                        <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
 
-<div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
-     sec:authorize="hasAuthority('ADMIN')" >
-    <h5>Добавить мышцу</h5>
-    <form method="post" action="/muscles/add" enctype="multipart/form-data">
-        <div style="display:inline-block">
+    <div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
+         sec:authorize="hasAuthority('ADMIN')">
+        <h5>Добавить мышцу</h5>
+        <form method="post" action="/muscles/add" enctype="multipart/form-data">
+            <div style="display:inline-block">
 
-            <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon3">Группа мышц</span>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">Группа мышц</span>
+                    </div>
+                    <input type="hidden" th:value="${currentMuscleGroup.getId()}" name="groupId">
+                    <input type="text" name="muscleGroup" class="form-control"
+                           th:value=" ${currentMuscleGroup.getName()}"
+                           aria-describedby="basic-addon3" readonly>
                 </div>
-                <input type="hidden" th:value="${currentMuscleGroup.getId()}" name="groupId">
-                <input type="text" name="muscleGroup" class="form-control"
-                       th:value=" ${currentMuscleGroup.getName()}"
-                       aria-describedby="basic-addon3" readonly>
+
+                <div class="input-group mb-2 ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Название мышц</span>
+                    </div>
+                    <input type="text" name="muscleName" class="form-control"
+                           aria-describedby="basic-addon3" placeholder="..." required>
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Информация о мышцах</span>
+                    </div>
+                    <textarea class="form-control " name="muscle_info" aria-label="With textarea"></textarea>
+                    <input type="file" name="file" class="input-group-text" id="file">
+                </div>
+
+                <button type="submit" class="btn btn-secondary mb-1">Add muscle</button>
             </div>
 
-            <div class="input-group mb-2 ">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Название мышц</span>
-                </div>
-                <input type="text" name="muscleName" class="form-control"
-                       aria-describedby="basic-addon3" placeholder="..." required>
-            </div>
-            <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Информация о мышцах</span>
-                </div>
-                <textarea class="form-control " name="muscle_info" aria-label="With textarea"></textarea>
-<!--                <button class="input-group-text" id="basic-addon33">Browse image</button>-->
-<!--                <img src="ehttps://cdn.britannica.com/s:800x450,c:crop/79/143179-138-80596415/muscles-bones-tendons.jpg" class="img-fluid" alt="Add image">-->
-                <input type="file" name="file" class="input-group-text" id="file">
-            </div>
-
-            <button type="submit" class="btn btn-secondary mb-1">Add muscle</button>
-        </div>
-
-    </form>
-</div>
-
+        </form>
+    </div>
 
 <footer th:insert="parts/footer::footer"></footer>
 </body>

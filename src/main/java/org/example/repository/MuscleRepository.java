@@ -11,6 +11,8 @@ public interface MuscleRepository extends CrudRepository<Muscle,Long> {
     List<Muscle>findAll();
     Muscle findByName(String name);
 
-    Set<Muscle> findAllByMuscleGroup(MuscleGroup muscleGroup);
+    List<Muscle> findAllByMuscleGroup(MuscleGroup muscleGroup);
+
+    List<Muscle> findAllByMuscleGroup_Id(Long muscleGroupId);
 
 }

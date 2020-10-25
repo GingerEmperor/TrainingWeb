@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -8,6 +9,7 @@ import org.example.exeptions.ExerciseNotFoundException;
 import org.example.models.Exercise;
 import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
+import org.example.models.muscles.MuscleGroup;
 import org.example.repository.ExerciseRepository;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +67,22 @@ public class ExerciseService {
         return exerciseRepository.findByTitle(exerciseTitle);
     }
 
-    public void save(Exercise exercise){
+    public Set<Exercise> findAllByPrimaryWorkingMuscle(Muscle muscle) {
+        return exerciseRepository.findAllByPrimaryWorkingMusclesContaining(muscle);
+    }
+
+    public Set<Exercise> findAllByPrimaryWorkingMuscleGroup(MuscleGroup muscleGroup) {
+        Set<Exercise>resultEx=new HashSet<>();
+        for (Muscle m:muscleGroup.getMuscleSet()) {
+            final Set<Exercise> allByPrimaryWorkingMuscle = findAllByPrimaryWorkingMuscle(m);
+            for (Exercise e:allByPrimaryWorkingMuscle) {
+                resultEx.add(e);
+            }
+        }
+        return resultEx;
+    }
+
+    public void save(Exercise exercise) {
         exerciseRepository.save(exercise);
     }
 }

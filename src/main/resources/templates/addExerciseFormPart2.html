@@ -33,7 +33,7 @@
                 </select>
             </label>
             <label for="secondaryMuscles" class="input-group-text mb-1">Второстипенных рабочих мышцы
-                <select class="form-control ml-2 mr-2 selectpicker" name="secondaryMuscles" id="secondaryMuscles" required multiple data-live-search="true">
+                <select class="form-control ml-2 mr-2 selectpicker" name="secondaryMuscles" id="secondaryMuscles" multiple data-live-search="true">
                     <option disabled>Choose secondary muscle</option><!--//Empty choise-->
                     <option th:each="muscle : ${secondaryMuscles}"
                             th:value="${muscle.getId()}" th:text="${muscle.getName()}">
@@ -46,7 +46,7 @@
                     <label for="exerciseInfo" class="input-group-text">Информация об упражнении</label>
                 </div>
                 <textarea type="text" id="exerciseInfo" name="exerciseInfo" class="form-control"
-                          aria-describedby="basic-addon3" placeholder="..." required></textarea>
+                          aria-describedby="basic-addon3" placeholder="..."></textarea>
             </div>
 
             <label for="previewImg" class="input-group-text mb-1">Browse exercise preview image
@@ -55,8 +55,7 @@
 
             <input type="hidden" name="equipment" class="input-group-text ml-2 mr-2" id="equipment" th:value="${equip}">
 
-
-            <a href="/exercises/add/attributes" class="button">Previous</a>
+            <a href="/exercises/add" class="btn btn-success mb-2 mt-2"><- Previous</a>
             <button type="submit" class="btn btn-success mb-2 mt-2">Add Exercise</button>
         </div>
     </form>

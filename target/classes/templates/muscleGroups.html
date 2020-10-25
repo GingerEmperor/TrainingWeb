@@ -11,7 +11,7 @@
 
         <div class="col-lg-4 col-md-12">
             <div class="card mb-4 shadow-sm">
-
+<!--//TODO add image-->
                 <div class="card">
                     <img th:src="@{../images/muscles/back/backPreview.jpg}" class="card-img-top"
                          alt="All"
@@ -31,7 +31,7 @@
             </div>
         </div>
         <!--        //-->
-        <div th:each="el :${allMusclesGroup}" class="col-lg-4 col-md-12">
+        <div th:each="el :${muscleGroups}" class="col-lg-4 col-md-12">
             <div class="card mb-4 shadow-sm">
 
                 <div class="card">
@@ -47,9 +47,14 @@
                                 <form th:action="'/muscleGroups/'+${el.getId()}">
                                     <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                 </form>
+                                <!--                                //TODO add endpoint "'/exercises/muscleGroup/'+${el.getId()}"-->
+                                <form th:action="'/exercises/muscleGroup/'+${el.getId()}" method="get">
+                                    <button class="btn btn-sm btn-outline-secondary">Show exercises</button>
+                                </form>
                                 <form method="post" th:action="'/muscleGroups/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                     <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                 </form>
+
                             </div>
                         </div>
                     </div>

@@ -18,6 +18,11 @@ public class MuscleService {
     public List<Muscle> findAll(){
         return muscleRepository.findAll();
     }
+
+    public List<Muscle> findAllByMuscleGroup(Long muscleGroupId){
+        return muscleRepository.findAllByMuscleGroup_Id(muscleGroupId);
+    }
+
     public Muscle findByName(String name){return muscleRepository.findByName(name);}
 
     public Muscle createMuscle(MuscleGroup group, String name, String info){
@@ -58,7 +63,7 @@ public class MuscleService {
         return false;
     }
 
-    public Set<Muscle> findAllByMuscleGroup(MuscleGroup muscleGroup){
+    public List<Muscle> findAllByMuscleGroup(MuscleGroup muscleGroup){
         return muscleRepository.findAllByMuscleGroup(muscleGroup);
     }
 

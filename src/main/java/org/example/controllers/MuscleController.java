@@ -2,9 +2,16 @@ package org.example.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.example.exeptions.FileCanNotSaveException;
+import org.example.models.Exercise;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.services.GlobalService;
@@ -42,9 +49,16 @@ public class MuscleController {
 
     @GetMapping()
     public String showAllMuscles(Model model) {
-        Iterable<Muscle> allMuscles = muscleService.findAll();
-        model.addAttribute("allMuscles", allMuscles);
+        List<MuscleGroup> allMuscleGroups =muscleGroupService.findAll();
+        model.addAttribute("muscleGroups",allMuscleGroups);
         return "muscles";
+    }
+
+    @GetMapping("/{id}")
+    public String muscleByIdDetails(@PathVariable(name = "id") long id,
+            Model model) {
+        model.addAttribute("muscle", muscleService.findById(id));
+        return "muscleDetails";
     }
 
     @PostMapping("/add")
@@ -82,13 +96,7 @@ public class MuscleController {
         return "redirect:/muscleGroups/" + groupId;
     }
 
-    @GetMapping("/{id}")
-    public String muscleByIdDetails(@PathVariable(name = "id") long id,
-            Model model) {
 
-        model.addAttribute("muscle", muscleService.findById(id));
-        return "muscleDetails";
-    }
 
     //TODO add delete image
     @PostMapping("/{id}/delete")
