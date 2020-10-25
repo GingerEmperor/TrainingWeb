@@ -5,11 +5,13 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.example.models.Exercise;
+import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
+
+    List<Exercise> findAll();
 
     Optional<Exercise> findById(Long id);
 
@@ -18,6 +20,8 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     Exercise findByPrimaryWorkingMusclesContaining(Muscle muscle);
 
     Set<Exercise> findAllByPrimaryWorkingMusclesContaining(Muscle muscle);
+
+    Set<Exercise> findAllByEquipmentNeed(Equipment equipment);
 
 
 }

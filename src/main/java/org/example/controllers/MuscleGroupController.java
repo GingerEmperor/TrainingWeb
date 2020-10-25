@@ -1,7 +1,11 @@
 package org.example.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +43,8 @@ public class MuscleGroupController {
 
     @GetMapping()
     public String showAllMusclesGroup(Model model) {
-        Iterable<MuscleGroup> allMusclesGroup = muscleGroupService.findAll();
+        List<MuscleGroup> allMusclesGroup = muscleGroupService.findAll();
+        allMusclesGroup.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0)-o2.getName().toLowerCase().charAt(0));
         model.addAttribute("muscleGroups", allMusclesGroup);
         return "muscleGroups";
     }
@@ -47,20 +52,15 @@ public class MuscleGroupController {
     @GetMapping("/{id}")
     public String showMusclesByGroupId(@PathVariable Long id,
                                        Model model) {
+        Map<MuscleGroup, List<Muscle>> muscleGroupMusclesMap=new TreeMap<>();
         MuscleGroup currentMuscleGroup = muscleGroupService.findById(id);
         List<Muscle> muscles=muscleService.findAllByMuscleGroup(currentMuscleGroup);
-        System.out.println("-----before------");
-        muscles.forEach(muscle -> System.out.println(muscle.getName()));
         muscles.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0)-o2.getName().toLowerCase().charAt(0));
-        System.out.println("---after-----");
-        muscles.forEach(muscle -> System.out.println(muscle.getName()));
+        muscleGroupMusclesMap.put(currentMuscleGroup,muscles);
 
-        //TODO sort all word alphabeticaly
-        //TODO Map
-
-
-        model.addAttribute("muscleGroups", currentMuscleGroup);
+        model.addAttribute("muscleGroupMusclesMap",muscleGroupMusclesMap);
         model.addAttribute("currentMuscleGroup",currentMuscleGroup);
+
         return "muscles";
     }
 
@@ -81,7 +81,7 @@ public class MuscleGroupController {
         if (currentMuscleGroup != null) {
             throw new RuntimeException("Такая мышечная группа уже есть");
         }
-///
+
         try {
             currentMuscleGroup=muscleGroupService.createNewMuscleGroup(
                     muscleGroupName,

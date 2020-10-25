@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
@@ -16,7 +15,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Exercise {
+public class Exercise implements Comparable<Exercise> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,4 +35,8 @@ public class Exercise {
 
     private Equipment equipmentNeed;
 
+    @Override
+    public int compareTo(final Exercise o) {
+        return this.getTitle().toLowerCase().charAt(0)-o.getTitle().toLowerCase().charAt(0);
+    }
 }

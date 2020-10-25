@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.models.Exercise;
@@ -48,54 +48,54 @@ public class ExerciseController {
     private String uploadPath;
 
     @GetMapping()
-    public String showAllByAlphabeticalOrder(Model model){
-        List<Exercise> allExercises=exerciseService.findAll();
-        Collections.sort(allExercises, Comparator.comparing(Exercise::getTitle));//sort alphabetical
-        model.addAttribute("allExercises",allExercises);
+    public String showAllByAlphabeticalOrder(Model model) {
+
+        Map<String, List<Exercise>> muscleGroup_ExerciseMap = new TreeMap<>();
+
+        List<Exercise> allExercises =new ArrayList<>(exerciseService.findAll());
+        Collections.sort(allExercises,(o1, o2) -> o1.getTitle().toLowerCase().charAt(0)-o2.getTitle().toLowerCase().charAt(0));
+        muscleGroup_ExerciseMap.put("All", allExercises);
+
+        model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
+
         return "exercises";
     }
-
-    @GetMapping("/byEquipmentNeed")//TODO to add frontend link for this
-    public String showAllByEquipmentNeed(Model model){
-        List<Exercise> allExercises=exerciseService.findAll();
-        Collections.sort(allExercises, Comparator.comparing(Exercise::getEquipmentNeed));//sort alphabetical
-        // Collections.sort(allExercises, (o1, o2) -> );//sort alphabetical
-        model.addAttribute("allExercises",allExercises);
-        return "exercises";
-    }
-
-    @GetMapping("/all")//TODO for debug
-    public String showAll(Model model){
-        Iterable<Exercise> allExercises=exerciseService.findAll();
-        model.addAttribute("allExercises",allExercises);
-        return "exercises";
-    }
-
-
 
     @GetMapping("/byMuscleGroups")//TODO to add frontend link for this
     public String showAllByMuscleGroups(Model model) {
 
         //TODO maybe use Map<MuscleGroup,Set<Exercises>>
-        Map<MuscleGroup, Set<Exercise>> muscleGroupExerciseMap = new HashMap<>();
-        MuscleGroup muscleGroup = new MuscleGroup();
+        Map<MuscleGroup, Set<Exercise>> muscleGroup_ExerciseMap = new TreeMap<>();
         for (MuscleGroup mG : muscleGroupService.findAll()) {
             Set<Exercise> exercisesByMuscleGroup = exerciseService.findAllByPrimaryWorkingMuscleGroup(mG);
-            muscleGroupExerciseMap.put(mG, exercisesByMuscleGroup);
+            muscleGroup_ExerciseMap.put(mG, exercisesByMuscleGroup);
         }
 
-        muscleGroupExerciseMap.keySet().forEach(muscleGroup1 -> System.out.println(muscleGroup1.getName()));
-        System.out.println("================");
-        for (Set<Exercise> e : muscleGroupExerciseMap.values()) {
-            e.stream().forEach(exercise -> System.out.println(exercise.getTitle()));
-            System.out.println("-----");
-        }
-        return null;
-        //
-        // Iterable<Exercise> allExercises = exerciseService.findAll();
-        // model.addAttribute("allExercises", allExercises);
+        model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
+        return "exercises";
 
-        // return "exercises";
+    }
+
+    @GetMapping("/byEquipmentNeed")//TODO to add frontend link for this
+    public String showAllByEquipmentNeed(Model model) {
+
+        Map<Equipment, List<Exercise>> equipment_ExerciseMap = new TreeMap<>();
+        for (Equipment eq : Equipment.values()) {
+            List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByEquipment(eq));
+            Collections.sort(exercisesByMuscleGroup,(o1, o2) -> o1.getTitle().toLowerCase().charAt(0)-o2.getTitle().toLowerCase().charAt(0));
+            equipment_ExerciseMap.put(eq, exercisesByMuscleGroup);
+        }
+
+        model.addAttribute("sortCriteria_ExerciseMap", equipment_ExerciseMap);
+
+        return "exercises";
+    }
+
+    @GetMapping("/all")//TODO for debug
+    public String showAll(Model model) {
+        Iterable<Exercise> allExercises = exerciseService.findAll();
+        model.addAttribute("allExercises", allExercises);
+        return "exercises";
     }
 
     @GetMapping("/add")

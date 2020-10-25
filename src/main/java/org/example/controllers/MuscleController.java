@@ -2,12 +2,14 @@ package org.example.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.example.exeptions.FileCanNotSaveException;
@@ -50,7 +52,18 @@ public class MuscleController {
     @GetMapping()
     public String showAllMuscles(Model model) {
         List<MuscleGroup> allMuscleGroups =muscleGroupService.findAll();
-        model.addAttribute("muscleGroups",allMuscleGroups);
+
+        Map<MuscleGroup, List<Muscle>> muscleGroupMusclesMap=new TreeMap<>();
+        for (MuscleGroup mG:allMuscleGroups) {
+            List<Muscle>muscles=new ArrayList<>();
+            for (Muscle m:mG.getMuscleSet()) {
+                muscles.add(m);
+            }
+            muscleGroupMusclesMap.put(mG,muscles);
+        }
+
+
+        model.addAttribute("muscleGroupMusclesMap",muscleGroupMusclesMap);
         return "muscles";
     }
 

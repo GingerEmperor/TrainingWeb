@@ -21,8 +21,8 @@ public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
-    public List<Exercise> findAll() {
-        return exerciseRepository.findAll();
+    public Set<Exercise> findAll() {
+        return new HashSet<>(exerciseRepository.findAll());
     }
 
     public Exercise findById(Long id) {
@@ -80,6 +80,10 @@ public class ExerciseService {
             }
         }
         return resultEx;
+    }
+
+    public Set<Exercise> findAllByEquipment(Equipment equipment){
+        return exerciseRepository.findAllByEquipmentNeed(equipment);
     }
 
     public void save(Exercise exercise) {
