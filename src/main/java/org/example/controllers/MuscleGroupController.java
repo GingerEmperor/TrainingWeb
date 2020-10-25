@@ -1,24 +1,29 @@
 package org.example.controllers;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,18 +43,24 @@ public class MuscleGroupController {
 
     @GetMapping()
     public String showAllMusclesGroup(Model model) {
-        Iterable<MuscleGroup> allMusclesGroup = muscleGroupService.findAll();
-        model.addAttribute("allMusclesGroup", allMusclesGroup);
+        List<MuscleGroup> allMusclesGroup = muscleGroupService.findAll();
+        allMusclesGroup.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0)-o2.getName().toLowerCase().charAt(0));
+        model.addAttribute("muscleGroups", allMusclesGroup);
         return "muscleGroups";
     }
 
     @GetMapping("/{id}")
     public String showMusclesByGroupId(@PathVariable Long id,
                                        Model model) {
+        Map<MuscleGroup, List<Muscle>> muscleGroupMusclesMap=new TreeMap<>();
         MuscleGroup currentMuscleGroup = muscleGroupService.findById(id);
-        Set<Muscle> muscles = muscleService.findAllByMuscleGroup(currentMuscleGroup);
-        model.addAttribute("allMuscles", muscles);
+        List<Muscle> muscles=muscleService.findAllByMuscleGroup(currentMuscleGroup);
+        muscles.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0)-o2.getName().toLowerCase().charAt(0));
+        muscleGroupMusclesMap.put(currentMuscleGroup,muscles);
+
+        model.addAttribute("muscleGroupMusclesMap",muscleGroupMusclesMap);
         model.addAttribute("currentMuscleGroup",currentMuscleGroup);
+
         return "muscles";
     }
 
@@ -70,7 +81,7 @@ public class MuscleGroupController {
         if (currentMuscleGroup != null) {
             throw new RuntimeException("Такая мышечная группа уже есть");
         }
-///
+
         try {
             currentMuscleGroup=muscleGroupService.createNewMuscleGroup(
                     muscleGroupName,

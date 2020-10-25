@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class MuscleGroup {
+public class MuscleGroup implements Comparable<MuscleGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -22,4 +22,13 @@ public class MuscleGroup {
     @JoinColumn(name = "muscle_id")
     Set<Muscle> muscleSet;
 
+    @Override
+    public int compareTo(final MuscleGroup o) {
+        return this.getName().toLowerCase().charAt(0)-o.getName().toLowerCase().charAt(0);
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

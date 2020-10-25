@@ -32,4 +32,7 @@ public class GlobalService {
         throw new FileCanNotSaveException();
     }
 
+    public int compareStringsByFirstCharacter(String s1,String s2){
+        return s1.toLowerCase().charAt(0)-s2.toLowerCase().charAt(0);
+    }
 }

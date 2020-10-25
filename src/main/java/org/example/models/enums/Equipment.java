@@ -16,4 +16,9 @@ public enum Equipment {
     public String getWord() {
         return word;
     }
+
+    // @Override
+    // public String toString() {
+    //     return word;
+    // }
 }

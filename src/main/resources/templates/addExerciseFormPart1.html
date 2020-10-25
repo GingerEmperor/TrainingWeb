@@ -32,7 +32,7 @@
                 </select>
             </label>
             <label for="secondaryMuscleGroup" class="input-group-text mb-1">Группы второстипенных рабочих мышцы
-                <select class="form-control ml-2 mr-2 selectpicker" name="secondaryMuscleGroup" id="secondaryMuscleGroup" required multiple data-live-search="true">
+                <select class="form-control ml-2 mr-2 selectpicker" name="secondaryMuscleGroup" id="secondaryMuscleGroup" multiple data-live-search="true">
                     <option disabled>Choose secondary muscle groups</option><!--//Empty choise-->
                     <option th:each="muscleGroup : ${allMuscleGroups}"
                             th:value="${muscleGroup.getId()}" th:text="${muscleGroup.getName()}">
