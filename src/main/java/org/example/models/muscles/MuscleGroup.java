@@ -18,8 +18,7 @@ public class MuscleGroup implements Comparable<MuscleGroup> {
 
     private String image;
 
-    @OneToMany
-    @JoinColumn(name = "muscle_id")
+    @OneToMany(mappedBy = "muscleGroup")
     Set<Muscle> muscleSet;
 
     @Override
