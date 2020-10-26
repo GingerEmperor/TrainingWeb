@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +75,7 @@ public class ExerciseController {
 
     }
 
-    @GetMapping("/byEquipmentNeed")//TODO to add frontend link for this
+    @GetMapping("/byEquipmentNeed")
     public String showAllByEquipmentNeed(Model model) {
 
         Map<Equipment, List<Exercise>> equipment_ExerciseMap = new TreeMap<>();
@@ -125,6 +124,10 @@ public class ExerciseController {
         }
         List<Muscle> primaryMuscles = new ArrayList<>();
         for (MuscleGroup mG : primaryMuscleGroups) {
+            Muscle separator=new Muscle();
+            separator.setName("---"+ mG.getName()+"---");
+            primaryMuscles.add(separator);
+
             primaryMuscles.addAll(mG.getMuscleSet());
         }
 
@@ -136,6 +139,10 @@ public class ExerciseController {
         }
         List<Muscle> secondaryMuscles = new ArrayList<>();
         for (MuscleGroup mG : secondaryMuscleGroups) {
+            Muscle separator=new Muscle();
+            separator.setName("---"+ mG.getName()+"---");
+            secondaryMuscles.add(separator);
+
             secondaryMuscles.addAll(mG.getMuscleSet());
         }
 
@@ -153,7 +160,9 @@ public class ExerciseController {
             @RequestParam(name = "primaryMuscles") String primaryMusclesIdArr,
             @RequestParam(name = "secondaryMuscles", required = false) String secondaryMusclesIdArr,
             @RequestParam(name = "equipment") Equipment equipment,
-            @RequestParam(name = "exerciseInfo") String exerciseInfo,
+            @RequestParam(name = "someInfo") String someInfo,
+            @RequestParam(name = "howToDo") String howToDo,
+            @RequestParam(name = "videoLink") String videoLink,
             @RequestParam(name = "previewImg") MultipartFile previewImg
     ) throws IOException {
 
@@ -179,12 +188,12 @@ public class ExerciseController {
         try {
             currentExercise = exerciseService.createNewExercise(
                     exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
-                    exerciseInfo, equipment,
+                    someInfo,howToDo,videoLink, equipment,
                     globalService.saveImgToPathWithPrefixName(previewImg, uploadPath, exerciseTitle));
         } catch (FileCanNotSaveException e) {
             currentExercise = exerciseService.createNewExercise(
                     exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
-                    exerciseInfo, equipment);
+                    someInfo,howToDo,videoLink, equipment);
         }
         exerciseService.save(currentExercise);
         return "redirect:/exercises";

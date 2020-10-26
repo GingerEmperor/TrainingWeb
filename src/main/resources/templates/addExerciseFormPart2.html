@@ -28,7 +28,12 @@
                 <select class="form-control selectpicker ml-2 mr-2" name="primaryMuscles" id="primaryMuscles" required multiple data-live-search="true">
                     <option disabled>Choose primary muscles</option><!--//Empty choise-->
                     <option th:each="muscle : ${primaryMuscles}"
-                            th:value="${muscle.getId()}" th:text="${muscle.getName()}">
+                            th:value="${muscle.getId()}"
+                            th:text="${muscle.getName()}"
+                            th:disabled="${muscle.getName().contains('---')?'true':'false'}"
+                             >
+
+                        <!--                        th:text="${muscle.getName()!='-&#45;&#45;'} ? ${muscle.getName()} :'&#45;&#45;&#45;&#45;'" >-->
                     </option>
                 </select>
             </label>
@@ -36,18 +41,33 @@
                 <select class="form-control ml-2 mr-2 selectpicker" name="secondaryMuscles" id="secondaryMuscles" multiple data-live-search="true">
                     <option disabled>Choose secondary muscle</option><!--//Empty choise-->
                     <option th:each="muscle : ${secondaryMuscles}"
-                            th:value="${muscle.getId()}" th:text="${muscle.getName()}">
+                            th:value="${muscle.getId()}"
+                            th:text="${muscle.getName()}"
+                            th:disabled="${muscle.getName().contains('---')?'true':'false'}"
+                    >
                     </option>
                 </select>
             </label>
 
-            <div class="input-group mb-2 ">
+            <div class="input-group mb-1 ">
                 <div class="input-group-prepend">
-                    <label for="exerciseInfo" class="input-group-text">Информация об упражнении</label>
+                    <label for="someInfo" class="input-group-text">Информация об упражнении</label>
                 </div>
-                <textarea type="text" id="exerciseInfo" name="exerciseInfo" class="form-control"
+                <textarea type="text" id="someInfo" name="someInfo" class="form-control"
                           aria-describedby="basic-addon3" placeholder="..."></textarea>
             </div>
+            <div class="input-group mb-1 ">
+                <div class="input-group-prepend">
+                    <label for="howToDo" class="input-group-text">Инструкция как делать</label>
+                </div>
+                <textarea type="text" id="howToDo" name="howToDo" class="form-control"
+                          aria-describedby="basic-addon3" placeholder="..."></textarea>
+            </div>
+
+            <label for="videoLink" class="input-group-text mb-1">Ссылка на видео упражнения
+                <input type="text" id="videoLink" name="videoLink" class="form-control ml-2 mr-2"
+                       aria-describedby="basic-addon3" placeholder="https//...">
+            </label>
 
             <label for="previewImg" class="input-group-text mb-1">Browse exercise preview image
                 <input type="file" name="previewImg" class="input-group-text ml-2 mr-2" id="previewImg">
