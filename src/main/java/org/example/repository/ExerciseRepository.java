@@ -20,6 +20,7 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     Exercise findByPrimaryWorkingMusclesContaining(Muscle muscle);
 
     Set<Exercise> findAllByPrimaryWorkingMusclesContaining(Muscle muscle);
+    Set<Exercise> findAllBySecondWorkingMusclesContaining(Muscle muscle);
 
     Set<Exercise> findAllByEquipmentNeed(Equipment equipment);
 

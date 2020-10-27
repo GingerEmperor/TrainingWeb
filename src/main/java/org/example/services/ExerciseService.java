@@ -83,6 +83,10 @@ public class ExerciseService {
         return exerciseRepository.findAllByPrimaryWorkingMusclesContaining(muscle);
     }
 
+    public Set<Exercise> findAllBySecondaryWorkingMuscle(final Muscle muscle) {
+        return exerciseRepository.findAllBySecondWorkingMusclesContaining(muscle);
+    }
+
     public Set<Exercise> findAllByPrimaryWorkingMuscleGroup(MuscleGroup muscleGroup) {
         Set<Exercise> resultEx = new HashSet<>();
         for (Muscle m : muscleGroup.getMuscleSet()) {

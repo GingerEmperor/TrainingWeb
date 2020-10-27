@@ -10,7 +10,7 @@
     <!--//-->
     <p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
     <div class="container">
-        <div th:each="muscleGroup:${muscleGroupMusclesMap.keySet()}" class="row mt-5 mb-5" style="border-style: solid">
+        <div th:each="muscleGroup:${muscleGroupMusclesMap.keySet()}" th:if="${!muscleGroup.getMuscleSet().isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
             <h4 th:text="${muscleGroup.getName()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
             <div th:each="el:${muscleGroupMusclesMap.get(muscleGroup)}" class="col-4">
                 <div class="card mb-4 shadow-sm">

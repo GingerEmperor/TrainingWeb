@@ -5,13 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// import org.example.models.Role;
 import org.example.models.User;
 import org.example.models.enums.Role;
 import org.example.repository.UserRepo;
-// import org.example.services.RoleService;
 import org.example.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,15 +17,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/users")
 @PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
-    @Autowired
-    UserService userService;
-    @Autowired
-    UserRepo userRepo;
+    private final UserService userService;
+
+    private final UserRepo userRepo;
+
     @GetMapping
     public String userList(Model model) {
         model.addAttribute("userList", userService.findAll());
@@ -38,7 +38,7 @@ public class UserController {
 
     @PostMapping("/edit")
     public String edit(
-            @RequestParam Map<String,String> form,
+            @RequestParam Map<String, String> form,
             @RequestParam("userId") User user
     ) {
         System.out.println(form);
@@ -49,13 +49,13 @@ public class UserController {
         user.getRoles().forEach(System.out::println);
         System.out.println(" ");
 
-        Set<String> roles= Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
+        Set<String> roles = Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
 
         user.getRoles().clear();
-        for (String key:form.keySet()) {
-            if(roles.contains(key)) {
+        for (String key : form.keySet()) {
+            if (roles.contains(key)) {
                 System.out.println(Role.valueOf(key));
-                user.getRoles().add(Role    .valueOf(key));
+                user.getRoles().add(Role.valueOf(key));
                 System.out.println();
             }
         }
