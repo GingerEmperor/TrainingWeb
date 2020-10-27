@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:insert="common/commonHead::commonHead"></div>
+<body>
+<header th:insert="parts/header::header"></header>
+
+<div class="container mt-5 bg-dark text-white rounded">
+    <h2 align="center" th:text="${exercise.getTitle()}"></h2>
+    <div class="card">
+        <img th:src="${'/img/'+exercise.getImage()}"
+             th:alt="${exercise.getTitle()}"
+             align="center" style="background: #55595c">
+
+        <!--        <img src="erhttps://cdn.britannica.com/s:800x450,c:crop/79/143179-138-80596415/muscles-bones-tendons.jpg" class="card-img-top"-->
+        <!--             th:alt="${muscle.getName()}"-->
+        <!--             align="center" style="background: #55595c">-->
+
+        <div th:if="${exercise.getExerciseInfo()!=null}" class="card-body" style="background: #C0C0C0">
+            SOME INFO
+            <p class="card-text text-dark"
+               th:text="${!exercise.getExerciseInfo().getSomeInfo().isEmpty()} ?
+                ${exercise.getExerciseInfo().getSomeInfo()} : 'NONE'">
+            </p>
+            HOW TO DO:
+            <p class="card-text text-dark"
+               th:text="${!exercise.getExerciseInfo().getHowToDo().isEmpty()} ?
+                ${exercise.getExerciseInfo().getHowToDo()} : 'NONE'">
+            </p>
+<!--            <p class="card-text text-dark" th:text="${exercise.getExerciseInfo().getHowToDo()()}">-->
+<!--            </p>-->
+            <p>
+                <a th:href="${exercise.getExerciseInfo().getVideoLink()}">Link</a>
+            </p>
+            <div class="btn-group">
+                <a class="btn btn-outline-secondary" href="/exercises">Назад</a>
+<!--                //TODO add edit-->
+                <form th:action="'todo/exercises/'+${exercise.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
+                    <button type="submit" class="btn btn-outline-warning">Edit</button>
+                </form>
+                <!--                //TODO add delete-->
+                <form method="post" th:action="'todo/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:insert="parts/footer::footer"></footer>
+</body>
+</html>

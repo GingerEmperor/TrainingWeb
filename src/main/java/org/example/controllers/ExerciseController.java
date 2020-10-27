@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,7 +58,7 @@ public class ExerciseController {
 
         model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
 
-        return "exercises";
+        return "exerciseTemplates/exercises";
     }
 
     @GetMapping("/byMuscleGroups")//TODO to add frontend link for this
@@ -71,7 +72,7 @@ public class ExerciseController {
         }
 
         model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
-        return "exercises";
+        return "exerciseTemplates/exercises";
 
     }
 
@@ -87,14 +88,23 @@ public class ExerciseController {
 
         model.addAttribute("sortCriteria_ExerciseMap", equipment_ExerciseMap);
 
-        return "exercises";
+        return "exerciseTemplates/exercises";
     }
 
     @GetMapping("/all")//TODO for debug
     public String showAll(Model model) {
         Iterable<Exercise> allExercises = exerciseService.findAll();
         model.addAttribute("allExercises", allExercises);
-        return "exercises";
+        return "exerciseTemplates/exercises";
+    }
+
+    @GetMapping("/{id}")
+    public String showExerciseInfoById(@PathVariable(name = "id") long id,
+            Model model) {
+        System.out.println("Works1");
+        model.addAttribute("exercise", exerciseService.findById(id));
+        System.out.println("Works2");
+        return "exerciseTemplates/exerciseDetails";
     }
 
     @GetMapping("/add")
@@ -104,7 +114,7 @@ public class ExerciseController {
 
         model.addAttribute("allMuscleGroups", allMuscleGroups);
         model.addAttribute("allEquipment", allEquipment);
-        return "addExerciseFormPart1";
+        return "exerciseTemplates/addExerciseFormPart1";
     }
 
     @PostMapping("/add/attributes")
@@ -151,7 +161,7 @@ public class ExerciseController {
         model.addAttribute("primaryMuscles", primaryMuscles);
         model.addAttribute("secondaryMuscles", secondaryMuscles);
 
-        return "addExerciseFormPart2";
+        return "exerciseTemplates/addExerciseFormPart2";
     }
 
     @PostMapping("/add")
@@ -199,5 +209,13 @@ public class ExerciseController {
         return "redirect:/exercises";
 
     }
+
+    // //TODO add delete image
+    // @PostMapping("/{id}/delete")
+    // public String deleteMuscleById(@PathVariable long id,
+    //         @RequestParam(name = "groupId") Long groupId) {
+    //     muscleService.deleteMuscleById(id);
+    //     return "redirect:/muscleGroups/" + groupId;
+    // }
 
 }

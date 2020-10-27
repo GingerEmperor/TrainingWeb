@@ -20,9 +20,11 @@
             </p>
             <div class="btn-group">
                 <a class="btn btn-outline-secondary" href="/muscles">Назад</a>
-                <form th:action="'todo/muscleGroups/'+${muscle.getId()}" sec:authorize="hasAuthority('ADMIN')">
+                <!--                //TODO add edit-->
+                <form th:action="'todo/muscleGroups/'+${muscle.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
                     <button type="submit" class="btn btn-outline-warning">Edit</button>
                 </form>
+                <!--                //TODO add delete-->
                 <form method="post" th:action="'todo/muscleGroups/'+${muscle.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                     <button type="submit" class="btn btn-outline-danger">Delete</button>
                 </form>

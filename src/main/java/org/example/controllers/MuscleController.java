@@ -1,26 +1,17 @@
 package org.example.controllers;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.UUID;
 
-import org.example.exeptions.FileCanNotSaveException;
-import org.example.models.Exercise;
+import org.example.exeptions.CanNotDeleteException;
+import org.example.exeptions.MuscleNotFoundException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,76 +37,74 @@ public class MuscleController {
     // @Autowired
     // CSVService csvService;
 
-    @Value("${upload.path}")
-    private String uploadPath;
-
     @GetMapping()
     public String showAllMuscles(Model model) {
-        List<MuscleGroup> allMuscleGroups =muscleGroupService.findAll();
+        System.out.println("_________________");
+        List<MuscleGroup> allMuscleGroups = muscleGroupService.findAll();
+        allMuscleGroups.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0) - o2.getName().toLowerCase().charAt(0));
+        allMuscleGroups.forEach(muscleGroup -> System.out.println(muscleGroup.getName()));
 
-        Map<MuscleGroup, List<Muscle>> muscleGroupMusclesMap=new TreeMap<>();
-        for (MuscleGroup mG:allMuscleGroups) {
-            List<Muscle>muscles=new ArrayList<>();
-            for (Muscle m:mG.getMuscleSet()) {
+        Map<MuscleGroup, List<Muscle>> muscleGroupMusclesMap = new LinkedHashMap<>();
+        for (MuscleGroup mG : allMuscleGroups) {
+            List<Muscle> muscles = new ArrayList<>();
+            for (Muscle m : mG.getMuscleSet()) {
                 muscles.add(m);
             }
-            muscleGroupMusclesMap.put(mG,muscles);
+            muscles.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0) - o2.getName().toLowerCase().charAt(0));
+            System.out.print(mG.getName() + " ");
+            muscleGroupMusclesMap.put(mG, muscles);
         }
-
-
-        model.addAttribute("muscleGroupMusclesMap",muscleGroupMusclesMap);
-        return "muscles";
+        muscleGroupMusclesMap.entrySet()
+                .stream().sorted((o1, o2) -> o1.getKey().getName().toLowerCase().charAt(0) -
+                o2.getKey().getName().toLowerCase().charAt(0));
+        System.out.println("----------------");
+        muscleGroupMusclesMap.keySet().forEach(muscleGroup -> System.out.println(muscleGroup.getName()));
+        model.addAttribute("muscleGroupMusclesMap", muscleGroupMusclesMap);
+        return "muscleTemplates/muscles";
     }
 
     @GetMapping("/{id}")
     public String muscleByIdDetails(@PathVariable(name = "id") long id,
             Model model) {
-        model.addAttribute("muscle", muscleService.findById(id));
-        return "muscleDetails";
+
+        try {
+            Muscle muscle = muscleService.findById(id);
+            model.addAttribute("muscle", muscle);
+            return "muscleTemplates/muscleDetails";
+        } catch (MuscleNotFoundException e) {
+            System.out.println("OSIBKA");
+            e.printStackTrace();
+            return "redirect:/";
+        }
+
     }
 
     @PostMapping("/add")
-    public String addMuscle(@RequestParam(name = "muscleGroup") String muscleGroup,
+    public String addMuscle(@RequestParam(name = "muscleGroup") String muscleGroupName,
             @RequestParam(name = "muscleName") String muscleName,
             @RequestParam(name = "muscle_info") String info,
             @RequestParam(name = "groupId") Long groupId,
-            @RequestParam(name = "file") MultipartFile file
-    ) throws IOException {
-
-        Muscle currentMuscle = muscleService.findByName(muscleName);
-        if (currentMuscle != null) {
-            throw new RuntimeException("Такая мышца уже существует");
-        }
-
-        MuscleGroup currentMuscleGroup = muscleGroupService.findByName(muscleGroup);
-        if (currentMuscleGroup == null) {
-            throw new RuntimeException("Такой группы мышц не существует");
-        }
-
+            @RequestParam(name = "file") MultipartFile image
+    ) {
         try {
-            currentMuscle = muscleService.createMuscle(
-                    currentMuscleGroup, muscleName, info,
-                    globalService.saveImgToPathWithPrefixName(file, uploadPath, muscleName)
-            );
-        } catch (FileCanNotSaveException e) {
-            currentMuscle = muscleService.createMuscle(
-                    currentMuscleGroup, muscleName, info
-            );
-
+            muscleService.addMuscle(muscleGroupName, muscleName, info, image);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
         }
-        muscleService.save(currentMuscle);
-        muscleGroupService.addMusclesIntoGroup(currentMuscle, currentMuscleGroup);
-
         return "redirect:/muscleGroups/" + groupId;
     }
-
-
 
     //TODO add delete image
     @PostMapping("/{id}/delete")
     public String deleteMuscleById(@PathVariable long id,
             @RequestParam(name = "groupId") Long groupId) {
-        muscleService.deleteMuscleById(id);
+        try {
+            muscleService.deleteMuscleById(id);
+        } catch (CanNotDeleteException e) {
+            System.out.println("OSIBKA");//TODO make smth with this
+            e.printStackTrace();
+        }
         return "redirect:/muscleGroups/" + groupId;
     }
 
