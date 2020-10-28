@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.example.exeptions.CanNotDeleteException;
-import org.example.exeptions.MuscleNotFoundException;
+import org.example.exeptions.NotFoundException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.services.GlobalService;
@@ -32,17 +32,13 @@ public class MuscleController {
 
     private final MuscleGroupService muscleGroupService;
 
-    private final GlobalService globalService;
-
     // @Autowired
     // CSVService csvService;
 
     @GetMapping()
     public String showAllMuscles(Model model) {
-        System.out.println("_________________");
         List<MuscleGroup> allMuscleGroups = muscleGroupService.findAll();
-        allMuscleGroups.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0) - o2.getName().toLowerCase().charAt(0));
-        allMuscleGroups.forEach(muscleGroup -> System.out.println(muscleGroup.getName()));
+        allMuscleGroups.sort((o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
 
         Map<MuscleGroup, List<Muscle>> muscleGroupMusclesMap = new LinkedHashMap<>();
         for (MuscleGroup mG : allMuscleGroups) {
@@ -50,15 +46,9 @@ public class MuscleController {
             for (Muscle m : mG.getMuscleSet()) {
                 muscles.add(m);
             }
-            muscles.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0) - o2.getName().toLowerCase().charAt(0));
-            System.out.print(mG.getName() + " ");
+            muscles.sort((o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
             muscleGroupMusclesMap.put(mG, muscles);
         }
-        muscleGroupMusclesMap.entrySet()
-                .stream().sorted((o1, o2) -> o1.getKey().getName().toLowerCase().charAt(0) -
-                o2.getKey().getName().toLowerCase().charAt(0));
-        System.out.println("----------------");
-        muscleGroupMusclesMap.keySet().forEach(muscleGroup -> System.out.println(muscleGroup.getName()));
         model.addAttribute("muscleGroupMusclesMap", muscleGroupMusclesMap);
         return "muscleTemplates/muscles";
     }
@@ -71,7 +61,7 @@ public class MuscleController {
             Muscle muscle = muscleService.findById(id);
             model.addAttribute("muscle", muscle);
             return "muscleTemplates/muscleDetails";
-        } catch (MuscleNotFoundException e) {
+        } catch (NotFoundException e) {
             System.out.println("OSIBKA");
             e.printStackTrace();
             return "redirect:/";

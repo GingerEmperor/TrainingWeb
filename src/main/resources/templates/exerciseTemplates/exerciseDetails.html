@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div th:insert="common/commonHead::commonHead"></div>
 <body>
 <header th:insert="parts/header::header"></header>
@@ -16,31 +16,49 @@
         <!--             align="center" style="background: #55595c">-->
 
         <div th:if="${exercise.getExerciseInfo()!=null}" class="card-body" style="background: #C0C0C0">
-            SOME INFO
-            <p class="card-text text-dark"
-               th:text="${!exercise.getExerciseInfo().getSomeInfo().isEmpty()} ?
+            <div class="row">
+                <span class="col">
+                    <h3 style="color: black">Primary muscles:</h3>
+                    <span th:each="muscle:${exercise.getPrimaryWorkingMuscles()}">
+                        <p style="color: darkblue" th:text="${muscle.getName()}"/>
+                    </span>
+                </span>
+
+                <span class="col">
+                    <h3 style="color: black">Secondary muscles:</h3>
+                    <span th:each="muscle:${exercise.getSecondWorkingMuscles()}">
+                        <p style="color: darkblue" th:text="${muscle.getName()}"/>
+                    </span>
+                </span>
+
+            </div>
+            <div class="mt-3">
+                SOME INFO
+                <p class="card-text text-dark"
+                   th:text="${!exercise.getExerciseInfo().getSomeInfo().isEmpty()} ?
                 ${exercise.getExerciseInfo().getSomeInfo()} : 'NONE'">
-            </p>
-            HOW TO DO:
-            <p class="card-text text-dark"
-               th:text="${!exercise.getExerciseInfo().getHowToDo().isEmpty()} ?
+                </p>
+                HOW TO DO:
+                <p class="card-text text-dark"
+                   th:text="${!exercise.getExerciseInfo().getHowToDo().isEmpty()} ?
                 ${exercise.getExerciseInfo().getHowToDo()} : 'NONE'">
-            </p>
-<!--            <p class="card-text text-dark" th:text="${exercise.getExerciseInfo().getHowToDo()()}">-->
-<!--            </p>-->
-            <p>
-                <a th:href="${exercise.getExerciseInfo().getVideoLink()}">Link</a>
-            </p>
-            <div class="btn-group">
-                <a class="btn btn-outline-secondary" href="/exercises">Назад</a>
-<!--                //TODO add edit-->
-                <form th:action="'todo/exercises/'+${exercise.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
-                    <button type="submit" class="btn btn-outline-warning">Edit</button>
-                </form>
-                <!--                //TODO add delete-->
-                <form method="post" th:action="'todo/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                    <button type="submit" class="btn btn-outline-danger">Delete</button>
-                </form>
+                </p>
+                <!--            <p class="card-text text-dark" th:text="${exercise.getExerciseInfo().getHowToDo()()}">-->
+                <!--            </p>-->
+                <p>
+                    <a th:href="${exercise.getExerciseInfo().getVideoLink()}">Link</a>
+                </p>
+                <div class="btn-group">
+                    <a class="btn btn-outline-secondary" href="/exercises">Назад</a>
+                    <!--                //TODO add edit-->
+                    <form th:action="'todo/exercises/'+${exercise.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
+                        <button type="submit" class="btn btn-outline-warning">Edit</button>
+                    </form>
+                    <!--                //TODO add delete-->
+                    <form th:method="post" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                        <button type="submit" class="btn btn-outline-danger">Delete</button>
+                    </form>
+                </div>
             </div>
         </div>
 

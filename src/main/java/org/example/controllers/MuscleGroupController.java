@@ -1,12 +1,10 @@
 package org.example.controllers;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.example.exeptions.FileCanNotSaveException;
-import org.example.exeptions.MuscleGroupNotFoundException;
+import org.example.exeptions.NotFoundException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.services.GlobalService;
@@ -33,15 +31,11 @@ public class MuscleGroupController {
 
     private final MuscleService muscleService;
 
-    private final GlobalService globalService;
-
-    @Value("${upload.path}")
-    private String uploadPath;
 
     @GetMapping()
     public String showAllMusclesGroup(Model model) {
         List<MuscleGroup> allMusclesGroup = muscleGroupService.findAll();
-        allMusclesGroup.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0) - o2.getName().toLowerCase().charAt(0));
+        allMusclesGroup.sort((o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
         model.addAttribute("muscleGroups", allMusclesGroup);
         return "muscleTemplates/muscleGroups";
     }
@@ -53,12 +47,12 @@ public class MuscleGroupController {
         MuscleGroup currentMuscleGroup;
         try {
             currentMuscleGroup = muscleGroupService.findById(id);
-        } catch (MuscleGroupNotFoundException e) {
+        } catch (NotFoundException e) {
             e.printStackTrace();
             return "redirect:/";
         }
         List<Muscle> muscles = muscleService.findAllByMuscleGroup(currentMuscleGroup);
-        muscles.sort((o1, o2) -> o1.getName().toLowerCase().charAt(0) - o2.getName().toLowerCase().charAt(0));
+        muscles.sort((o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
         muscleGroupMusclesMap.put(currentMuscleGroup, muscles);
 
         model.addAttribute("muscleGroupMusclesMap", muscleGroupMusclesMap);
