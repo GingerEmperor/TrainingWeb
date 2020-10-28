@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.models.Exercise;
 import org.example.models.enums.Equipment;
@@ -53,7 +55,7 @@ public class ExerciseController {
         Map<String, List<Exercise>> muscleGroup_ExerciseMap = new TreeMap<>();
 
         List<Exercise> allExercises =new ArrayList<>(exerciseService.findAll());
-        Collections.sort(allExercises,(o1, o2) -> o1.getTitle().toLowerCase().charAt(0)-o2.getTitle().toLowerCase().charAt(0));
+        Collections.sort(allExercises,(o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
         muscleGroup_ExerciseMap.put("All", allExercises);
 
         model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
@@ -65,9 +67,10 @@ public class ExerciseController {
     public String showAllByMuscleGroups(Model model) {
 
         //TODO maybe use Map<MuscleGroup,Set<Exercises>>
-        Map<MuscleGroup, Set<Exercise>> muscleGroup_ExerciseMap = new TreeMap<>();
+        Map<MuscleGroup, List<Exercise>> muscleGroup_ExerciseMap = new LinkedHashMap<>();
         for (MuscleGroup mG : muscleGroupService.findAll()) {
-            Set<Exercise> exercisesByMuscleGroup = exerciseService.findAllByPrimaryWorkingMuscleGroup(mG);
+            List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscleGroup(mG));
+            exercisesByMuscleGroup.sort((o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
             muscleGroup_ExerciseMap.put(mG, exercisesByMuscleGroup);
         }
 
@@ -82,7 +85,7 @@ public class ExerciseController {
         Map<Equipment, List<Exercise>> equipment_ExerciseMap = new TreeMap<>();
         for (Equipment eq : Equipment.values()) {
             List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByEquipment(eq));
-            Collections.sort(exercisesByMuscleGroup,(o1, o2) -> o1.getTitle().toLowerCase().charAt(0)-o2.getTitle().toLowerCase().charAt(0));
+            Collections.sort(exercisesByMuscleGroup,(o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
             equipment_ExerciseMap.put(eq, exercisesByMuscleGroup);
         }
 
@@ -124,6 +127,13 @@ public class ExerciseController {
             @RequestParam(required = false, name = "secondaryMuscleGroup") String secondMuscleIdArr,
             @RequestParam(required = true, name = "equipment") Equipment equipment,
             Model model) {
+
+        try {
+            exerciseService.checkIfExistsExerciseByTitle(exerciseTitle);
+        }catch (AlreadyExistsException e){
+            e.printStackTrace();
+            return "redirect:/";
+        }
 
         List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
         List<MuscleGroup> secondaryMuscleGroups = new ArrayList<>();
@@ -176,10 +186,8 @@ public class ExerciseController {
             @RequestParam(name = "previewImg") MultipartFile previewImg
     ) throws IOException {
 
-        Exercise currentExercise = exerciseService.findByTitle(exerciseTitle);
-        if (currentExercise != null) {
-            throw new RuntimeException("Такое упраднение уже есть");
-        }
+        Exercise currentExercise;
+
         Set<Muscle> primaryMuscleSet = new HashSet<>();
         Set<Muscle> secondaryMuscleSet = new HashSet<>();
 
@@ -211,11 +219,16 @@ public class ExerciseController {
     }
 
     // //TODO add delete image
-    // @PostMapping("/{id}/delete")
-    // public String deleteMuscleById(@PathVariable long id,
-    //         @RequestParam(name = "groupId") Long groupId) {
-    //     muscleService.deleteMuscleById(id);
-    //     return "redirect:/muscleGroups/" + groupId;
-    // }
+    @PostMapping("/{id}/delete")
+    public String deleteMuscleById(@PathVariable long id) {
+        try {
+            System.out.println("DELETE WORK");
+            exerciseService.deleteExerciseById(id);
+            return "redirect:/exercises";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
 
 }

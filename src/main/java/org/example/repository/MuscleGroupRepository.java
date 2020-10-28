@@ -1,12 +1,10 @@
 package org.example.repository;
 
-import org.example.models.muscles.Muscle;
-import org.example.models.muscles.MuscleGroup;
-import org.springframework.data.repository.CrudRepository;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
+import org.example.models.muscles.MuscleGroup;
+import org.springframework.data.repository.CrudRepository;
 
 public interface MuscleGroupRepository extends CrudRepository<MuscleGroup, Long> {
     Optional<MuscleGroup> findByName(String name);

@@ -1,11 +1,10 @@
 package org.example.services;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import org.example.exeptions.ExerciseNotFoundException;
+import org.example.exeptions.AlreadyExistsException;
+import org.example.exeptions.NotFoundException;
 import org.example.models.Exercise;
 import org.example.models.ExerciseInfo;
 import org.example.models.enums.Equipment;
@@ -22,16 +21,22 @@ public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
+    public boolean checkIfExistsExerciseByTitle(String title){
+        try {
+            exerciseRepository.findByTitle(title);
+        }catch (NotFoundException e){
+            return true;
+        }
+        throw new AlreadyExistsException("Такое упражнение уже существует");
+    }
+
     public Set<Exercise> findAll() {
         return new HashSet<>(exerciseRepository.findAll());
     }
 
     public Exercise findById(Long id) {
-        Optional<Exercise> exerciseOptional = exerciseRepository.findById(id);
-        if (exerciseOptional.isPresent()) {
-            return exerciseOptional.get();
-        }
-        throw new ExerciseNotFoundException();
+        return exerciseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Такого упражнения не существует"));
     }
 
     public Exercise createNewExercise(
@@ -91,9 +96,7 @@ public class ExerciseService {
         Set<Exercise> resultEx = new HashSet<>();
         for (Muscle m : muscleGroup.getMuscleSet()) {
             final Set<Exercise> allByPrimaryWorkingMuscle = findAllByPrimaryWorkingMuscle(m);
-            for (Exercise e : allByPrimaryWorkingMuscle) {
-                resultEx.add(e);
-            }
+            resultEx.addAll(allByPrimaryWorkingMuscle);
         }
         return resultEx;
     }
@@ -104,5 +107,12 @@ public class ExerciseService {
 
     public void save(Exercise exercise) {
         exerciseRepository.save(exercise);
+    }
+
+    public void deleteExerciseById(final long id) {
+        Exercise exerciseToDelete=findById(id);
+        exerciseToDelete.getPrimaryWorkingMuscles().clear();
+        exerciseToDelete.getSecondWorkingMuscles().clear();
+        exerciseRepository.delete(exerciseToDelete);
     }
 }

@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.CanNotDeleteException;
 import org.example.exeptions.FileCanNotSaveException;
-import org.example.exeptions.MuscleAlreadyExistsException;
-import org.example.exeptions.MuscleGroupNotFoundException;
-import org.example.exeptions.MuscleNotFoundException;
+import org.example.exeptions.NotFoundException;
 import org.example.models.Exercise;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
@@ -67,7 +66,7 @@ public class MuscleService {
 
     public Muscle findById(long id) {
         return muscleRepository.findById(id)
-                .orElseThrow(() -> new MuscleNotFoundException("Такой мышцы нет"));
+                .orElseThrow(() -> new NotFoundException("Такой мышцы нет"));
     }
 
     public Muscle addMuscle(
@@ -78,7 +77,7 @@ public class MuscleService {
     ) {
         Muscle muscleToAdd = findByName(muscleName);
         if (muscleToAdd != null) {
-            throw new MuscleAlreadyExistsException("Мышца с таким именем уже существует");
+            throw new AlreadyExistsException("Мышца с таким именем уже существует");
         }
         MuscleGroup currentMuscleGroup = muscleGroupService.findByName(muscleGroupName);
 

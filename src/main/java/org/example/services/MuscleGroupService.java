@@ -1,24 +1,18 @@
 package org.example.services;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.CanNotDeleteException;
 import org.example.exeptions.FileCanNotSaveException;
-import org.example.exeptions.MuscleGroupAlreadyExistsException;
-import org.example.exeptions.MuscleGroupNotFoundException;
-import org.example.exeptions.MuscleNotFoundException;
+import org.example.exeptions.NotFoundException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.repository.MuscleGroupRepository;
-import org.example.repository.MuscleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +29,7 @@ public class MuscleGroupService {
 
     public MuscleGroup findByName(String name) {
         return muscleGroupRepository.findByName(name)
-                .orElseThrow(() -> new MuscleGroupNotFoundException("Такой группы мышц не существует"));
+                .orElseThrow(() -> new NotFoundException("Такой группы мышц не существует"));
     }
 
     private MuscleGroup createNewMuscleGroup(String name) {
@@ -54,7 +48,7 @@ public class MuscleGroupService {
         MuscleGroup currentMuscleGroup;
         try {
             currentMuscleGroup = findByName(muscleGroupName);
-        } catch (MuscleGroupNotFoundException e) {
+        } catch (NotFoundException e) {
             try {
                 currentMuscleGroup = createNewMuscleGroup(
                         muscleGroupName,
@@ -65,7 +59,7 @@ public class MuscleGroupService {
             save(currentMuscleGroup);
             return currentMuscleGroup;
         }
-        throw new MuscleGroupAlreadyExistsException("Такая группа мыщц уже существует");
+        throw new AlreadyExistsException("Такая группа мыщц уже существует");
     }
 
     public boolean addMusclesIntoGroup(Muscle muscle, MuscleGroup muscleGroup) {
@@ -78,7 +72,7 @@ public class MuscleGroupService {
         return muscleGroupRepository.findAll();
     }
 
-    public MuscleGroup findById(Long id) throws MuscleGroupNotFoundException {
+    public MuscleGroup findById(Long id) throws NotFoundException {
         // Optional<MuscleGroup> muscleGroup = muscleGroupRepository.findById(id);
         // if (muscleGroup.isPresent()) {
         //     return muscleGroup.get();
@@ -87,7 +81,7 @@ public class MuscleGroupService {
         // }
         //            throw new RuntimeException("Нет такой группы мышц");
         return muscleGroupRepository.findById(id)
-                .orElseThrow(() -> new MuscleGroupNotFoundException("Такой группы мыщц не существует"));
+                .orElseThrow(() -> new NotFoundException("Такой группы мыщц не существует"));
     }
 
     public boolean deleteMuscleGroup(MuscleGroup muscleGroup) {

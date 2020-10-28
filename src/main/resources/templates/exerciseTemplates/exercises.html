@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:insert="common/commonHead::commonHead"></head>
 <body>
 <header th:insert="parts/header::header"></header>
@@ -11,11 +11,9 @@
 
 
 <div class="container">
-    <!--    <div class="row">-->
     <div th:each="criteria :${sortCriteria_ExerciseMap.keySet()}" th:if="${!sortCriteria_ExerciseMap.get(criteria).isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
 
         <h4 th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
-        <!--            <div th:each="exercise :${criteria}">-->
         <div th:each="exercise:${sortCriteria_ExerciseMap.get(criteria)}" class="col-4">
             <div class="card mb-4 shadow-sm">
 
@@ -32,13 +30,12 @@
                                 <form th:action="'/exercises/'+${exercise.getId()}">
                                     <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                 </form>
-                                <form method="post" th:action="'/exercixes/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                <form th:method="POST" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                     <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <!--                    </div>-->
                 </div>
             </div>
         </div>
