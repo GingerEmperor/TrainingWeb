@@ -63,7 +63,7 @@ public class ExerciseController {
         return "exerciseTemplates/exercises";
     }
 
-    @GetMapping("/byMuscleGroups")//TODO to add frontend link for this
+    @GetMapping("/byMuscleGroups")
     public String showAllByMuscleGroups(Model model) {
 
         //TODO maybe use Map<MuscleGroup,Set<Exercises>>
@@ -73,6 +73,23 @@ public class ExerciseController {
             exercisesByMuscleGroup.sort((o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
             muscleGroup_ExerciseMap.put(mG, exercisesByMuscleGroup);
         }
+
+        model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
+        return "exerciseTemplates/exercises";
+
+    }
+
+    @GetMapping("/byMuscleGroups/{id}")//TODO to add frontend link for this
+    public String showAllByConcreteMuscleGroup(
+            @PathVariable(name = "id") long id,
+            Model model) {
+
+        Map<MuscleGroup, List<Exercise>> muscleGroup_ExerciseMap = new LinkedHashMap<>();
+        MuscleGroup mG = muscleGroupService.findById(id);
+            List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscleGroup(mG));
+            exercisesByMuscleGroup.sort((o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
+            muscleGroup_ExerciseMap.put(mG, exercisesByMuscleGroup);
+
 
         model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
         return "exerciseTemplates/exercises";

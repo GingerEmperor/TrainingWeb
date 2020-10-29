@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.example.exeptions.InvalidNameException;
 import org.example.exeptions.NotFoundException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
+import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,8 @@ public class MuscleGroupController {
     private final MuscleGroupService muscleGroupService;
 
     private final MuscleService muscleService;
+
+    private final GlobalService globalService;
 
     @GetMapping()
     public String showAllMusclesGroup(Model model) {
@@ -60,7 +64,7 @@ public class MuscleGroupController {
         return "muscleTemplates/muscles";
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all")////
     public String showAllMuscles() {
         return "redirect:/muscles";
     }
@@ -70,30 +74,31 @@ public class MuscleGroupController {
             @RequestParam(name = "file") MultipartFile file
     ) {
 
-        if (muscleGroupName.isEmpty()) {
-            return "redirect:/";
-        }
-
         try {
+            globalService.checkIfNameIsValid(muscleGroupName);
             muscleGroupService.createNewMuscleGroup(muscleGroupName, file);
+            return "redirect:/muscleGroups";
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
         }
-        return "redirect:/muscleGroups";
     }
 
     @PatchMapping("/{id}")
     public String editMuscleGroup(
             @PathVariable(name = "id") Long id,
-            @RequestParam(name = "name") String newName
+            @RequestParam(name = "newName") String newName,
+            @RequestParam(name = "imageFile") MultipartFile imageFile
     ) {
-        System.out.println("PATCH WORKS");
         try {
-            MuscleGroup updatedMuscleGroup = muscleGroupService.findById(id);
-            updatedMuscleGroup.setName(newName);
+            globalService.checkIfNameIsValid(newName);
+            MuscleGroup updatedMuscleGroup;
+            if(imageFile!=null && !imageFile.getOriginalFilename().isEmpty()){
+                updatedMuscleGroup =muscleGroupService.updateMuscleGroup(id,newName,imageFile);
+            }else {
+                updatedMuscleGroup=muscleGroupService.updateMuscleGroup(id,newName);
+            }
             muscleGroupService.save(updatedMuscleGroup);
-            //TODO add update image
             return "redirect:/muscleGroups";
         } catch (Exception e) {
             e.printStackTrace();

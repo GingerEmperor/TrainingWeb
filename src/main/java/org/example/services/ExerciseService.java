@@ -21,9 +21,15 @@ public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
+
+    public Exercise findByTitle(final String exerciseTitle) {
+        return exerciseRepository.findByTitle(exerciseTitle)
+                .orElseThrow(() -> new NotFoundException("Такое упраднение уже есть"));
+    }
+
     public boolean checkIfExistsExerciseByTitle(String title){
         try {
-            exerciseRepository.findByTitle(title);
+            findByTitle(title);
         }catch (NotFoundException e){
             return true;
         }
@@ -78,10 +84,6 @@ public class ExerciseService {
         exercise.getExerciseInfo().setVideoLink(videoLink);
         exercise.setEquipmentNeed(equipment);
         return exercise;
-    }
-
-    public Exercise findByTitle(final String exerciseTitle) {
-        return exerciseRepository.findByTitle(exerciseTitle);
     }
 
     public Set<Exercise> findAllByPrimaryWorkingMuscle(Muscle muscle) {

@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +44,17 @@ public class MuscleService {
     }
 
     public Muscle findByName(String name) {
-        return muscleRepository.findByName(name);
+        return muscleRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundException("Такой мышцы нет в базе двнных"));
+    }
+
+    public boolean checkIfExistsMuscleByName(String name) {
+        try {
+            findByName(name);
+        } catch (NotFoundException e) {
+            return true;
+        }
+        throw new AlreadyExistsException("Такое упражнение уже существует");
     }
 
     public Muscle createMuscle(MuscleGroup group, String name, String info) {
@@ -96,23 +107,31 @@ public class MuscleService {
         return muscleToAdd;
     }
 
+    // public Muscle updateMuscle(long id, String muscleGroupName, MultipartFile image) {
+    //     MuscleGroup updatedMuscleGroup = updateMuscleGroup(id, muscleGroupName);
+    //     try {
+    //         final String img = globalService.saveImgToPathWithPrefixName(image, uploadPath, muscleGroupName);
+    //         updatedMuscleGroup.setImage(img);
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return updatedMuscleGroup;
+    // }
+    //
     public boolean deleteMuscleById(long id) {
-        Optional<Muscle> muscleOpt = muscleRepository.findById(id);
-        if (muscleOpt.isPresent()) {
-            Muscle muscle = muscleOpt.get();
-            MuscleGroup muscleGroup = muscle.getMuscleGroup();
-            muscleGroup.getMuscleSet().remove(muscle);
-            final Set<Exercise> exerciseByPrimaryWorkingMuscle = exerciseService.findAllByPrimaryWorkingMuscle(muscle);
-            final Set<Exercise> exerciseBySecondaryWorkingMuscle = exerciseService.findAllBySecondaryWorkingMuscle(muscle);
-            if (exerciseByPrimaryWorkingMuscle.isEmpty() && exerciseBySecondaryWorkingMuscle.isEmpty()) {
-                muscleRepository.delete(muscleOpt.get());
-            } else {
-                throw new CanNotDeleteException("Нельзя удалить мышцу т.к. есть упражнения на неё");
-            }
-
-            return true;
+        Muscle muscleToDelete = findById(id);
+        MuscleGroup muscleGroup = muscleToDelete.getMuscleGroup();
+        muscleGroup.getMuscleSet().remove(muscleToDelete);
+        final Set<Exercise> exerciseByPrimaryWorkingMuscle = exerciseService.findAllByPrimaryWorkingMuscle(muscleToDelete);
+        final Set<Exercise> exerciseBySecondaryWorkingMuscle = exerciseService.findAllBySecondaryWorkingMuscle(muscleToDelete);
+        if (exerciseByPrimaryWorkingMuscle.isEmpty() && exerciseBySecondaryWorkingMuscle.isEmpty()) {
+            new File(uploadPath + "/" + muscleToDelete.getImage());
+            muscleRepository.delete(muscleToDelete);
+        } else {
+            throw new CanNotDeleteException("Нельзя удалить мышцу т.к. есть упражнения на неё");
         }
-        throw new CanNotDeleteException("Нельзя удалить мышцу т.к. её не сушествует");
+
+        return true;
     }
 
     public List<Muscle> findAllByMuscleGroup(MuscleGroup muscleGroup) {
