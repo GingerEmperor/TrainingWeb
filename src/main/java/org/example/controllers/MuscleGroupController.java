@@ -7,13 +7,13 @@ import java.util.TreeMap;
 import org.example.exeptions.NotFoundException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
-import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +30,6 @@ public class MuscleGroupController {
     private final MuscleGroupService muscleGroupService;
 
     private final MuscleService muscleService;
-
 
     @GetMapping()
     public String showAllMusclesGroup(Model model) {
@@ -84,7 +83,25 @@ public class MuscleGroupController {
         return "redirect:/muscleGroups";
     }
 
-    @PostMapping("/{id}/delete")
+    @PatchMapping("/{id}")
+    public String editMuscleGroup(
+            @PathVariable(name = "id") Long id,
+            @RequestParam(name = "name") String newName
+    ) {
+        System.out.println("PATCH WORKS");
+        try {
+            MuscleGroup updatedMuscleGroup = muscleGroupService.findById(id);
+            updatedMuscleGroup.setName(newName);
+            muscleGroupService.save(updatedMuscleGroup);
+            //TODO add update image
+            return "redirect:/muscleGroups";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @DeleteMapping("/{id}/delete")
     public String deleteMuscleGroup(@PathVariable(name = "id") Long muscleGroupId) {
         try {
             MuscleGroup muscleGroupToDelete = muscleGroupService.findById(muscleGroupId);
