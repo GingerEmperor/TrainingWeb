@@ -6,13 +6,15 @@ import java.util.Optional;
 import org.example.exeptions.NotFoundException;
 import org.example.models.User;
 import org.example.repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class UserService {
-    @Autowired
-    private UserRepo userRepo;
+
+    private final UserRepo userRepo;
 
     public List<User>findAll(){
         return userRepo.findAll();
@@ -24,8 +26,5 @@ public class UserService {
             return userOptional.get();
         throw new NotFoundException("Такого юзера не существует");
     }
-
-
-
 
 }
