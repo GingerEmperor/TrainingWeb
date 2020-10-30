@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class MuscleService {
 
     private final GlobalService globalService;
 
-    @Value("${upload.path}")
+    @Value("${upload.musclePath}")
     private String uploadPath;
 
     public List<Muscle> findAll() {
@@ -43,7 +44,17 @@ public class MuscleService {
     }
 
     public Muscle findByName(String name) {
-        return muscleRepository.findByName(name);
+        return muscleRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundException("Такой мышцы нет в базе двнных"));
+    }
+
+    public boolean checkIfExistsMuscleByName(String name) {
+        try {
+            findByName(name);
+        } catch (NotFoundException e) {
+            return true;
+        }
+        throw new AlreadyExistsException("Такое упражнение уже существует");
     }
 
     public Muscle createMuscle(MuscleGroup group, String name, String info) {
@@ -75,10 +86,13 @@ public class MuscleService {
             String muscleInfo,
             MultipartFile image
     ) {
-        Muscle muscleToAdd = findByName(muscleName);
-        if (muscleToAdd != null) {
-            throw new AlreadyExistsException("Мышца с таким именем уже существует");
+       Muscle muscleToAdd;
+        try {
+            checkIfExistsMuscleByName(muscleName);
+        }catch (AlreadyExistsException e){
+            e.printStackTrace();
         }
+
         MuscleGroup currentMuscleGroup = muscleGroupService.findByName(muscleGroupName);
 
         try {
@@ -96,23 +110,45 @@ public class MuscleService {
         return muscleToAdd;
     }
 
-    public boolean deleteMuscleById(long id) {
-        Optional<Muscle> muscleOpt = muscleRepository.findById(id);
-        if (muscleOpt.isPresent()) {
-            Muscle muscle = muscleOpt.get();
-            MuscleGroup muscleGroup = muscle.getMuscleGroup();
-            muscleGroup.getMuscleSet().remove(muscle);
-            final Set<Exercise> exerciseByPrimaryWorkingMuscle = exerciseService.findAllByPrimaryWorkingMuscle(muscle);
-            final Set<Exercise> exerciseBySecondaryWorkingMuscle = exerciseService.findAllBySecondaryWorkingMuscle(muscle);
-            if (exerciseByPrimaryWorkingMuscle.isEmpty() && exerciseBySecondaryWorkingMuscle.isEmpty()) {
-                muscleRepository.delete(muscleOpt.get());
-            } else {
-                throw new CanNotDeleteException("Нельзя удалить мышцу т.к. есть упражнения на неё");
-            }
+    public Muscle updateMuscle(long id, String newMuscleName,String newInfo) {
+        Muscle updatedMuscle=findById(id);
+        updatedMuscle.setName(newMuscleName);
+        updatedMuscle.setInfo(newInfo);
+        return updatedMuscle;
+    }
 
-            return true;
+    public Muscle updateMuscle(
+            long id,
+            String newMuscleName,
+            String newMuscleInfo,
+            MultipartFile newMuscleImage
+    ) {
+
+        Muscle updatedMuscle = updateMuscle(id, newMuscleName,newMuscleInfo);
+        try {
+            final String img = globalService.saveImgToPathWithPrefixName(newMuscleImage, uploadPath, newMuscleName);
+            new File(uploadPath+"/"+updatedMuscle.getImage()).delete();
+            updatedMuscle.setImage(img);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        throw new CanNotDeleteException("Нельзя удалить мышцу т.к. её не сушествует");
+        return updatedMuscle;
+    }
+    //
+    public boolean deleteMuscleById(long id) {
+        Muscle muscleToDelete = findById(id);
+        MuscleGroup muscleGroup = muscleToDelete.getMuscleGroup();
+        muscleGroup.getMuscleSet().remove(muscleToDelete);
+        final Set<Exercise> exerciseByPrimaryWorkingMuscle = exerciseService.findAllByPrimaryWorkingMuscle(muscleToDelete);
+        final Set<Exercise> exerciseBySecondaryWorkingMuscle = exerciseService.findAllBySecondaryWorkingMuscle(muscleToDelete);
+        if (exerciseByPrimaryWorkingMuscle.isEmpty() && exerciseBySecondaryWorkingMuscle.isEmpty()) {
+            new File(uploadPath + "/" + muscleToDelete.getImage()).delete();
+            muscleRepository.delete(muscleToDelete);
+        } else {
+            throw new CanNotDeleteException("Нельзя удалить мышцу т.к. есть упражнения на неё");
+        }
+
+        return true;
     }
 
     public List<Muscle> findAllByMuscleGroup(MuscleGroup muscleGroup) {

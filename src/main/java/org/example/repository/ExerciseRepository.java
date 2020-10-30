@@ -15,7 +15,7 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     Optional<Exercise> findById(Long id);
 
-    Exercise findByTitle(String title);
+    Optional<Exercise> findByTitle(String title);
 
     Exercise findByPrimaryWorkingMusclesContaining(Muscle muscle);
 

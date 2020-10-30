@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+
 import org.example.exeptions.FileCanNotSaveException;
+import org.example.exeptions.InvalidNameException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,5 +36,12 @@ public class GlobalService {
 
     public int compareStringsByFirstCharacter(String s1,String s2){
         return s1.toLowerCase().charAt(0)-s2.toLowerCase().charAt(0);
+    }
+
+    public boolean checkIfNameIsValid(String name){
+        if (name == null || name.isEmpty()) {
+            throw new InvalidNameException("Не валидное имя");
+        }
+        return true;
     }
 }

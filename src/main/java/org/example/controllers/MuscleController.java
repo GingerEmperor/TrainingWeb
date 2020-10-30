@@ -14,7 +14,9 @@ import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,8 @@ public class MuscleController {
     private final MuscleService muscleService;
 
     private final MuscleGroupService muscleGroupService;
+
+    private final GlobalService globalService;
 
     // @Autowired
     // CSVService csvService;
@@ -56,7 +60,6 @@ public class MuscleController {
     @GetMapping("/{id}")
     public String muscleByIdDetails(@PathVariable(name = "id") long id,
             Model model) {
-
         try {
             Muscle muscle = muscleService.findById(id);
             model.addAttribute("muscle", muscle);
@@ -66,7 +69,6 @@ public class MuscleController {
             e.printStackTrace();
             return "redirect:/";
         }
-
     }
 
     @PostMapping("/add")
@@ -85,10 +87,10 @@ public class MuscleController {
         return "redirect:/muscleGroups/" + groupId;
     }
 
-    //TODO add delete image
-    @PostMapping("/{id}/delete")
+    @DeleteMapping("/{id}/delete")
     public String deleteMuscleById(@PathVariable long id,
             @RequestParam(name = "groupId") Long groupId) {
+        System.out.println("DELETE MUSCLE");
         try {
             muscleService.deleteMuscleById(id);
         } catch (CanNotDeleteException e) {
@@ -96,6 +98,30 @@ public class MuscleController {
             e.printStackTrace();
         }
         return "redirect:/muscleGroups/" + groupId;
+    }
+
+    @PatchMapping("/{id}")
+    public String editMuscle(
+            @PathVariable(name = "id") Long id,
+            @RequestParam(name = "newName") String newName,
+            @RequestParam(name = "newInfo") String newInfo,
+            @RequestParam(name = "imageFile") MultipartFile imageFile,
+            @RequestParam(name = "groupId") Long groupId
+    ) {
+        try {
+            globalService.checkIfNameIsValid(newName);
+            Muscle updatedMuscle;
+            if(imageFile!=null && !imageFile.getOriginalFilename().isEmpty()){
+                updatedMuscle =muscleService.updateMuscle(id,newName,newInfo,imageFile);
+            }else {
+                updatedMuscle=muscleService.updateMuscle(id,newName,newInfo);
+            }
+            muscleService.save(updatedMuscle);
+            return "redirect:/muscleGroups/"+groupId;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
     }
 
     // @PostMapping("/all/toCSV")//TODO write to CSV

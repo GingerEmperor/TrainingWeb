@@ -4,10 +4,11 @@
 <body>
 <header th:insert="parts/header::header"></header>
 <p>Exercises</p>
-<a class="btn btn-secondary" href="/exercises">All</a>
-<a class="btn btn-secondary" href="/exercises/byMuscleGroups">Sort by MuscleGroup</a>
-<a class="btn btn-secondary" href="/exercises/byEquipmentNeed">Sort by Equipment</a>
-
+<div th:if="${sortCriteria_ExerciseMap.keySet().size()>1}">
+    <a class="btn btn-secondary" href="/exercises">All</a>
+    <a class="btn btn-secondary" href="/exercises/byMuscleGroups">Sort by MuscleGroup</a>
+    <a class="btn btn-secondary" href="/exercises/byEquipmentNeed">Sort by Equipment</a>
+</div>
 
 
 <div class="container">

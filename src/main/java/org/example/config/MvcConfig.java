@@ -9,8 +9,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Value("${upload.musclePath}")
+    private String uploadMusclePath;
+
+    @Value("${upload.muscleGroupPath}")
+    private String uploadMuscleGroupPath;
 
     @Value("${upload.exercisePath}")
     private String uploadExercisePath;
@@ -25,7 +28,8 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/img/**")
-                .addResourceLocations("file://" + uploadPath + "/")
+                .addResourceLocations("file://" + uploadMuscleGroupPath + "/")
+                .addResourceLocations("file://" + uploadMusclePath + "/")
                 .addResourceLocations("file://" +uploadExercisePath+"/");
     }
 }

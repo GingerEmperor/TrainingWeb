@@ -39,11 +39,27 @@
                          align="center" style="background: #55595c" height="225">
                     <div class="card-body" style="background: #C0C0C0">
                         <div class="row mb-2 ">
-                            <form class="col" th:action="'/muscleGroups/'+${el.getId()}" th:method="PATCH">
+                            <form class="col" th:action="'/muscleGroups/'+${el.getId()}" th:method="PATCH" enctype="multipart/form-data">
+
+
+                                <div class="input-group" th:id="'imageFile_'+${el.getId()}" hidden>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroupFileAddon01">Image</span>
+                                    </div>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" name="imageFile" id="inputGroupFile01"
+                                               aria-describedby="inputGroupFileAddon01">
+                                        <label class="custom-file-label" for="inputGroupFile01"></label>
+                                    </div>
+                                </div>
+
+<!--                                <input type="file" class="input-group-text" th:id="'imageFile_'+${el.getId()}" name="imageFile" text="change image" hidden>-->
                                 <div class="input-group">
-                                    <input type="text" id="changeName" name="name" class="form-control" th:value="${el.getName()}" readonly>
-                                    <button type="button" onclick="changeReadOnly()" id="editButton" sec:authorize="hasAuthority('ADMIN')" class="input-group-text">✎</button>
-                                    <button type="submit" id="updateNameButton" sec:authorize="hasAuthority('ADMIN')" class="input-group-text" hidden>✓</button>
+
+                                    <input type="text" th:id="'changeName_'+${el.getId()}" name="newName" class="form-control" th:value="${el.getName()}" readonly>
+                                    <button type="button" th:onclick="'changeReadOnly(\'' +${el.getId()} +'\');'" th:id="'editButton_'+${el.getId()}" sec:authorize="hasAuthority('ADMIN')"
+                                            class="input-group-text">✎</button>
+                                    <button type="submit" th:id="'updateNameButton_'+${el.getId()}" sec:authorize="hasAuthority('ADMIN')" class="input-group-text" hidden>✓</button>
                                 </div>
                             </form>
                         </div>
@@ -55,15 +71,14 @@
                                 </button>
                             </form>
                             <!--                                //TODO add endpoint "'/exercises/muscleGroup/'+${el.getId()}"-->
-                            <form th:action="'/exercises/muscleGroup/'+${el.getId()}" method="get">
+                            <form th:action="'/exercises/byMuscleGroups/'+${el.getId()}" method="get">
                                 <button class="btn btn-sm btn-outline-secondary">Show exercises
-                                    <span class="badge badge-pill badge-secondary" th:text="${el.getMuscleSet().size()}"></span><!--//TODO change to exercises set-->
+<!--                                    <span class="badge badge-pill badge-secondary" th:text="${el.getMuscleSet().size()}"></span>&lt;!&ndash;//TODO change to exercises size&ndash;&gt;-->
                                 </button>
                             </form>
                             <form th:method="DELETE" th:action="'/muscleGroups/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -103,11 +118,12 @@
 </div>
 
 
-<script>
-    function changeReadOnly() {
-        document.getElementById("changeName").readOnly = !document.getElementById("changeName").readOnly;
-        document.getElementById("editButton").hidden = true;
-        document.getElementById("updateNameButton").hidden = false;
+<script th:inline="javascript">
+    function changeReadOnly(id) {
+        document.getElementById("editButton_".concat(id)).hidden = true;
+        document.getElementById("changeName_".concat(id)).readOnly = false;
+        document.getElementById("updateNameButton_".concat(id)).hidden = false;
+        document.getElementById("imageFile_".concat(id)).hidden=false;
     }
 </script>
 

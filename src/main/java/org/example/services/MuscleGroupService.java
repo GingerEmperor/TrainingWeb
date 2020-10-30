@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,12 +25,21 @@ public class MuscleGroupService {
 
     private final GlobalService globalService;
 
-    @Value("${upload.path}")
+    @Value("${upload.muscleGroupPath}")
     private String uploadPath;
 
     public MuscleGroup findByName(String name) {
         return muscleGroupRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Такой группы мышц не существует"));
+    }
+
+    public boolean checkIfExistsMuscleGroupByName(String name) {
+        try {
+            findByName(name);
+        } catch (NotFoundException e) {
+            return true;
+        }
+        throw new AlreadyExistsException("Такое упражнение уже существует");
     }
 
     private MuscleGroup createNewMuscleGroup(String name) {
@@ -46,20 +56,35 @@ public class MuscleGroupService {
 
     public MuscleGroup createNewMuscleGroup(String muscleGroupName, MultipartFile file) {
         MuscleGroup currentMuscleGroup;
+        checkIfExistsMuscleGroupByName(muscleGroupName);
         try {
-            currentMuscleGroup = findByName(muscleGroupName);
-        } catch (NotFoundException e) {
-            try {
-                currentMuscleGroup = createNewMuscleGroup(
-                        muscleGroupName,
-                        globalService.saveImgToPathWithPrefixName(file, uploadPath, muscleGroupName));
-            } catch (FileCanNotSaveException | IOException f) {
-                currentMuscleGroup = createNewMuscleGroup(muscleGroupName);
-            }
-            save(currentMuscleGroup);
-            return currentMuscleGroup;
+            currentMuscleGroup = createNewMuscleGroup(
+                    muscleGroupName,
+                    globalService.saveImgToPathWithPrefixName(file, uploadPath, muscleGroupName));
+        } catch (FileCanNotSaveException | IOException f) {
+            currentMuscleGroup = createNewMuscleGroup(muscleGroupName);
         }
-        throw new AlreadyExistsException("Такая группа мыщц уже существует");
+        save(currentMuscleGroup);
+        return currentMuscleGroup;
+
+    }
+
+    public MuscleGroup updateMuscleGroup(long id, String muscleGroupName) {
+        MuscleGroup updatedMuscleGroup=findById(id);
+        updatedMuscleGroup.setName(muscleGroupName);
+        return updatedMuscleGroup;
+    }
+
+    public MuscleGroup updateMuscleGroup(long id, String muscleGroupName, MultipartFile image) {
+        MuscleGroup updatedMuscleGroup = updateMuscleGroup(id, muscleGroupName);
+        try {
+            final String img = globalService.saveImgToPathWithPrefixName(image, uploadPath, muscleGroupName);
+            new File(uploadPath+"/"+updatedMuscleGroup.getName()).delete();
+            updatedMuscleGroup.setImage(img);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return updatedMuscleGroup;
     }
 
     public boolean addMusclesIntoGroup(Muscle muscle, MuscleGroup muscleGroup) {
@@ -73,13 +98,6 @@ public class MuscleGroupService {
     }
 
     public MuscleGroup findById(Long id) throws NotFoundException {
-        // Optional<MuscleGroup> muscleGroup = muscleGroupRepository.findById(id);
-        // if (muscleGroup.isPresent()) {
-        //     return muscleGroup.get();
-        // } else {
-        //     throw new MuscleGroupNotFoundException("Такой группы мыщц не существует");
-        // }
-        //            throw new RuntimeException("Нет такой группы мышц");
         return muscleGroupRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Такой группы мыщц не существует"));
     }
@@ -87,6 +105,8 @@ public class MuscleGroupService {
     public boolean deleteMuscleGroup(MuscleGroup muscleGroup) {
         MuscleGroup muscleGroupToDelete = findById(muscleGroup.getId());
         if (muscleGroupToDelete.getMuscleSet().isEmpty()) {
+            File imgFile=new File((uploadPath+"/"+muscleGroupToDelete.getImage()));
+            imgFile.delete();
             muscleGroupRepository.delete(muscleGroupToDelete);
             return true;
         } else {

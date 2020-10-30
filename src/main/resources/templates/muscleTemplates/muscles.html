@@ -26,7 +26,7 @@
                                     <form th:action="'/muscles/'+${el.getId()}">
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                     </form>
-                                    <form method="post" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                    <form th:method="DELETE" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                         <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                     </form>
