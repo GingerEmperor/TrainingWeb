@@ -32,7 +32,7 @@ public class MuscleService {
 
     private final GlobalService globalService;
 
-    @Value("${upload.path}")
+    @Value("${upload.musclePath}")
     private String uploadPath;
 
     public List<Muscle> findAll() {
@@ -86,10 +86,13 @@ public class MuscleService {
             String muscleInfo,
             MultipartFile image
     ) {
-        Muscle muscleToAdd = findByName(muscleName);
-        if (muscleToAdd != null) {
-            throw new AlreadyExistsException("Мышца с таким именем уже существует");
+       Muscle muscleToAdd;
+        try {
+            checkIfExistsMuscleByName(muscleName);
+        }catch (AlreadyExistsException e){
+            e.printStackTrace();
         }
+
         MuscleGroup currentMuscleGroup = muscleGroupService.findByName(muscleGroupName);
 
         try {
@@ -107,16 +110,30 @@ public class MuscleService {
         return muscleToAdd;
     }
 
-    // public Muscle updateMuscle(long id, String muscleGroupName, MultipartFile image) {
-    //     MuscleGroup updatedMuscleGroup = updateMuscleGroup(id, muscleGroupName);
-    //     try {
-    //         final String img = globalService.saveImgToPathWithPrefixName(image, uploadPath, muscleGroupName);
-    //         updatedMuscleGroup.setImage(img);
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    //     return updatedMuscleGroup;
-    // }
+    public Muscle updateMuscle(long id, String newMuscleName,String newInfo) {
+        Muscle updatedMuscle=findById(id);
+        updatedMuscle.setName(newMuscleName);
+        updatedMuscle.setInfo(newInfo);
+        return updatedMuscle;
+    }
+
+    public Muscle updateMuscle(
+            long id,
+            String newMuscleName,
+            String newMuscleInfo,
+            MultipartFile newMuscleImage
+    ) {
+
+        Muscle updatedMuscle = updateMuscle(id, newMuscleName,newMuscleInfo);
+        try {
+            final String img = globalService.saveImgToPathWithPrefixName(newMuscleImage, uploadPath, newMuscleName);
+            new File(uploadPath+"/"+updatedMuscle.getImage()).delete();
+            updatedMuscle.setImage(img);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return updatedMuscle;
+    }
     //
     public boolean deleteMuscleById(long id) {
         Muscle muscleToDelete = findById(id);
@@ -125,7 +142,7 @@ public class MuscleService {
         final Set<Exercise> exerciseByPrimaryWorkingMuscle = exerciseService.findAllByPrimaryWorkingMuscle(muscleToDelete);
         final Set<Exercise> exerciseBySecondaryWorkingMuscle = exerciseService.findAllBySecondaryWorkingMuscle(muscleToDelete);
         if (exerciseByPrimaryWorkingMuscle.isEmpty() && exerciseBySecondaryWorkingMuscle.isEmpty()) {
-            new File(uploadPath + "/" + muscleToDelete.getImage());
+            new File(uploadPath + "/" + muscleToDelete.getImage()).delete();
             muscleRepository.delete(muscleToDelete);
         } else {
             throw new CanNotDeleteException("Нельзя удалить мышцу т.к. есть упражнения на неё");

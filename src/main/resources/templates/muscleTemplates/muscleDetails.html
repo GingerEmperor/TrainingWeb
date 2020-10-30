@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div th:insert="common/commonHead::commonHead"></div>
 <body>
 <header th:insert="parts/header::header"></header>
@@ -9,30 +9,57 @@
     <div class="card">
         <img th:src="${'/img/'+muscle.getImage()}"
              th:alt="${muscle.getName()}"
-             align="center" style="background: #55595c">
-
-        <!--        <img src="erhttps://cdn.britannica.com/s:800x450,c:crop/79/143179-138-80596415/muscles-bones-tendons.jpg" class="card-img-top"-->
-        <!--             th:alt="${muscle.getName()}"-->
-        <!--             align="center" style="background: #55595c">-->
-
+             class="text-center" style="background: #55595c" height="600">
         <div class="card-body" style="background: #C0C0C0">
-            <p class="card-text text-dark" th:text="${muscle.getInfo()}">
-            </p>
-            <div class="btn-group">
+            <form th:action="'/muscles/'+${muscle.getId()}" th:method="PATCH" enctype="multipart/form-data">
+                <div class="input-group">
+                    <input type="text" name="newName" id="newName" class="form-control text-center" th:value="${muscle.getName()}" readonly>
+                    <button type="button" onclick="changeReadOnly()" id="editButton" sec:authorize="hasAuthority('ADMIN')"
+                            class="input-group-text">✎
+                    </button>
+                    <button type="submit" id="updateNameButton" sec:authorize="hasAuthority('ADMIN')" class="input-group-text" hidden>✓</button>
+                </div>
+                <textarea class="form-control" id="muscleInfo" name="newInfo" aria-label="With textarea" th:text="${muscle.getInfo()}" rows="10" readonly></textarea>
+
+                <div class="input-group" id="imageFile" hidden>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon01">Upload Image</span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="imageFile" id="inputGroupFile01"
+                               aria-describedby="inputGroupFileAddon01">
+                        <label class="custom-file-label" for="inputGroupFile01">Choose file...</label>
+                    </div>
+                </div>
+
+                <input type="hidden" id="groupId" name="groupId" th:value="${muscle.getMuscleGroup().getId()}" class="input-group-text">
+            </form>
+
+            <!--                <button type="submit" class="btn btn-outline-warning" sec:authorize="hasAuthority('ADMIN')">Edit</button>-->
+
+
+            <form th:method="DELETE" th:action="'/muscles/'+${muscle.getId()}+'/delete'" class="mt-2">
                 <a class="btn btn-outline-secondary" href="/muscles">Назад</a>
-                <!--                //TODO add edit-->
-                <form th:action="'todo/muscleGroups/'+${muscle.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
-                    <button type="submit" class="btn btn-outline-warning">Edit</button>
-                </form>
-                <!--                //TODO add delete-->
-                <form method="post" th:action="'todo/muscleGroups/'+${muscle.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                    <button type="submit" class="btn btn-outline-danger">Delete</button>
-                </form>
-            </div>
+                <input type="hidden" th:value="${muscle.getMuscleGroup().getId()}" name="groupId">
+                <button type="submit" class="btn btn-outline-danger float-right" sec:authorize="hasAuthority('ADMIN')">Delete</button>
+            </form>
+
+
         </div>
 
     </div>
 </div>
+
+<script th:inline="javascript">
+    function changeReadOnly() {
+        document.getElementById("editButton").hidden = true;
+        document.getElementById("newName").readOnly = false;
+        document.getElementById("muscleInfo").readOnly = false;
+        document.getElementById("imageFile").hidden = false;
+        document.getElementById("updateNameButton").hidden = false;
+    }
+</script>
+
 
 <footer th:insert="parts/footer::footer"></footer>
 </body>

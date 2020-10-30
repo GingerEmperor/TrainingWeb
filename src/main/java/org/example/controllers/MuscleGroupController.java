@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.example.exeptions.InvalidNameException;
 import org.example.exeptions.NotFoundException;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
@@ -64,7 +63,7 @@ public class MuscleGroupController {
         return "muscleTemplates/muscles";
     }
 
-    @GetMapping("/all")////
+    @GetMapping("/all")
     public String showAllMuscles() {
         return "redirect:/muscles";
     }

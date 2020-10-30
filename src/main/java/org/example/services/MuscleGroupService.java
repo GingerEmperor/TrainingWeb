@@ -25,7 +25,7 @@ public class MuscleGroupService {
 
     private final GlobalService globalService;
 
-    @Value("${upload.path}")
+    @Value("${upload.muscleGroupPath}")
     private String uploadPath;
 
     public MuscleGroup findByName(String name) {
@@ -79,6 +79,7 @@ public class MuscleGroupService {
         MuscleGroup updatedMuscleGroup = updateMuscleGroup(id, muscleGroupName);
         try {
             final String img = globalService.saveImgToPathWithPrefixName(image, uploadPath, muscleGroupName);
+            new File(uploadPath+"/"+updatedMuscleGroup.getName()).delete();
             updatedMuscleGroup.setImage(img);
         } catch (IOException e) {
             e.printStackTrace();
