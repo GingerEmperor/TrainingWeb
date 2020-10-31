@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="common/commonHead::commonHead"></head>
+<body>
+<header th:insert="parts/header::header"></header>
+<p>ADD Exercise</p>
+
+<!--//add exercise-->
+<!--//TODO make it work BE-->
+<div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white" align="center" sec:authorize="hasAuthority('ADMIN')">
+    <h5 align="center" class="alert mt-2 mb-2">Изменить упражнение</h5>
+    <form th:method="PATCH" action="/exercises/edit" enctype="multipart/form-data">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+
+        <div style="display:inline-block">
+            <!--            <h4 th:value="${exerciseTitle}" th:placeholder="${exerciseTitle}" th: disabled></h4>-->
+            <label for="exerciseTitle" class="input-group-text mb-1">Название упражнения
+                <input type="text" id="exerciseTitle" name="exerciseTitle" class="form-control ml-2 mr-2"
+                       aria-describedby="basic-addon3" th:value="${exerciseTitle}" readonly>
+            </label>
+
+            <label for="primaryMuscles" class="input-group-text mb-1">Главные рабочие мышцы
+                <select class="form-control selectpicker ml-2 mr-2" name="primaryMuscles" id="primaryMuscles" required multiple data-live-search="true">
+                    <option disabled>Choose primary muscles</option><!--//Empty choise-->
+                    <option th:each="muscle : ${primaryMuscles}"
+                            th:value="${muscle.getId()}"
+                            th:text="${muscle.getName()}"
+                            th:disabled="${muscle.getName().contains('---')?'true':'false'}"
+                             >
+
+                        <!--                        th:text="${muscle.getName()!='-&#45;&#45;'} ? ${muscle.getName()} :'&#45;&#45;&#45;&#45;'" >-->
+                    </option>
+                </select>
+            </label>
+            <label for="secondaryMuscles" class="input-group-text mb-1">Второстипенных рабочих мышцы
+                <select class="form-control ml-2 mr-2 selectpicker" name="secondaryMuscles" id="secondaryMuscles" multiple data-live-search="true">
+                    <option disabled>Choose secondary muscle</option><!--//Empty choise-->
+                    <option th:each="muscle : ${secondaryMuscles}"
+                            th:value="${muscle.getId()}"
+                            th:text="${muscle.getName()}"
+                            th:disabled="${muscle.getName().contains('---')?'true':'false'}"
+                    >
+                    </option>
+                </select>
+            </label>
+
+            <div class="input-group mb-1 ">
+                <div class="input-group-prepend">
+                    <label for="someInfo" class="input-group-text">Информация об упражнении</label>
+                </div>
+                <textarea type="text" id="someInfo" name="someInfo" class="form-control"
+                          aria-describedby="basic-addon3" placeholder="..."></textarea>
+            </div>
+            <div class="input-group mb-1 ">
+                <div class="input-group-prepend">
+                    <label for="howToDo" class="input-group-text">Инструкция как делать</label>
+                </div>
+                <textarea type="text" id="howToDo" name="howToDo" class="form-control"
+                          aria-describedby="basic-addon3" placeholder="..."></textarea>
+            </div>
+
+            <label for="videoLink" class="input-group-text mb-1">Ссылка на видео упражнения
+                <input type="text" id="videoLink" name="videoLink" class="form-control ml-2 mr-2"
+                       aria-describedby="basic-addon3" placeholder="https//...">
+            </label>
+
+            <label for="previewImg" class="input-group-text mb-1">Browse exercise preview image
+                <input type="file" name="previewImg" class="input-group-text ml-2 mr-2" id="previewImg">
+            </label>
+
+            <input type="hidden" name="equipment" class="input-group-text ml-2 mr-2" id="equipment" th:value="${equip}">
+            <input type="text" name="editExerciseId" th:value="${editExercise.getId()}">
+
+            <a href="/exercises/add" class="btn btn-success mb-2 mt-2"><- Previous</a>
+            <button type="submit" class="btn btn-success mb-2 mt-2">Add Exercise</button>
+        </div>
+    </form>
+</div>
+
+
+<footer th:insert="parts/footer::footer"></footer>
+</body>
+</html>

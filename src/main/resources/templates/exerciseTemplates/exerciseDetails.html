@@ -4,30 +4,26 @@
 <body>
 <header th:insert="parts/header::header"></header>
 
-<div class="container mt-5 bg-dark text-white rounded">
+<div class="container-lg mt-5 bg-dark text-white rounded" >
     <h2 align="center" th:text="${exercise.getTitle()}"></h2>
     <div class="card">
         <img th:src="${'/img/'+exercise.getImage()}"
              th:alt="${exercise.getTitle()}"
-             align="center" style="background: #55595c">
-
-        <!--        <img src="erhttps://cdn.britannica.com/s:800x450,c:crop/79/143179-138-80596415/muscles-bones-tendons.jpg" class="card-img-top"-->
-        <!--             th:alt="${muscle.getName()}"-->
-        <!--             align="center" style="background: #55595c">-->
+             class="text-center" style="background: #55595c" height="600">
 
         <div th:if="${exercise.getExerciseInfo()!=null}" class="card-body" style="background: #C0C0C0">
             <div class="row">
                 <span class="col">
                     <h3 style="color: black">Primary muscles:</h3>
                     <span th:each="muscle:${exercise.getPrimaryWorkingMuscles()}">
-                        <p style="color: darkblue" th:text="${muscle.getName()}"/>
+                        <a th:href="'/muscles/'+${muscle.getId()}"><p style="color: darkblue" th:text="${muscle.getName()}"/></a>
                     </span>
                 </span>
 
                 <span class="col">
                     <h3 style="color: black">Secondary muscles:</h3>
                     <span th:each="muscle:${exercise.getSecondWorkingMuscles()}">
-                        <p style="color: darkblue" th:text="${muscle.getName()}"/>
+                        <a th:href="'/muscles/'+${muscle.getId()}"><p style="color: darkblue" th:text="${muscle.getName()}"/></a>
                     </span>
                 </span>
 
@@ -48,22 +44,29 @@
                 <p>
                     <a th:href="${exercise.getExerciseInfo().getVideoLink()}">Link</a>
                 </p>
-                <div class="btn-group">
-                    <a class="btn btn-outline-secondary" href="/exercises">Назад</a>
-                    <!--                //TODO add edit-->
-                    <form th:action="'todo/exercises/'+${exercise.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
-                        <button type="submit" class="btn btn-outline-warning">Edit</button>
-                    </form>
-                    <!--                //TODO add delete-->
-                    <form th:method="post" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                        <button type="submit" class="btn btn-outline-danger">Delete</button>
-                    </form>
-                </div>
             </div>
         </div>
 
+        <div class="btn-group">
+            <a class="btn btn-outline-secondary" onclick="goBack()">Назад</a>
+            <!--                //TODO add edit-->
+            <form th:method="PATCH" th:action="'/exercises/'+${exercise.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
+                <button type="submit" class="btn btn-outline-warning">Edit</button>
+            </form>
+
+            <form th:method="DELETE" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                <button type="submit" class="btn btn-outline-danger">Delete</button>
+            </form>
+        </div>
     </div>
 </div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+</script>
 
 <footer th:insert="parts/footer::footer"></footer>
 </body>

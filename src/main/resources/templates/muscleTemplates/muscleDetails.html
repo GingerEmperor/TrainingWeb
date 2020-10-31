@@ -4,7 +4,7 @@
 <body>
 <header th:insert="parts/header::header"></header>
 
-<div class="container mt-5 bg-dark text-white rounded">
+<div class="container-lg mt-5 bg-dark text-white rounded">
     <h2 align="center" th:text="${muscle.getName()}"></h2>
     <div class="card">
         <img th:src="${'/img/'+muscle.getImage()}"
@@ -12,15 +12,37 @@
              class="text-center" style="background: #55595c" height="600">
         <div class="card-body" style="background: #C0C0C0">
             <form th:action="'/muscles/'+${muscle.getId()}" th:method="PATCH" enctype="multipart/form-data">
+
                 <div class="input-group">
+                    <div class="input-group-prepend" >
+                        <span class="input-group-text bg-secondary text-white">TITLE</span>
+                    </div>
                     <input type="text" name="newName" id="newName" class="form-control text-center" th:value="${muscle.getName()}" readonly>
                     <button type="button" onclick="changeReadOnly()" id="editButton" sec:authorize="hasAuthority('ADMIN')"
                             class="input-group-text">✎
                     </button>
                     <button type="submit" id="updateNameButton" sec:authorize="hasAuthority('ADMIN')" class="input-group-text" hidden>✓</button>
                 </div>
-                <textarea class="form-control" id="muscleInfo" name="newInfo" aria-label="With textarea" th:text="${muscle.getInfo()}" rows="10" readonly></textarea>
+                <div class="input-group">
+                    <div class="input-group-prepend" >
+                        <span class="input-group-text bg-secondary text-white">INFO</span>
+                    </div>
+                    <textarea class="form-control" id="muscleInfo" name="newInfo" aria-label="With textarea" th:text="${muscle.getInfo()}" rows="10" readonly></textarea>
+                </div>
+                <!--                ///-->
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-secondary text-white" >Принадлежит группе</span>
+                    </div>
+                    <a th:href="'/muscleGroups/'+${muscle.getMuscleGroup().getId()}"><span class="input-group-text" style="color: darkblue" th:text="${muscle.getMuscleGroup().getName()}"/></a>
+                </div>
 
+                <!--                ///-->
+                <!--                <span class="text-dark">Принадлежит группе-->
+                <!--                        <a th:href="'/muscleGroups/'+${muscle.getMuscleGroup().getId()}"><p style="color: darkblue" th:text="${muscle.getMuscleGroup().getName()}"/></a>-->
+                <!--                    </span>-->
+                <!--                -->
+                <!--                ////-->
                 <div class="input-group" id="imageFile" hidden>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroupFileAddon01">Upload Image</span>
@@ -39,7 +61,7 @@
 
 
             <form th:method="DELETE" th:action="'/muscles/'+${muscle.getId()}+'/delete'" class="mt-2">
-                <a class="btn btn-outline-secondary" href="/muscles">Назад</a>
+                <a class="btn btn-outline-secondary" onclick="goBack()">Назад</a>
                 <input type="hidden" th:value="${muscle.getMuscleGroup().getId()}" name="groupId">
                 <button type="submit" class="btn btn-outline-danger float-right" sec:authorize="hasAuthority('ADMIN')">Delete</button>
             </form>
@@ -57,6 +79,10 @@
         document.getElementById("muscleInfo").readOnly = false;
         document.getElementById("imageFile").hidden = false;
         document.getElementById("updateNameButton").hidden = false;
+    }
+
+    function goBack() {
+        window.history.back();
     }
 </script>
 
