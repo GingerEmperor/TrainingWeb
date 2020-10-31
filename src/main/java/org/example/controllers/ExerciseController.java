@@ -24,7 +24,9 @@ import org.example.services.MuscleService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,8 +56,8 @@ public class ExerciseController {
 
         Map<String, List<Exercise>> muscleGroup_ExerciseMap = new TreeMap<>();
 
-        List<Exercise> allExercises =new ArrayList<>(exerciseService.findAll());
-        Collections.sort(allExercises,(o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
+        List<Exercise> allExercises = new ArrayList<>(exerciseService.findAll());
+        Collections.sort(allExercises, (o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
         muscleGroup_ExerciseMap.put("All", allExercises);
 
         model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
@@ -86,10 +88,9 @@ public class ExerciseController {
 
         Map<MuscleGroup, List<Exercise>> muscleGroup_ExerciseMap = new LinkedHashMap<>();
         MuscleGroup mG = muscleGroupService.findById(id);
-            List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscleGroup(mG));
-            exercisesByMuscleGroup.sort((o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
-            muscleGroup_ExerciseMap.put(mG, exercisesByMuscleGroup);
-
+        List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscleGroup(mG));
+        exercisesByMuscleGroup.sort((o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
+        muscleGroup_ExerciseMap.put(mG, exercisesByMuscleGroup);
 
         model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
         return "exerciseTemplates/exercises";
@@ -102,7 +103,7 @@ public class ExerciseController {
         Map<Equipment, List<Exercise>> equipment_ExerciseMap = new TreeMap<>();
         for (Equipment eq : Equipment.values()) {
             List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByEquipment(eq));
-            Collections.sort(exercisesByMuscleGroup,(o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
+            Collections.sort(exercisesByMuscleGroup, (o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
             equipment_ExerciseMap.put(eq, exercisesByMuscleGroup);
         }
 
@@ -113,17 +114,19 @@ public class ExerciseController {
 
     @GetMapping("/all")//TODO for debug
     public String showAll(Model model) {
-        Iterable<Exercise> allExercises = exerciseService.findAll();
-        model.addAttribute("allExercises", allExercises);
+        Map<String, List<Exercise>> muscleGroup_ExerciseMap = new TreeMap<>();
+        List<Exercise> allExercises = new ArrayList<>(exerciseService.findAll());
+        muscleGroup_ExerciseMap.put("All", allExercises);
+
+        model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
+
         return "exerciseTemplates/exercises";
     }
 
     @GetMapping("/{id}")
     public String showExerciseInfoById(@PathVariable(name = "id") long id,
             Model model) {
-        System.out.println("Works1");
         model.addAttribute("exercise", exerciseService.findById(id));
-        System.out.println("Works2");
         return "exerciseTemplates/exerciseDetails";
     }
 
@@ -147,7 +150,7 @@ public class ExerciseController {
 
         try {
             exerciseService.checkIfExistsExerciseByTitle(exerciseTitle);
-        }catch (AlreadyExistsException e){
+        } catch (AlreadyExistsException e) {
             e.printStackTrace();
             return "redirect:/";
         }
@@ -161,8 +164,8 @@ public class ExerciseController {
         }
         List<Muscle> primaryMuscles = new ArrayList<>();
         for (MuscleGroup mG : primaryMuscleGroups) {
-            Muscle separator=new Muscle();
-            separator.setName("---"+ mG.getName()+"---");
+            Muscle separator = new Muscle();
+            separator.setName("---" + mG.getName() + "---");
             primaryMuscles.add(separator);
 
             primaryMuscles.addAll(mG.getMuscleSet());
@@ -176,8 +179,8 @@ public class ExerciseController {
         }
         List<Muscle> secondaryMuscles = new ArrayList<>();
         for (MuscleGroup mG : secondaryMuscleGroups) {
-            Muscle separator=new Muscle();
-            separator.setName("---"+ mG.getName()+"---");
+            Muscle separator = new Muscle();
+            separator.setName("---" + mG.getName() + "---");
             secondaryMuscles.add(separator);
 
             secondaryMuscles.addAll(mG.getMuscleSet());
@@ -197,14 +200,11 @@ public class ExerciseController {
             @RequestParam(name = "primaryMuscles") String primaryMusclesIdArr,
             @RequestParam(name = "secondaryMuscles", required = false) String secondaryMusclesIdArr,
             @RequestParam(name = "equipment") Equipment equipment,
-            @RequestParam(name = "someInfo") String someInfo,
+            @RequestParam(name = "someInfo") String exerciseInfo,
             @RequestParam(name = "howToDo") String howToDo,
             @RequestParam(name = "videoLink") String videoLink,
             @RequestParam(name = "previewImg") MultipartFile previewImg
-    ) throws IOException {
-
-        Exercise currentExercise;
-
+    ) {
         Set<Muscle> primaryMuscleSet = new HashSet<>();
         Set<Muscle> secondaryMuscleSet = new HashSet<>();
 
@@ -221,28 +221,123 @@ public class ExerciseController {
         }
 
         try {
-            currentExercise = exerciseService.createNewExercise(
-                    exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
-                    someInfo,howToDo,videoLink, equipment,
-                    globalService.saveImgToPathWithPrefixName(previewImg, uploadPath, exerciseTitle));
-        } catch (FileCanNotSaveException e) {
-            currentExercise = exerciseService.createNewExercise(
-                    exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
-                    someInfo,howToDo,videoLink, equipment);
+            globalService.checkIfNameIsValid(exerciseTitle);
+            exerciseService.createNewExercise(exerciseTitle, primaryMuscleSet, secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg);
+            return "redirect:/exercises";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
         }
-        exerciseService.save(currentExercise);
-        return "redirect:/exercises";
-
     }
 
-    // //TODO add delete image
-    @PostMapping("/{id}/delete")
+    @PatchMapping("/{id}/edit")
+    public String editAttributesExercise(@PathVariable long id, Model model) {
+        Iterable<MuscleGroup> allMuscleGroups = muscleGroupService.findAll();
+        Iterable<Equipment> allEquipment = Arrays.asList(Equipment.values().clone());
+        Exercise editExercise = exerciseService.findById(id);
+
+        model.addAttribute("allMuscleGroups", allMuscleGroups);
+        model.addAttribute("allEquipment", allEquipment);
+        model.addAttribute("editExercise", editExercise);
+        return "exerciseTemplates/editExerciseFormPart1";
+    }
+
+    @PatchMapping("/{id}/edit/attributes")
+    public String editExercise(
+            @RequestParam(required = true, name = "exerciseTitle") String exerciseTitle,
+            @RequestParam(required = true, name = "primaryMuscleGroup") String primaryMuscleIdArr,
+            @RequestParam(required = false, name = "secondaryMuscleGroup") String secondMuscleIdArr,
+            @RequestParam(required = true, name = "equipment") Equipment equipment,
+            @RequestParam(required = true, name = "editExerciseId") Long editExerciseId,
+            Model model) {
+
+        Exercise editExercise = exerciseService.findById(editExerciseId);
+
+        List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
+        List<MuscleGroup> secondaryMuscleGroups = new ArrayList<>();
+
+        String[] primIds = primaryMuscleIdArr.split(",");
+        for (final String primId : primIds) {
+            primaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(primId)));
+        }
+        List<Muscle> primaryMuscles = new ArrayList<>();
+        for (MuscleGroup mG : primaryMuscleGroups) {
+            Muscle separator = new Muscle();
+            separator.setName("---" + mG.getName() + "---");
+            primaryMuscles.add(separator);
+
+            primaryMuscles.addAll(mG.getMuscleSet());
+        }
+
+        if (secondMuscleIdArr != null) {
+            String[] secIds = secondMuscleIdArr.split(",");
+            for (final String secId : secIds) {
+                secondaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(secId)));
+            }
+        }
+        List<Muscle> secondaryMuscles = new ArrayList<>();
+        for (MuscleGroup mG : secondaryMuscleGroups) {
+            Muscle separator = new Muscle();
+            separator.setName("---" + mG.getName() + "---");
+            secondaryMuscles.add(separator);
+
+            secondaryMuscles.addAll(mG.getMuscleSet());
+        }
+
+
+        model.addAttribute("editExercise",editExercise);
+        model.addAttribute("exerciseTitle", exerciseTitle);
+        model.addAttribute("equip", equipment);
+        model.addAttribute("primaryMuscles", primaryMuscles);
+        model.addAttribute("secondaryMuscles", secondaryMuscles);
+
+        return "exerciseTemplates/editExerciseFormPart2";
+    }
+
+    @PatchMapping("/edit")
+    public String editExercisesInDB(
+            @RequestParam(name = "editExerciseId")Long editExerciseId,
+            @RequestParam(name = "exerciseTitle") String exerciseTitle,
+            @RequestParam(name = "primaryMuscles") String primaryMusclesIdArr,
+            @RequestParam(name = "secondaryMuscles", required = false) String secondaryMusclesIdArr,
+            @RequestParam(name = "equipment") Equipment equipment,
+            @RequestParam(name = "someInfo") String exerciseInfo,
+            @RequestParam(name = "howToDo") String howToDo,
+            @RequestParam(name = "videoLink") String videoLink,
+            @RequestParam(name = "previewImg") MultipartFile previewImg
+    ) {
+        Set<Muscle> primaryMuscleSet = new HashSet<>();
+        Set<Muscle> secondaryMuscleSet = new HashSet<>();
+
+        String[] primIds = primaryMusclesIdArr.split(",");
+        for (final String primId : primIds) {
+            primaryMuscleSet.add(muscleService.findById(Long.parseLong(primId)));
+        }
+
+        if (secondaryMusclesIdArr != null) {
+            String[] secIds = secondaryMusclesIdArr.split(",");
+            for (final String secId : secIds) {
+                secondaryMuscleSet.add(muscleService.findById(Long.parseLong(secId)));
+            }
+        }
+
+        try {
+            globalService.checkIfNameIsValid(exerciseTitle);
+            exerciseService.updateExercise(editExerciseId, exerciseTitle, primaryMuscleSet, secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg);
+            return "redirect:/exercises";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @DeleteMapping("/{id}/delete")
     public String deleteMuscleById(@PathVariable long id) {
         try {
             System.out.println("DELETE WORK");
             exerciseService.deleteExerciseById(id);
             return "redirect:/exercises";
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
         }

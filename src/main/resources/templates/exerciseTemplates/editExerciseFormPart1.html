@@ -8,8 +8,8 @@
 <!--//add exercise-->
 <!--//TODO make it work BE-->
 <div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white" align="center" sec:authorize="hasAuthority('ADMIN')">
-    <h5 align="center" class="alert mt-2 mb-2">Добавить упражнение</h5>
-    <form method="post" action="/exercises/add/attributes">
+    <h5 align="center" class="alert mt-2 mb-2">Изменить упражнение</h5>
+    <form th:method="PATCH" th:action="'/exercises/'+${editExercise.getId()}+'/edit/attributes'">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -19,19 +19,14 @@
 
         <div style="display:inline-block">
             <label for="exerciseTitle" class="input-group-text mb-1">Название упражнения
-                <span th:if="${editExercise==null}">
                 <input type="text" id="exerciseTitle" name="exerciseTitle" class="form-control ml-2 mr-2"
-                       aria-describedby="basic-addon3" placeholder="..." required>
-                </span>
-                <span th:unless="${editExercise==null}">
-                    <input type="text" id="exerciseTitl" name="exerciseTitle" class="form-control ml-2 mr-2"
-                           aria-describedby="basic-addon3" th:value="${editExercise.getTitle()}" required>
-                    <input type="text" name="editExerciseId" th:value="${editExercise.getId()}">
-                </span>
+                       aria-describedby="basic-addon3" th:value="${editExercise.getTitle()}" required>
+                <input type="text" name="editExerciseId" th:value="${editExercise.getId()}">
             </label>
 
             <label for="primaryMuscleGroup" class="input-group-text mb-1">Группы главных рабочие мышцы
-                <select class="form-control selectpicker ml-2 mr-2" name="primaryMuscleGroup" id="primaryMuscleGroup" required multiple data-live-search="true">
+                <select class="form-control selectpicker ml-2 mr-2" name="primaryMuscleGroup" id="primaryMuscleGroup"
+                        required multiple data-live-search="true">
                     <option disabled>Choose primary muscle groups</option><!--//Empty choise-->
                     <option th:each="muscleGroup : ${allMuscleGroups}"
                             th:value="${muscleGroup.getId()}" th:text="${muscleGroup.getName()}">
