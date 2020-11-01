@@ -10,30 +10,54 @@
 <!--    <a class="btn btn-secondary" href="/exercises/byEquipmentNeed">Sort by Equipment</a>-->
 <!--</div>-->
 
+<!--<form class="form-inline my-2 my-lg-0">-->
+<!--    <input class="form-control mr-sm-2" type="search" placeholder="Search by muscle group" aria-label="Search">-->
+<!--    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+<!--</form>-->
 
 <div class="container-lg">
-    <div th:each="criteria :${sortCriteria_ExerciseMap.keySet()}" th:if="${!sortCriteria_ExerciseMap.get(criteria).isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
 
-        <h4 th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
-        <div th:each="exercise:${sortCriteria_ExerciseMap.get(criteria)}" class="col-lg-4 col-md-12">
-            <div class="card mb-4 shadow-sm">
 
-                <div class="card">
-                    <img th:src="${'/img/'+exercise.getImage()}" class="card-img-top"
-                         th:alt="${exercise.getTitle()}"
-                         align="center" style="background: #55595c" height="225">
-                    <div class="card-body" style="background: #C0C0C0">
-                        <p class="card-text text-dark" th:text="${exercise.getTitle()}">
-                        </p>
+    <form action="/exercises/searchBy" th:method="GET" class="form-inline my-2 my-lg-0">
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">Search by</div>
+                <select class="custom-select" id="search_by" name="search_by" required>
+                    <option selected disabled>Chose option</option>
+                    <option value="muscleGroup">Muscle group</option>
+                    <option value="muscle">Muscle</option>
+                    <option value="exercise">Exercise title</option>
+                </select>
+                <input name="inputSearch" id="inputSearch" class="form-control mr-sm-2" type="search" placeholder="..." aria-label="Search" required>
+            </div>
+            <button class="btn btn-outline-success " type="submit">Search</button>
+        </div>
+    </form>
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <form th:action="'/exercises/'+${exercise.getId()}">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                                </form>
-                                <form th:method="DELETE" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
-                                </form>
+    <div th:each="criteria :${sortCriteria_ExerciseMap.keySet()}">
+        <div th:if="${!sortCriteria_ExerciseMap.get(criteria).isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
+
+            <h4 th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
+            <div th:each="exercise:${sortCriteria_ExerciseMap.get(criteria)}" class="col-lg-4 col-md-12">
+                <div class="card mb-4 shadow-sm">
+
+                    <div class="card">
+                        <img th:src="${'/img/'+exercise.getImage()}" class="card-img-top"
+                             th:alt="${exercise.getTitle()}"
+                             align="center" style="background: #55595c" height="225">
+                        <div class="card-body" style="background: #C0C0C0">
+                            <p class="card-text text-dark" th:text="${exercise.getTitle()}">
+                            </p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <form th:action="'/exercises/'+${exercise.getId()}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </form>
+                                    <form th:method="DELETE" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -41,7 +65,16 @@
             </div>
         </div>
     </div>
-</div>
+    <div th:if="${sortCriteria_ExerciseMap.keySet().size()==1}">
+        <div th:each="criteria :${sortCriteria_ExerciseMap.keySet()}">
+            <div th:if="${sortCriteria_ExerciseMap.get(criteria).isEmpty()}">
+                <h1 th:text="${criteria}"></h1>
+                <div class="alert alert-warning" role="alert">
+                    Упражнений нет
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -53,6 +86,23 @@
     </form>
 </div>
 
+<script th:inline="javascript">
+    // function disableInputSearch() {
+    //     alert("disssable")
+    //     document.getElementById("inputSearch").getE
+    // }
+    function changeReadOnly() {
+        document.getElementById("editButton").hidden = true;
+        document.getElementById("newName").readOnly = false;
+        document.getElementById("muscleInfo").readOnly = false;
+        document.getElementById("imageFile").hidden = false;
+        document.getElementById("updateNameButton").hidden = false;
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
 
 <footer th:insert="parts/footer::footer"></footer>
 </body>
