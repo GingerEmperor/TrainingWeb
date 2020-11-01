@@ -13,6 +13,7 @@ import java.util.TreeMap;
 
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.FileCanNotSaveException;
+import org.example.exeptions.SearchFailException;
 import org.example.models.Exercise;
 import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -97,6 +99,22 @@ public class ExerciseController {
 
     }
 
+    @GetMapping("/byMuscle/{id}")
+    public String showAllByConcreteMuscle(
+            @PathVariable(name = "id") long id,
+            Model model) {
+
+        Map<Muscle, List<Exercise>> muscle_ExerciseMap = new LinkedHashMap<>();
+        Muscle muscle = muscleService.findById(id);
+        List<Exercise> exercisesByMuscle = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscle(muscle));
+        exercisesByMuscle.sort((o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
+        muscle_ExerciseMap.put(muscle, exercisesByMuscle);
+
+        model.addAttribute("sortCriteria_ExerciseMap", muscle_ExerciseMap);
+        return "exerciseTemplates/exercises";
+
+    }
+
     @GetMapping("/byEquipmentNeed")
     public String showAllByEquipmentNeed(Model model) {
 
@@ -128,6 +146,46 @@ public class ExerciseController {
             Model model) {
         model.addAttribute("exercise", exerciseService.findById(id));
         return "exerciseTemplates/exerciseDetails";
+    }
+
+    @GetMapping("/searchBy")
+    public String searchBy(@RequestParam(name = "search_by") String searchBy,
+            @RequestParam(name = "inputSearch", required = false) String inputSearch
+    ) {
+        try {
+            switch (searchBy) {
+                case "muscleGroup":
+                    System.out.println("muscleGroup");
+                    try {
+                        MuscleGroup muscleGroup = muscleGroupService.findByName(inputSearch);
+                        return "redirect:byMuscleGroups/" + muscleGroup.getId();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new SearchFailException("Невозилжно найти такую группу мышц");
+                    }
+                case "muscle":
+                    System.out.println("muscle");//
+                    try {
+                        Muscle muscle = muscleService.findByName(inputSearch);
+                        return "redirect:byMuscle/" + muscle.getId();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new SearchFailException("Невозилжно найти такую мышцу");
+                    }
+                default:
+                    System.out.println("exerciseTile");
+                    try {
+                        Exercise exercise = exerciseService.findByTitle(inputSearch);
+                        return "redirect:" + exercise.getId();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new SearchFailException("Невозилжно найти такое упражнение");
+                    }
+            }
+        } catch (SearchFailException e) {
+            e.printStackTrace();
+            return "redirect:/exercises";
+        }
     }
 
     @GetMapping("/add")
@@ -284,8 +342,7 @@ public class ExerciseController {
             secondaryMuscles.addAll(mG.getMuscleSet());
         }
 
-
-        model.addAttribute("editExercise",editExercise);
+        model.addAttribute("editExercise", editExercise);
         model.addAttribute("exerciseTitle", exerciseTitle);
         model.addAttribute("equip", equipment);
         model.addAttribute("primaryMuscles", primaryMuscles);
@@ -296,7 +353,7 @@ public class ExerciseController {
 
     @PatchMapping("/edit")
     public String editExercisesInDB(
-            @RequestParam(name = "editExerciseId")Long editExerciseId,
+            @RequestParam(name = "editExerciseId") Long editExerciseId,
             @RequestParam(name = "exerciseTitle") String exerciseTitle,
             @RequestParam(name = "primaryMuscles") String primaryMusclesIdArr,
             @RequestParam(name = "secondaryMuscles", required = false) String secondaryMusclesIdArr,

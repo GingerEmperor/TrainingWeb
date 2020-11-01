@@ -8,6 +8,7 @@ import java.util.Set;
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.exeptions.NotFoundException;
+import org.example.exeptions.SearchFailException;
 import org.example.models.Exercise;
 import org.example.models.ExerciseInfo;
 import org.example.models.enums.Equipment;
@@ -31,10 +32,12 @@ public class ExerciseService {
     @Value("${upload.exercisePath}")
     private String uploadPath;
 
+
     public Exercise findByTitle(final String exerciseTitle) {
         return exerciseRepository.findByTitle(exerciseTitle)
-                .orElseThrow(() -> new NotFoundException("Такое упраднение уже есть"));
+                .orElseThrow(() -> new NotFoundException("Такое упраднения нет в БД"));
     }
+
 
     public boolean checkIfExistsExerciseByTitle(String title) {
         try {
@@ -122,8 +125,6 @@ public class ExerciseService {
         return newExerciseToAdd;
     }
 
-    ///
-
     public Set<Exercise> findAllByPrimaryWorkingMuscle(Muscle muscle) {
         return exerciseRepository.findAllByPrimaryWorkingMusclesContaining(muscle);
     }
@@ -148,8 +149,6 @@ public class ExerciseService {
     public void save(Exercise exercise) {
         exerciseRepository.save(exercise);
     }
-
-
 
     public void deleteExerciseById(final long id) {
         Exercise exerciseToDelete = findById(id);
@@ -189,9 +188,9 @@ public class ExerciseService {
             final String videoLink,
             final Equipment equipment,
             final String image) {
-        Exercise exercise=updateExercise(exerciseToUpdate,exerciseTitle,
-                primaryMuscleSet,secondaryMuscleSet,exerciseInfo,
-                howToDo,videoLink,equipment);
+        Exercise exercise = updateExercise(exerciseToUpdate, exerciseTitle,
+                primaryMuscleSet, secondaryMuscleSet, exerciseInfo,
+                howToDo, videoLink, equipment);
         exercise.setImage(image);
 
         return exercise;
@@ -206,17 +205,17 @@ public class ExerciseService {
             final String videoLink,
             final Equipment equipment,
             final MultipartFile previewImg) {
-        Exercise exerciseToUpdate=findById(exerciseToUpdateId);
-        Exercise updatedExercise=exerciseToUpdate;
+        Exercise exerciseToUpdate = findById(exerciseToUpdateId);
+        Exercise updatedExercise = exerciseToUpdate;
         try {
-            updatedExercise=updateExercise(exerciseToUpdate,exerciseTitle,
-                    primaryMuscleSet,secondaryMuscleSet,exerciseInfo,
-                    howToDo,videoLink,equipment,
+            updatedExercise = updateExercise(exerciseToUpdate, exerciseTitle,
+                    primaryMuscleSet, secondaryMuscleSet, exerciseInfo,
+                    howToDo, videoLink, equipment,
                     globalService.saveImgToPathWithPrefixName(previewImg, uploadPath, exerciseTitle));
-        }catch (Exception e){
-            updatedExercise=updateExercise(exerciseToUpdate,exerciseTitle,
-                    primaryMuscleSet,secondaryMuscleSet,exerciseInfo,
-                    howToDo,videoLink,equipment);
+        } catch (Exception e) {
+            updatedExercise = updateExercise(exerciseToUpdate, exerciseTitle,
+                    primaryMuscleSet, secondaryMuscleSet, exerciseInfo,
+                    howToDo, videoLink, equipment);
         }
 
         save(updatedExercise);

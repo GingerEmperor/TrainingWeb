@@ -12,7 +12,7 @@
     <form th:method="PATCH" action="/exercises/edit" enctype="multipart/form-data">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
@@ -74,10 +74,10 @@
             </label>
 
             <input type="hidden" name="equipment" class="input-group-text ml-2 mr-2" id="equipment" th:value="${equip}">
-            <input type="text" name="editExerciseId" th:value="${editExercise.getId()}">
+            <input type="hidden" name="editExerciseId" th:value="${editExercise.getId()}">
 
             <a href="/exercises/add" class="btn btn-success mb-2 mt-2"><- Previous</a>
-            <button type="submit" class="btn btn-success mb-2 mt-2">Add Exercise</button>
+            <button type="submit" class="btn btn-success mb-2 mt-2">Update Exercise</button>
         </div>
     </form>
 </div>
