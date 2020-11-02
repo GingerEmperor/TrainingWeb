@@ -28,7 +28,30 @@
                                     </form>
                                     <form th:method="DELETE" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                         <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+<!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
+
+                                        <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
+                                            <div class="modal-dialog ">
+
+                                                <!-- Modal content-->
+                                                <div class="modal-content bg-dark" style="border-style: solid ">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title text-center text-white " >Delete confirm</h4>
+                                                        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="text-white" th:text="'Are you sure you want to delete <<'+${el.getName()}+'>> ?'">Are you sure you want to delete</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-outline-danger" >Delete</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
                                     </form>
                                 </div>
                             </div>
