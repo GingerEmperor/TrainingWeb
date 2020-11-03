@@ -13,12 +13,24 @@
         <div th:if="${userList}" th:each="user :${userList}" class="col-lg-4 col-md-12">
             <div class="card mb-4 shadow-sm">
 
-                <form method="post" th:action="@{/users/edit}">
 
-                    <div class="card">
-                        <div class="card-body" style="background: #000000">
+                <div class="card">
+                    <div class="card-body" style="background: #000000">
+                        <form th:method="PATCH" th:action="@{/users/edit}">
+
                             <input type="hidden" name="userId" th:value="${user.getId()}">
                             <p class="card-text" th:text="${user.getUsername()}+'  |  '+${user.getPassword()}+'  |'"/>
+
+                            <div th:if="${user.getStatus()!=null}" class="text-white text-center">
+                                <h4 th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" class="bg-success"
+                                    th:text="'STATUS: '+${user.getStatus().name()} "></h4>
+                                <h4 th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" class="bg-danger"
+                                    th:text="'STATUS: '+${user.getStatus().name()} "></h4>
+<!--                                <h4 th:if="${user.getStatus()==allStatus.get(0).valueOf('DELETED')}" class="bg-warning"-->
+<!--                                    th:text="'STATUS: '+${user.getStatus().name()} "></h4>-->
+                            </div>
+                            <p class="card-text" th:text="'Name: '+${user.getFirstName()}+'   '+${user.getLastName()}"/>
+                            <p class="card-text" th:text="'Email: '+${user.getEmail()}"/>
                             <div th:each="role :${allRoles}" class="row">
                                 <input type="checkbox" th:name="${role}" th:checked="${user.roles.contains(role)}" class="ml-3">
                                 <p class="card-text ml-2" th:text="${role.name()}"/>
@@ -27,13 +39,21 @@
                                 <!--//TODO make buttons work-->
                                 <button type="submit" class="btn btn-outline-warning mt-2">Submit</button>
                                 <button type="button" class="btn btn-outline-success mt-2">Watch</button>
-                                <button type="button" class="btn btn-outline-danger mt-2">Ban</button>
+                                <!--                                <p th:text="${user.getStatus()== allStatus.get(0).valueOf('BANNED')}"/>-->
+                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" th:formaction="'/users/'+${user.getId()}+'/ban'" type="submit"
+                                        class="btn btn-outline-danger mt-2">Ban
+                                </button>
+                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" th:formaction="'/users/'+${user.getId()}+'/unban'" type="submit"
+                                        class="btn btn-outline-danger mt-2">UnBan
+                                </button>
+                                <!--                                <a  type="button" th:action="'/users/'+${user.getId()}+'/ban'"  class="btn btn-outline-danger mt-2">Delete</a>-->
                                 <button type="button" class="btn btn-outline-danger mt-2">Delete</button>
 
                             </div>
+                        </form>
 
-                        </div>
                     </div>
+                </div>
                 </form>
             </div>
 

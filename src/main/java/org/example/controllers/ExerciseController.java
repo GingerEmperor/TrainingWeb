@@ -1,6 +1,5 @@
 package org.example.controllers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +11,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.example.exeptions.AlreadyExistsException;
-import org.example.exeptions.FileCanNotSaveException;
 import org.example.exeptions.SearchFailException;
 import org.example.models.Exercise;
 import org.example.models.enums.Equipment;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,7 +67,6 @@ public class ExerciseController {
     @GetMapping("/byMuscleGroups")
     public String showAllByMuscleGroups(Model model) {
 
-        //TODO maybe use Map<MuscleGroup,Set<Exercises>>
         Map<MuscleGroup, List<Exercise>> muscleGroup_ExerciseMap = new LinkedHashMap<>();
         for (MuscleGroup mG : muscleGroupService.findAll()) {
             List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscleGroup(mG));
@@ -184,6 +180,7 @@ public class ExerciseController {
             }
         } catch (SearchFailException e) {
             e.printStackTrace();
+            //add ничкго не нацдено
             return "redirect:/exercises";
         }
     }

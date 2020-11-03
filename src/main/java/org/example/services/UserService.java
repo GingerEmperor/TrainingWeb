@@ -27,4 +27,8 @@ public class UserService {
         throw new NotFoundException("Такого юзера не существует");
     }
 
+    public User save(final User user) {
+        userRepo.save(user);
+        return user;
+    }
 }
