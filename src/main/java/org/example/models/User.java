@@ -1,6 +1,7 @@
 package org.example.models;
 
 import org.example.models.enums.Role;
+import org.example.models.enums.Status;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -27,6 +28,9 @@ public class User {
     private String password;
 
     private boolean active;//TODO make enum STATUS with ACTIVE,BANNED,DELETED...
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
