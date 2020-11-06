@@ -4,8 +4,21 @@
 <body>
 <header th:insert="parts/header::header"></header>
 
-<div class="container-lg mt-5 bg-dark text-white rounded" >
-    <h2 align="center" th:text="${exercise.getTitle()}"></h2>
+<div class="container-lg mt-5 bg-dark text-white rounded">
+        <h2>
+            <p align="center" th:text="${exercise.getTitle()}" class="col"></p>
+
+            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}" class="badge badge-success col"
+                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}" class="badge badge-danger col"
+                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}" class="badge badge-warning col"
+                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}" class="badge badge-info col"
+                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}" class="badge badge-primary col"
+                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+        </h2>
     <div class="card">
         <img th:src="${'/img/'+exercise.getImage()}"
              th:alt="${exercise.getTitle()}"
@@ -41,56 +54,72 @@
                 </p>
                 <!--            <p class="card-text text-dark" th:text="${exercise.getExerciseInfo().getHowToDo()()}">-->
                 <!--            </p>-->
+                HOW TO DO VIDEO:
                 <p>
                     <a th:href="${exercise.getExerciseInfo().getVideoLink()}">Link</a>
                 </p>
+                NEED EQUIPMENT:
+                <div class="card-text text-dark text-center">
+                    <h2>
+                    <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}" class="badge badge-success"
+                          th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}" class="badge badge-danger"
+                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}" class="badge badge-warning"
+                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}" class="badge badge-info"
+                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}" class="badge badge-primary"
+                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                        <!--                     th:text="${exercise.getEquipmentNeed().getWord()}">-->
+                    </h2>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a class="btn btn-outline-secondary" onclick="goBack()">Назад</a>
+                <!--                //TODO add edit-->
+                <form th:method="PATCH" th:action="'/exercises/'+${exercise.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
+                    <button type="submit" class="btn btn-outline-warning">Edit</button>
+                </form>
+
+                <form th:method="DELETE" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                    <!--                <button type="submit" class="btn btn-outline-danger">Delete</button>-->
+                    <button type="button" class="btn btn btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${exercise.getId()}">Delete</button><!-- Modal -->
+
+                    <div class="modal fade" th:id="'myModal'+${exercise.getId()}" role="dialog">
+                        <div class="modal-dialog ">
+
+                            <!-- Modal content-->
+                            <div class="modal-content bg-dark" style="border-style: solid ">
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-center text-white ">Delete confirm</h4>
+                                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="text-white" th:text="'Are you sure you want to delete <<'+${exercise.getTitle()}+'>> ?'">Are you sure you want to delete</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </form>
             </div>
         </div>
-
-        <div class="btn-group">
-            <a class="btn btn-outline-secondary" onclick="goBack()">Назад</a>
-            <!--                //TODO add edit-->
-            <form th:method="PATCH" th:action="'/exercises/'+${exercise.getId()}+'/edit'" sec:authorize="hasAuthority('ADMIN')">
-                <button type="submit" class="btn btn-outline-warning">Edit</button>
-            </form>
-
-            <form th:method="DELETE" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-<!--                <button type="submit" class="btn btn-outline-danger">Delete</button>-->
-                <button type="button" class="btn btn btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${exercise.getId()}">Delete</button><!-- Modal -->
-
-                <div class="modal fade" th:id="'myModal'+${exercise.getId()}" role="dialog">
-                    <div class="modal-dialog ">
-
-                        <!-- Modal content-->
-                        <div class="modal-content bg-dark" style="border-style: solid ">
-                            <div class="modal-header">
-                                <h4 class="modal-title text-center text-white " >Delete confirm</h4>
-                                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <p class="text-white" th:text="'Are you sure you want to delete <<'+${exercise.getTitle()}+'>> ?'">Are you sure you want to delete</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-danger" >Delete</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </form>
-        </div>
     </div>
-</div>
 
-<script>
-    function goBack() {
-        window.history.back();
-    }
+    <script>
+        function goBack() {
+            window.history.back();
+        }
 
-</script>
+    </script>
 
-<footer th:insert="parts/footer::footer"></footer>
+    <footer th:insert="parts/footer::footer"></footer>
 </body>
 </html>

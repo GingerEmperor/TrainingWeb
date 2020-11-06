@@ -46,16 +46,33 @@
                              th:alt="${exercise.getTitle()}"
                              align="center" style="background: #55595c" height="225">
                         <div class="card-body" style="background: #C0C0C0">
-                            <p class="card-text text-dark" th:text="${exercise.getTitle()}">
-                            </p>
-
+                            <div>
+                                <span class="card-text text-dark" th:text="${exercise.getTitle()}"></span>
+                                <!--                                <div class="text-right">-->
+                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}"
+                                      class="badge badge-success" style="float:right"
+                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}"
+                                      class="badge badge-danger" style="float:right"
+                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}"
+                                      class="badge badge-warning" style="float:right"
+                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}"
+                                      class="badge badge-info" style="float:right"
+                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}"
+                                      class="badge badge-primary" style="float:right"
+                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+                                <!--                                </div>-->
+                            </div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
+                                <div class="btn-group mt-4">
                                     <form th:action="'/exercises/'+${exercise.getId()}">
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                     </form>
                                     <form th:method="DELETE" th:action="'/exercises/'+${exercise.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-<!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
+                                        <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
                                         <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${exercise.getId()}">Delete</button><!-- Modal -->
 
                                         <div class="modal fade" th:id="'myModal'+${exercise.getId()}" role="dialog">
@@ -64,7 +81,7 @@
                                                 <!-- Modal content-->
                                                 <div class="modal-content bg-dark" style="border-style: solid ">
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title text-center text-white " >Delete confirm</h4>
+                                                        <h4 class="modal-title text-center text-white ">Delete confirm</h4>
                                                         <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                                                     </div>
                                                     <div class="modal-body">
@@ -72,7 +89,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-outline-danger" >Delete</button>
+                                                        <button type="submit" class="btn btn-outline-danger">Delete</button>
                                                     </div>
                                                 </div>
 

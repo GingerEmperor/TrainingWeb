@@ -13,6 +13,8 @@ import java.util.TreeMap;
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.SearchFailException;
 import org.example.models.Exercise;
+import org.example.models.criteria.Crit;
+import org.example.models.criteria.EquipmentCriteria;
 import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
@@ -114,11 +116,11 @@ public class ExerciseController {
     @GetMapping("/byEquipmentNeed")
     public String showAllByEquipmentNeed(Model model) {
 
-        Map<Equipment, List<Exercise>> equipment_ExerciseMap = new TreeMap<>();
+        Map<Crit, List<Exercise>> equipment_ExerciseMap = new LinkedHashMap<>();
         for (Equipment eq : Equipment.values()) {
             List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByEquipment(eq));
             Collections.sort(exercisesByMuscleGroup, (o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
-            equipment_ExerciseMap.put(eq, exercisesByMuscleGroup);
+            equipment_ExerciseMap.put(new EquipmentCriteria(eq), exercisesByMuscleGroup);
         }
 
         model.addAttribute("sortCriteria_ExerciseMap", equipment_ExerciseMap);
@@ -260,6 +262,7 @@ public class ExerciseController {
             @RequestParam(name = "videoLink") String videoLink,
             @RequestParam(name = "previewImg") MultipartFile previewImg
     ) {
+        // Equipment equipment=Equipment.;
         Set<Muscle> primaryMuscleSet = new HashSet<>();
         Set<Muscle> secondaryMuscleSet = new HashSet<>();
 
@@ -277,7 +280,8 @@ public class ExerciseController {
 
         try {
             globalService.checkIfNameIsValid(exerciseTitle);
-            exerciseService.createNewExercise(exerciseTitle, primaryMuscleSet, secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg);
+            exerciseService.createNewExercise(exerciseTitle, primaryMuscleSet,
+                    secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg);
             return "redirect:/exercises";
         } catch (Exception e) {
             e.printStackTrace();
