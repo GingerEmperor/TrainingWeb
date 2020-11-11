@@ -27,6 +27,9 @@ public class Muscle {
     @Lob
     private String info;
 
+    @Lob
+    private String functions;
+
     private String image;
 
     @ManyToOne

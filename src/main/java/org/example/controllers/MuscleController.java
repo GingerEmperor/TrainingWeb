@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,15 +72,16 @@ public class MuscleController {
         }
     }
 
-    @PostMapping("/add")
+    @PutMapping("/add")
     public String addMuscle(@RequestParam(name = "muscleGroup") String muscleGroupName,
             @RequestParam(name = "muscleName") String muscleName,
             @RequestParam(name = "muscle_info") String info,
+            @RequestParam(name = "muscle_functions") String muscleFunctions,
             @RequestParam(name = "groupId") Long groupId,
             @RequestParam(name = "file") MultipartFile image
     ) {
         try {
-            muscleService.addMuscle(muscleGroupName, muscleName, info, image);
+            muscleService.addMuscle(muscleGroupName, muscleName, info,muscleFunctions, image);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -105,6 +107,7 @@ public class MuscleController {
             @PathVariable(name = "id") Long id,
             @RequestParam(name = "newName") String newName,
             @RequestParam(name = "newInfo") String newInfo,
+            @RequestParam(name = "newFunctions") String newFunctions,
             @RequestParam(name = "imageFile") MultipartFile imageFile,
             @RequestParam(name = "groupId") Long groupId
     ) {
@@ -112,9 +115,9 @@ public class MuscleController {
             globalService.checkIfNameIsValid(newName);
             Muscle updatedMuscle;
             if(imageFile!=null && !imageFile.getOriginalFilename().isEmpty()){
-                updatedMuscle =muscleService.updateMuscle(id,newName,newInfo,imageFile);
+                updatedMuscle =muscleService.updateMuscle(id,newName,newInfo,newFunctions,imageFile);
             }else {
-                updatedMuscle=muscleService.updateMuscle(id,newName,newInfo);
+                updatedMuscle=muscleService.updateMuscle(id,newName,newInfo,newFunctions);
             }
             muscleService.save(updatedMuscle);
             return "redirect:/muscleGroups/"+groupId;
