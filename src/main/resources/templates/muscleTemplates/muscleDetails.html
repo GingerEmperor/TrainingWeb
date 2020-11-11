@@ -29,6 +29,12 @@
                     </div>
                     <textarea class="form-control" id="muscleInfo" name="newInfo" aria-label="With textarea" th:text="${muscle.getInfo()}" rows="10" readonly></textarea>
                 </div>
+                <div class="input-group" th:if="${muscle.getFunctions()!=null}">
+                    <div class="input-group-prepend" >
+                        <span class="input-group-text bg-secondary text-white">Функции</span>
+                    </div>
+                    <textarea class="form-control" id="muscleFunctions" name="newFunctions" aria-label="With textarea" th:text="${muscle.getFunctions()}" readonly></textarea>
+                </div>
                 <!--                ///-->
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
@@ -102,6 +108,7 @@
         document.getElementById("muscleInfo").readOnly = false;
         document.getElementById("imageFile").hidden = false;
         document.getElementById("updateNameButton").hidden = false;
+        document.getElementById("muscleFunctions").readOnly=false;
     }
 
     function goBack() {

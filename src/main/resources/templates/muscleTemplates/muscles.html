@@ -65,8 +65,8 @@
     <div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
          sec:authorize="hasAuthority('ADMIN')">
         <h5>Добавить мышцу</h5>
-        <form method="post" action="/muscles/add" enctype="multipart/form-data">
-            <div style="display:inline-block">
+        <form th:method="PUT" action="/muscles/add" enctype="multipart/form-data">
+            <div >
 
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
@@ -89,9 +89,18 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Информация о мышцах</span>
                     </div>
-                    <textarea class="form-control " name="muscle_info" aria-label="With textarea"></textarea>
+                    <textarea class="form-control " name="muscle_info" aria-label="With textarea" rows="10"></textarea>
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Функция мышц</span>
+                    </div>
+                    <textarea class="form-control " name="muscle_functions" aria-label="With textarea"></textarea>
+                </div>
+                <div class="input-group mb-2">
                     <input type="file" name="file" class="input-group-text" id="file">
                 </div>
+
 
                 <button type="submit" class="btn btn-secondary mb-1">Add muscle</button>
             </div>
