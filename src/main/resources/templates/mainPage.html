@@ -10,60 +10,95 @@
     <p>Fitness App</p>
     <p th:text="'Hello, ' + ${name} + '!'"/>
 </div>
-<!--<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-header">-->
-<!--                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
-<!--                <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>-->
-<!--            </div>-->
-<!--            <div class="modal-body">-->
-<!--                <p>You are about to delete <b><i class="title"></i></b> record, this procedure is irreversible.</p>-->
-<!--                <p>Do you want to proceed?</p>-->
-<!--            </div>-->
-<!--            <div class="modal-footer">-->
-<!--                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>-->
-<!--                <button type="button" class="btn btn-danger btn-ok">Delete</button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+
+<!--<p>Click the buttons to create and delete row(s) for the table.</p>-->
+<!--<div class="container">-->
+<!--    <table class="table" id="myTable">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>#</th>-->
+<!--            <th>Exercise</th>-->
+<!--            <th>HowMuch</th>-->
+<!--            <th>Technique</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr>-->
+<!--            <td>Row1 cell1</td>-->
+<!--            <td>Row1 cell2</td>-->
+<!--            <td><input type="button" value="Delete" onclick="deleteRow(this)"/></td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--    <br>-->
+
+<!--    <button onclick="myCreateFunction()">Create row</button>-->
+<!--    <button onclick="myDeleteFunction()">Delete row</button>-->
 <!--</div>-->
-<button class="btn btn-default" data-record-id="54" data-record-title="Something cool" data-toggle="modal" data-target="#confirm-delete">
-    Delete "Something cool", #54
-</button>
 
+<!--<script th:inline="javascript" type="text/javascript">-->
+<!--    var rowIdx = 0;-->
 
-<script>
-    bootbox.confirm({
-        title: "Destroy planet?",
-        message: "Do you want to activate the Deathstar now? This cannot be undone.",
-        buttons: {
-            cancel: {
-                label: '<i class="fa fa-times"></i> Cancel'
-            },
-            confirm: {
-                label: '<i class="fa fa-check"></i> Confirm'
-            }
-        },
-        callback: function (result) {
-            console.log('This was logged in the callback: ' + result);
-        }
-    });
-</script>
+<!--    function myCreateFunction() {-->
+<!--        var table = document.getElementById("myTable");-->
+<!--        var row = table.insertRow();-->
+<!--        var cell1 = row.insertCell(0);-->
+<!--        var cell2 = row.insertCell(1);-->
+<!--        var cell3 = row.insertCell(2);-->
+<!--        var cell4 = row.insertCell(3);-->
+<!--        cell1.innerHTML = ++rowIdx;-->
+<!--        cell2.innerHTML = "<input type='text'>";-->
+<!--        cell3.innerHTML = "<input type='text'>";-->
+<!--        cell4.innerHTML = "<td><input type=\"button\" value=\"Delete\" onclick=\"deleteRow(this)\"/></td>\n";-->
+<!--    }-->
 
+<!--    // function deleteRoww(rowId){-->
+<!--    //     var table = document.getElementById("myTable");-->
+<!--    //     table.deleteRow();-->
+<!--    // }-->
 
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-<!--<script>-->
-<!--    $(document).ready(function(){-->
-<!--        $("p").click(function(){-->
-<!--            $(this).hide();-->
-<!--        });-->
-<!--    });-->
+<!--    function myDeleteFunction() {-->
+<!--        document.getElementById("myTable").deleteRow();-->
+<!--    }-->
+
+<!--    function deleteRow(btn) {-->
+<!--        rowIdx&#45;&#45;;-->
+<!--        var row = btn.parentNode.parentNode;-->
+<!--        row.parentNode.removeChild(row);-->
+<!--    }-->
 <!--</script>-->
-<!--<p>If you click on me, I will disappear.</p>-->
-<!--<p>Click me away!</p>-->
-<!--<p>Click me too!</p>-->
 
+
+<!--<br>-->
+<!--<table class="table table-hover">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th scope="col">#</th>-->
+<!--        <th scope="col">First</th>-->
+<!--        <th scope="col">Last</th>-->
+<!--        <th scope="col">Handle</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr>-->
+<!--        <th scope="row">1</th>-->
+<!--        <td>Mark</td>-->
+<!--        <td>Otto</td>-->
+<!--        <td>@mdo</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th scope="row">2</th>-->
+<!--        <td>Jacob</td>-->
+<!--        <td>Thornton</td>-->
+<!--        <td>@fat</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th scope="row">3</th>-->
+<!--        <td colspan="2">Larry the Bird</td>-->
+<!--        <td>@twitter</td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
 
 <footer th:insert="parts/footer::footer"></footer>
 </body>

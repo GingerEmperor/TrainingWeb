@@ -57,7 +57,7 @@ public class MuscleService {
         throw new AlreadyExistsException("Такое упражнение уже существует");
     }
 
-    public Muscle createMuscle(MuscleGroup group, String name, String info,String muscleFunctions) {
+    public Muscle createMuscle(MuscleGroup group, String name, String info, String muscleFunctions) {
         Muscle muscle = new Muscle();
         muscle.setMuscleGroup(group);
         muscle.setName(name);
@@ -66,8 +66,8 @@ public class MuscleService {
         return muscle;
     }
 
-    public Muscle createMuscle(MuscleGroup group, String name, String info,String muscleFunctions, String image) {
-        Muscle muscle = createMuscle(group, name, info,muscleFunctions);
+    public Muscle createMuscle(MuscleGroup group, String name, String info, String muscleFunctions, String image) {
+        Muscle muscle = createMuscle(group, name, info, muscleFunctions);
         muscle.setImage(image);
         return muscle;
     }
@@ -88,23 +88,20 @@ public class MuscleService {
             String muscleFunctions,
             MultipartFile image
     ) {
-       Muscle muscleToAdd;
-        try {
-            checkIfExistsMuscleByName(muscleName);
-        }catch (AlreadyExistsException e){
-            e.printStackTrace();
-        }
+        Muscle muscleToAdd;
+
+        checkIfExistsMuscleByName(muscleName);
 
         MuscleGroup currentMuscleGroup = muscleGroupService.findByName(muscleGroupName);
 
         try {
             muscleToAdd = createMuscle(
-                    currentMuscleGroup, muscleName, muscleInfo,muscleFunctions,
+                    currentMuscleGroup, muscleName, muscleInfo, muscleFunctions,
                     globalService.saveImgToPathWithPrefixName(image, uploadPath, muscleName)
             );
         } catch (FileCanNotSaveException | IOException e) {
             muscleToAdd = createMuscle(
-                    currentMuscleGroup, muscleName, muscleInfo,muscleFunctions
+                    currentMuscleGroup, muscleName, muscleInfo, muscleFunctions
             );
         }
         save(muscleToAdd);
@@ -112,8 +109,8 @@ public class MuscleService {
         return muscleToAdd;
     }
 
-    public Muscle updateMuscle(long id, String newMuscleName,String newInfo,String newFunctions) {
-        Muscle updatedMuscle=findById(id);
+    public Muscle updateMuscle(long id, String newMuscleName, String newInfo, String newFunctions) {
+        Muscle updatedMuscle = findById(id);
         updatedMuscle.setName(newMuscleName);
         updatedMuscle.setInfo(newInfo);
         updatedMuscle.setFunctions(newFunctions);
@@ -128,16 +125,17 @@ public class MuscleService {
             MultipartFile newMuscleImage
     ) {
 
-        Muscle updatedMuscle = updateMuscle(id, newMuscleName,newMuscleInfo,newMuscleFunctions);
+        Muscle updatedMuscle = updateMuscle(id, newMuscleName, newMuscleInfo, newMuscleFunctions);
         try {
             final String img = globalService.saveImgToPathWithPrefixName(newMuscleImage, uploadPath, newMuscleName);
-            new File(uploadPath+"/"+updatedMuscle.getImage()).delete();
+            new File(uploadPath + "/" + updatedMuscle.getImage()).delete();
             updatedMuscle.setImage(img);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return updatedMuscle;
     }
+
     //
     public boolean deleteMuscleById(long id) {
         Muscle muscleToDelete = findById(id);

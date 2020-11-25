@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:insert="common/commonHead::commonHead"></head>
+<body>
+<header th:insert="parts/header::header"></header>
+<p>Trainings</p>
+
+
+<h1>This is training page</h1>
+<div class="container-lg">
+
+    <div th:if="${allTrainings.size()==0}">
+        <div class="alert alert-warning" role="alert">
+            Треннировок нет
+        </div>
+    </div>
+    <div>
+        <div th:each="training:${allTrainings}" class="col-lg-4 col-md-12">
+            <div class="card mb-4 shadow-sm">
+
+                <div class="card">
+                    <img th:src="${'/img/'+training.getImage()}" class="card-img-top"
+                         th:alt="${training.getName()}"
+                         align="center" style="background: #55595c" height="225">
+                    <div class="card-body" style="background: #C0C0C0">
+                        <div>
+                            <span class="card-text text-dark" th:text="${training.getName()}"></span>
+                            <!--                                <div class="text-right">-->
+                            <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}"-->
+                            <!--                              class="badge badge-success" style="float:right"-->
+                            <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                            <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}"-->
+                            <!--                              class="badge badge-danger" style="float:right"-->
+                            <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                            <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}"-->
+                            <!--                              class="badge badge-warning" style="float:right"-->
+                            <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                            <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}"-->
+                            <!--                              class="badge badge-info" style="float:right"-->
+                            <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                            <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}"-->
+                            <!--                              class="badge badge-primary" style="float:right"-->
+                            <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                            <!--                                </div>-->
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group mt-4">
+                                <!--                            TODO-->
+                                <form th:action="'/trainings/'+${training.getId()}">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                </form>
+                                <form th:method="DELETE" th:action="'/trainings/'+${training.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                    <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${training.getId()}">Delete</button><!-- Modal -->
+
+                                    <div class="modal fade" th:id="'myModal'+${training.getId()}" role="dialog">
+                                        <div class="modal-dialog ">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content bg-dark" style="border-style: solid ">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center text-white ">Delete confirm</h4>
+                                                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="text-white" th:text="'Are you sure you want to delete <<'+${training.getName()}+'>> ?'">Are you sure you want to delete</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
+     sec:authorize="hasAuthority('ADMIN')">
+    <h5>Добавить тренировку</h5>
+    <form th:method="GET" action="/trainings/add">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+        <label for="muscleGroup" class="input-group-text mb-1">Для групп:
+            <select class="form-control selectpicker ml-2 mr-2" name="muscleGroups" id="muscleGroup" required multiple data-live-search="true">
+                <option disabled>Choose primary muscle groups</option><!--//Empty choise-->
+                <option th:each="muscleGroup : ${allMuscleGroups}"
+                        th:value="${muscleGroup.getId()}" th:text="${muscleGroup.getName()}">
+                </option>
+            </select>
+            <button type="submit" class="btn btn-secondary mb-1">Add Training</button>
+        </label>
+    </form>
+</div>
+
+
+<footer th:insert="parts/footer::footer"></footer>
+</body>
+</html>

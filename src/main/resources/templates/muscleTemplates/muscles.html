@@ -65,7 +65,7 @@
     <div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
          sec:authorize="hasAuthority('ADMIN')">
         <h5>Добавить мышцу</h5>
-        <form th:method="PUT" action="/muscles/add" enctype="multipart/form-data">
+        <form th:method="POST" action="/muscles/add" enctype="multipart/form-data">
             <div >
 
                 <div class="input-group mb-2">

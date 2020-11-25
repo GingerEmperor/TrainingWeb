@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:insert="common/commonHead::commonHead"></head>
+<body>
+<header th:insert="parts/header::header"></header>
+<p>Trainings</p>
+
+
+<h1>This is training page</h1>
+
+<div class="container rounded text-white bg-dark">
+    <form action="/trainings" method="post">
+        <div class="input-group mb-3 col-12">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Название трентровки</span>
+            </div>
+            <input type="text" name="trainingName" class="form-control" id="basic-url" aria-describedby="basic-addon3" required>
+        </div>
+        <div class="input-group mb-3 col">
+
+            <div class="input-group-prepend">
+                <span class="input-group-text">Для кого</span>
+            </div>
+            <select class="form-control" name="forWho" required>
+                <option selected disabled>Выберите на кого расчитана тренировка</option>
+                <option th:each="forWho:${forWhos}" th:value="${forWho}" th:text="${forWho.getWorld()}"></option>
+            </select>
+
+            <div class="input-group-prepend ml-4">
+                <span class="input-group-text">Сложность</span>
+            </div>
+            <select class="form-control" name="difficulty" required>
+                <option selected disabled>Выберите сложность тренировки</option>
+                <option th:each="difficulty:${difficulties}" th:value="${difficulty}" th:text="${difficulty.getWord()}"></option>
+            </select>
+
+            <div class="input-group-prepend ml-4">
+                <span class="input-group-text">Цель</span>
+            </div>
+            <select class="form-control" name="goal" required>
+                <option selected disabled>Выберите цель тренировки</option>
+                <option th:each="goal:${goals}" th:value="${goal}" th:text="${goal.getWord()}"></option>
+            </select>
+
+        </div>
+        <div class="col">Список упражнений
+            <table class="table text-white" id="myTable">
+                <thead>
+                <tr>
+                    <th>Упражнение</th>
+                    <th>Количестро повторений</th>
+                    <th>Рекомендуемое максимальное время выполнения(сек)</th>
+                    <th>Кол-во подходов</th>
+                    <th>Отдых после подхода (сек)</th>
+                </tr>
+                </thead>
+                <tbody id="tbodyId">
+                <tr id="trId">
+
+                    <td>
+                        <select class="form-control" name="exercise" required>
+                            <option selected disabled>Выберите упражнение</option>
+                            <option th:each="ex:${exercises}" th:value="${ex.getTitle()}" th:text="${ex.getTitle()}" th:disabled="${ex.getTitle().contains('---')?'true':'false'}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="howMuch" required>
+                            <option th:each="i : ${#numbers.sequence(0, 30)}" th:value="${i}" th:text="${i}" th:selected="${i==5}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="recommendedTimeToDo" required>
+                            <option selected disabled>Выберите рекомендуемое время выполнения</option>
+                            <option th:each="i : ${#numbers.sequence(0, 200, 20)}" th:value="${i}" th:text="${i}" th:selected="${i==60}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="trial" required>
+                            <option th:each="i : ${#numbers.sequence(1, 3)}" th:value="${i}" th:text="${i}" th:selected="${i==1}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="rest" required>
+                            <option th:each="i:${#numbers.sequence(10,100,10)}" th:value="${i}" th:text="${i}" th:selected="${i==30}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="button" class="btn btn-danger" value="Delete" onclick="deleteRow(this)"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+
+            <div class="input-group mb-3 col-3">
+                <button class="btn btn-secondary" type="button" onclick="addRo()">Add exercise</button>
+            </div>
+            <div>
+                <div class="input-group mb-1 ">
+                    <div class="input-group-prepend">
+                        <label for="someAdvice" class="input-group-text">Советы по тренировке</label>
+                    </div>
+                    <textarea type="text" id="someAdvice" name="someAdvice" class="form-control"
+                              aria-describedby="basic-addon3" placeholder="..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="text-center col">
+            <button class="btn btn-lg btn-success mt-4" type="submit">SUBMIT</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    var count = 1;
+
+    function addRo() {
+        count++;
+
+        var formInp = document.getElementById('tbodyId');
+
+        var se = document.getElementById("trId").cloneNode(true);
+        formInp.appendChild(se);
+    }
+
+    function deleteRow(btn) {
+        if (count > 1) {
+            var row = btn.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            count--;
+        }
+    }
+</script>
+
+
+<footer th:insert="parts/footer::footer"></footer>
+</body>
+</html>

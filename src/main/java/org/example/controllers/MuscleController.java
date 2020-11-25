@@ -72,7 +72,7 @@ public class MuscleController {
         }
     }
 
-    @PutMapping("/add")
+    @PostMapping("/add")
     public String addMuscle(@RequestParam(name = "muscleGroup") String muscleGroupName,
             @RequestParam(name = "muscleName") String muscleName,
             @RequestParam(name = "muscle_info") String info,

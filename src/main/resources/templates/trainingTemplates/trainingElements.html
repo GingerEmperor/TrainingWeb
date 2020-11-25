@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:insert="common/commonHead::commonHead"></head>
+<body>
+<header th:insert="parts/header::header"></header>
+<p>TrainingElements</p>
+
+<h1>This is training elements page</h1>
+
+
+<script th:inline="javascript">
+    function changeReadOnly(id) {
+        document.getElementById("editButton_".concat(id)).hidden = true;
+        document.getElementById("changeName_".concat(id)).readOnly = false;
+        document.getElementById("updateNameButton_".concat(id)).hidden = false;
+        document.getElementById("imageFile_".concat(id)).hidden=false;
+    }
+
+    function ifConfirmTr(){
+
+    }
+</script>
+
+<footer th:insert="parts/footer::footer"></footer>
+</body>
+</html>
