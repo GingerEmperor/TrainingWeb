@@ -7,11 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.example.models.enums.Difficulty;
 import org.example.models.enums.ForWho;
 import org.example.models.enums.Goal;
+import org.example.models.muscles.MuscleGroup;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +33,11 @@ public class Training {
 
     private String name;
 
-    @OneToMany
+    @ManyToMany
     private List<TrainingElement> trainingElements;
+
+    @ManyToMany
+    private List<MuscleGroup> muscleGroups;
 
     @Lob
     private String advice;

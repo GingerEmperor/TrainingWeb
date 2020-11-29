@@ -23,7 +23,7 @@ public class TrainingElement {
 
     private int howMuchToDo;
 
-    private int recommendedTimeToDoLessThan;
+    private int recommendedTimeToDo;
 
     private int timeToRest;
 
@@ -33,7 +33,7 @@ public class TrainingElement {
                 "id=" + id +
                 ", exercise=" + exercise.getTitle() +
                 ", howMuchToDo=" + howMuchToDo +
-                ", recommendedTimeToDoLessThan=" + recommendedTimeToDoLessThan +
+                ", recommendedTimeToDoLessThan=" + recommendedTimeToDo +
                 ", timeToRest=" + timeToRest +
                 '}';
     }
