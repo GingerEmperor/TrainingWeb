@@ -10,6 +10,7 @@ import org.example.models.enums.Difficulty;
 import org.example.models.enums.ForWho;
 import org.example.models.enums.Goal;
 import org.example.models.muscles.Muscle;
+import org.example.models.muscles.MuscleGroup;
 import org.example.services.ExerciseService;
 import org.example.services.MuscleGroupService;
 import org.example.services.TrainingElementService;
@@ -49,14 +50,16 @@ public class TrainingController {
             Model model
     ) {
         //Add muscles
+        List<MuscleGroup> muscleGroups = new ArrayList<>();
         List<Muscle> muscles = new ArrayList<>();
         List<Exercise> exercises = new ArrayList<>();
 
         String[] arrOfMuscleGroupId = stringWithMuscleGroupIds.split(",");
 
         for (String muscleGroupId : arrOfMuscleGroupId) {
-            muscles.addAll(muscleGroupService.findById(Long.parseLong(muscleGroupId))
-                    .getMuscleSet());
+            MuscleGroup muscleGroup = muscleGroupService.findById(Long.parseLong(muscleGroupId));
+            muscleGroups.add(muscleGroup);
+            muscles.addAll(muscleGroup.getMuscleSet());
         }
 
         //add exercises
@@ -67,6 +70,7 @@ public class TrainingController {
             exercises.addAll(exerciseService.findAllByPrimaryWorkingMuscle(muscle));
         }
 
+        model.addAttribute("muscleGroups", muscleGroups);
         model.addAttribute("muscles", muscles);
         model.addAttribute("exercises", exercises);
         model.addAttribute("forWhos", ForWho.values());
@@ -77,17 +81,21 @@ public class TrainingController {
 
     @PostMapping()
     public String addTraining(
-            @RequestParam(name = "trainingName", required = false) String trainingName,
-            @RequestParam(name = "forWho", required = false) String forWho,
-            @RequestParam(name = "difficulty", required = false) String difficulty,
-            @RequestParam(name = "goal", required = false) String goal,
-            @RequestParam(name = "exercise", required = false) String exerciseName,
-            @RequestParam(name = "howMuch", required = false) String howMuchToDo,
-            @RequestParam(name = "recommendedTimeToDo", required = false) String recommendedTimeToDo,
-            @RequestParam(name = "trial", required = false) String trailsCount,
-            @RequestParam(name = "rest", required = false) String timeToRest,
-            @RequestParam(name = "someAdvice", required = false) String someAdvice
+            @RequestParam(name = "trainingName") String trainingName,
+            @RequestParam(name = "muscleGroups") String mainGroups,
+            @RequestParam(name = "forWho") String forWho,
+            @RequestParam(name = "difficulty") String difficulty,
+            @RequestParam(name = "goal") String goal,
+            @RequestParam(name = "exercise") String exerciseName,
+            @RequestParam(name = "howMuch") String howMuchToDo,
+            @RequestParam(name = "recommendedTimeToDo") String recommendedTimeToDo,
+            @RequestParam(name = "trial") String trailsCount,
+            @RequestParam(name = "rest") String timeToRest,
+            @RequestParam(name = "someAdvice") String someAdvice
     ) {
+        System.out.println(mainGroups);
+        //TODO to not save trainings with same title
+
         // System.out.println("trainingName " + trainingName);
         // System.out.println("forWho " + forWho);
         // System.out.println("difficulty " + difficulty);
@@ -106,20 +114,27 @@ public class TrainingController {
         final String[] trailsArr = trailsCount.split(",");
         final String[] timeToRestArr = timeToRest.split(",");
 
-        List<TrainingElement> trainingElements=new ArrayList<>();
+        final String maaiinGroupsArr = mainGroups.substring(1, mainGroups.length() - 1);
+        final String[] mainGroupsNamesArr = maaiinGroupsArr.split(",");
+
+        List<TrainingElement> trainingElements = new ArrayList<>();
+        System.out.println(maaiinGroupsArr);
+        for (String s:mainGroupsNamesArr) {
+            System.out.println(s);
+        }
 
         for (int i = 0; i < exercisesNameArr.length; i++) {
-            for (int j = 0; j <Integer.parseInt(trailsArr[i]); j++) {
-                TrainingElement trainingElement=new TrainingElement();//TODO add in service getOrCreate
-                trainingElement.setExercise(exerciseService.findByTitle(exercisesNameArr[i]));
-                trainingElement.setHowMuchToDo(Integer.parseInt(howMuchToDoArr[i]));
-                trainingElement.setRecommendedTimeToDoLessThan(Integer.parseInt(recommendedTimeToDoArr[i]));
-                trainingElement.setTimeToRest(Integer.parseInt(timeToRestArr[i]));
+            for (int j = 0; j < Integer.parseInt(trailsArr[i]); j++) {
+                TrainingElement trainingElement = trainingElementService.getOrMake(
+                        exerciseService.findByTitle(exercisesNameArr[i]),
+                        Integer.parseInt(howMuchToDoArr[i]),
+                        Integer.parseInt(recommendedTimeToDoArr[i]),
+                        Integer.parseInt(timeToRestArr[i])
+                );
 
                 trainingElements.add(trainingElementService.save(trainingElement));
             }
         }
-
 
         Training training = Training.builder()
                 .name(trainingName)
@@ -129,6 +144,13 @@ public class TrainingController {
                 .trainingElements(trainingElements)
                 .advice(someAdvice)
                 .build();
+
+        List<MuscleGroup> muscleGroups = new ArrayList<>();
+        for (int i = 0; i < mainGroupsNamesArr.length; i++) {
+            muscleGroups.add(muscleGroupService.
+                    findByName(mainGroupsNamesArr[i].trim()));
+        }
+        training.setMuscleGroups(muscleGroups);
 
         //TODO to add image
 
