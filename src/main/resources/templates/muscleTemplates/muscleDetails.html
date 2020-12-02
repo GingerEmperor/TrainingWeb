@@ -68,9 +68,12 @@
 
             <form th:method="DELETE" th:action="'/muscles/'+${muscle.getId()}+'/delete'" class="mt-2">
                 <a class="btn btn-outline-secondary" onclick="goBack()">Назад</a>
+                <a class="btn btn-outline-secondary" th:href="'/exercises/byMuscle/'+${muscle.getId()}">Показать все  упражнения с этой мышцей</a>
                 <input type="hidden" th:value="${muscle.getMuscleGroup().getId()}" name="groupId">
 <!--                <button type="submit" class="btn btn-outline-danger float-right" sec:authorize="hasAuthority('ADMIN')">Delete</button>-->
-                <button type="button" class="btn btn btn-outline-danger float-right" data-toggle="modal" th:data-target="'#myModal'+${muscle.getId()}">Delete</button><!-- Modal -->
+                <button type="button" class="btn btn btn-outline-danger float-right" data-toggle="modal" th:data-target="'#myModal'+${muscle.getId()}">
+                    Delete
+                </button><!-- Modal -->
 
                 <div class="modal fade" th:id="'myModal'+${muscle.getId()}" role="dialog">
                     <div class="modal-dialog ">

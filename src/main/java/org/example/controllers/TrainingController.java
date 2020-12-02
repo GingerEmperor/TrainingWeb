@@ -96,17 +96,6 @@ public class TrainingController {
         System.out.println(mainGroups);
         //TODO to not save trainings with same title
 
-        // System.out.println("trainingName " + trainingName);
-        // System.out.println("forWho " + forWho);
-        // System.out.println("difficulty " + difficulty);
-        // System.out.println("goal " + goal);
-        // System.out.println("exercise " + exerciseName);
-        // System.out.println("howMuch " + howMuchToDo);
-        // System.out.println("recommendedTimeToDo " + recommendedTimeToDo);
-        // System.out.println("trial " + trailsCount);
-        // System.out.println("rest " + timeToRest);
-        // System.out.println("someAdvice " + someAdvice);
-        // System.out.println("////////////////////");
 
         final String[] exercisesNameArr = exerciseName.split(",");
         final String[] howMuchToDoArr = howMuchToDo.split(",");
@@ -114,11 +103,11 @@ public class TrainingController {
         final String[] trailsArr = trailsCount.split(",");
         final String[] timeToRestArr = timeToRest.split(",");
 
-        final String maaiinGroupsArr = mainGroups.substring(1, mainGroups.length() - 1);
-        final String[] mainGroupsNamesArr = maaiinGroupsArr.split(",");
+        final String mainGroupsIndexesString = mainGroups.substring(1, mainGroups.length() - 1);
+        final String[] mainGroupsNamesArr = mainGroupsIndexesString.split(",");
 
         List<TrainingElement> trainingElements = new ArrayList<>();
-        System.out.println(maaiinGroupsArr);
+        System.out.println(mainGroupsIndexesString);
         for (String s:mainGroupsNamesArr) {
             System.out.println(s);
         }
