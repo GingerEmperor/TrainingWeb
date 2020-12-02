@@ -22,12 +22,8 @@
                             <p class="card-text" th:text="${user.getUsername()}+'  |  '+${user.getPassword()}+'  |'"/>
 
                             <div th:if="${user.getStatus()!=null}" class="text-white text-center">
-                                <h4 th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" class="bg-success"
+                                <h4 th:style="'background-color:'+${user.getStatus().getColorCode()}"
                                     th:text="'STATUS: '+${user.getStatus().name()} "></h4>
-                                <h4 th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" class="bg-danger"
-                                    th:text="'STATUS: '+${user.getStatus().name()} "></h4>
-<!--                                <h4 th:if="${user.getStatus()==allStatus.get(0).valueOf('DELETED')}" class="bg-warning"-->
-<!--                                    th:text="'STATUS: '+${user.getStatus().name()} "></h4>-->
                             </div>
                             <p class="card-text" th:text="'Name: '+${user.getFirstName()}+'   '+${user.getLastName()}"/>
                             <p class="card-text" th:text="'Email: '+${user.getEmail()}"/>

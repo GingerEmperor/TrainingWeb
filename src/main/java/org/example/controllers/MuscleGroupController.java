@@ -93,9 +93,9 @@ public class MuscleGroupController {
             globalService.checkIfNameIsValid(newName);
             MuscleGroup updatedMuscleGroup;
             if(imageFile!=null && !imageFile.getOriginalFilename().isEmpty()){
-                updatedMuscleGroup =muscleGroupService.updateMuscleGroup(id,newName,imageFile);
+                updatedMuscleGroup =muscleGroupService.updateMuscleGroup(id,newName.trim(),imageFile);
             }else {
-                updatedMuscleGroup=muscleGroupService.updateMuscleGroup(id,newName);
+                updatedMuscleGroup=muscleGroupService.updateMuscleGroup(id,newName.trim());
             }
             muscleGroupService.save(updatedMuscleGroup);
             return "redirect:/muscleGroups";
