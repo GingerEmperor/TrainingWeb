@@ -51,17 +51,17 @@
                         </div>
                         <div>
                             <div>Расчитана на:
-                                <span class="badge badge-info"
+                                <span class="badge text-white" th:style="'background-color:'+${training.getForWho().getColorCode()}"
                                       th:text="${training.getForWho().getWorld()} ">
                                 </span>
                             </div>
                             <div>Цель:
-                                <span class="badge badge-success"
+                                <span class="badge text-white" th:style="'background-color:'+${training.getGoal().getColorCode()}"
                                       th:text="${training.getGoal().getWord()} ">
                                     </span>
                             </div>
                             <div>Сложность:
-                                <span class="badge badge-warning"
+                                <span class="badge text-white" th:style="'background-color:'+${training.getDifficulty().getColorCode()}"
                                       th:text="${training.getDifficulty().getWord()} ">
                                     </span>
                             </div>
@@ -89,10 +89,10 @@
                         <hr/>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group mt-4">
-                                <!--                            TODO-->
                                 <form th:action="'/trainings/'+${training.getId()}">
                                     <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                 </form>
+                                <!--                            TODO-->
                                 <form th:method="DELETE" th:action="'/trainings/'+${training.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                     <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
                                     <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${training.getId()}">Delete</button><!-- Modal -->

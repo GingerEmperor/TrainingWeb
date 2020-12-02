@@ -5,20 +5,23 @@
 <header th:insert="parts/header::header"></header>
 
 <div class="container-lg mt-5 bg-dark text-white rounded">
-        <h2>
-            <p align="center" th:text="${exercise.getTitle()}" class="col"></p>
+    <h2>
+        <p align="center" th:text="${exercise.getTitle()}" class="col"></p>
 
-            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}" class="badge badge-success col"
-                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}" class="badge badge-danger col"
-                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}" class="badge badge-warning col"
-                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}" class="badge badge-info col"
-                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}" class="badge badge-primary col"
-                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-        </h2>
+        <!--            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}" class="badge badge-success col"-->
+        <!--                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+        <!--            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}" class="badge badge-danger col"-->
+        <!--                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+        <!--            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}" class="badge badge-warning col"-->
+        <!--                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+        <!--            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}" class="badge badge-info col"-->
+        <!--                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+        <!--            <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}" class="badge badge-primary col"-->
+        <!--                  th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+
+        <span class="badge col" th:style="'background-color:'+${exercise.getEquipmentNeed().getColorCode()} "
+              th:text="${exercise.getEquipmentNeed().getWord()} "></span>
+    </h2>
     <div class="card">
         <img th:src="${'/img/'+exercise.getImage()}"
              th:alt="${exercise.getTitle()}"
@@ -112,14 +115,15 @@
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        function goBack() {
-            window.history.back();
-        }
+<script>
+    function goBack() {
+        window.history.back();
+    }
 
-    </script>
+</script>
 
-    <footer th:insert="parts/footer::footer"></footer>
+<footer th:insert="parts/footer::footer"></footer>
 </body>
 </html>

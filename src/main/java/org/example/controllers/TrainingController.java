@@ -18,6 +18,7 @@ import org.example.services.TrainingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,7 +97,6 @@ public class TrainingController {
         System.out.println(mainGroups);
         //TODO to not save trainings with same title
 
-
         final String[] exercisesNameArr = exerciseName.split(",");
         final String[] howMuchToDoArr = howMuchToDo.split(",");
         final String[] recommendedTimeToDoArr = recommendedTimeToDo.split(",");
@@ -108,7 +108,7 @@ public class TrainingController {
 
         List<TrainingElement> trainingElements = new ArrayList<>();
         System.out.println(mainGroupsIndexesString);
-        for (String s:mainGroupsNamesArr) {
+        for (String s : mainGroupsNamesArr) {
             System.out.println(s);
         }
 
@@ -146,6 +146,12 @@ public class TrainingController {
         System.out.println(trainingService.save(training));
 
         return "redirect:/trainings";
+    }
+
+    @GetMapping("/{id}")
+    public String showTrainingDetails(@PathVariable Long id, Model model) {
+
+        return "trainingTemplates/trainingDetails";
     }
 
 }

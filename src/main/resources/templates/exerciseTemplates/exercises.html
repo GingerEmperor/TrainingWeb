@@ -38,8 +38,8 @@
         <div th:if="${!sortCriteria_ExerciseMap.get(criteria).isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
 
 
-<!--            <h4 th:if="${!criteria.toString().contains('(')&&!criteria.toString().contains(',')}"-->
-<!--                th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>-->
+            <!--            <h4 th:if="${!criteria.toString().contains('(')&&!criteria.toString().contains(',')}"-->
+            <!--                th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>-->
             <h4 th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
             <div th:each="exercise:${sortCriteria_ExerciseMap.get(criteria)}" class="col-lg-4 col-md-12">
                 <div class="card mb-4 shadow-sm">
@@ -51,23 +51,23 @@
                         <div class="card-body" style="background: #C0C0C0">
                             <div>
                                 <span class="card-text text-dark" th:text="${exercise.getTitle()}"></span>
-                                <!--                                <div class="text-right">-->
-                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}"
-                                      class="badge badge-success" style="float:right"
+                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}"-->
+                                <!--                                      class="badge badge-success" style="float:right"-->
+                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}"-->
+                                <!--                                      class="badge badge-danger" style="float:right"-->
+                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}"-->
+                                <!--                                      class="badge badge-warning" style="float:right"-->
+                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}"-->
+                                <!--                                      class="badge badge-info" style="float:right"-->
+                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}"-->
+                                <!--                                      class="badge badge-primary" style="float:right"-->
+                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
+                                <span class="badge badge-primary" th:style="'background-color:'+${exercise.getEquipmentNeed().getColorCode()}+'; float:right;'"
                                       th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}"
-                                      class="badge badge-danger" style="float:right"
-                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}"
-                                      class="badge badge-warning" style="float:right"
-                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}"
-                                      class="badge badge-info" style="float:right"
-                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}"
-                                      class="badge badge-primary" style="float:right"
-                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>
-                                <!--                                </div>-->
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group mt-4">
@@ -111,12 +111,12 @@
     <div th:if="${sortCriteria_ExerciseMap.keySet().size()==1}">
         <div th:each="criteria :${sortCriteria_ExerciseMap.keySet()}">
             <div th:if="${sortCriteria_ExerciseMap.get(criteria).isEmpty()}">
-<!--&lt;!&ndash;                <div th:if="${criteria.toString().contains('(')&&criteria.toString().contains(',')}">&ndash;&gt;-->
-<!--                    <h1 th:text="${criteria.toString().substring(0,criteria.toString().indexOf('('))}"></h1>-->
-<!--&lt;!&ndash;                </div>&ndash;&gt;-->
-<!--                <div th:unless="${criteria.toString().contains('(')&&criteria.toString().contains(',')}">-->
-                    <h1 th:text="${criteria.toString()}"></h1>
-<!--                </div>-->
+                <!--&lt;!&ndash;                <div th:if="${criteria.toString().contains('(')&&criteria.toString().contains(',')}">&ndash;&gt;-->
+                <!--                    <h1 th:text="${criteria.toString().substring(0,criteria.toString().indexOf('('))}"></h1>-->
+                <!--&lt;!&ndash;                </div>&ndash;&gt;-->
+                <!--                <div th:unless="${criteria.toString().contains('(')&&criteria.toString().contains(',')}">-->
+                <h1 th:text="${criteria.toString()}"></h1>
+                <!--                </div>-->
                 <div class="alert alert-warning" role="alert">
                     Упражнений нет
                 </div>
