@@ -3,7 +3,7 @@
 <head th:insert="common/commonHead::commonHead"></head>
 <body>
 <header th:insert="parts/header::header"></header>
-<p>Trainings</p>
+<p>Training Add</p>
 
 
 <h1>This is training page</h1>
@@ -14,8 +14,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">Тренировка для </span>
             </div>
-            <span class="input-group-prepend" th:each="muscleGroup:${muscleGroups}" th:text="${muscleGroup.getName()}" readonly></span>
-            <input type="text" name="muscleGroups" th:value="${muscleGroups}"  class="form-control" aria-describedby="basic-addon3" >
+            <input type="text" name="muscleGroups" th:value="${muscleGroups}"  class="form-control" aria-describedby="basic-addon3" readonly >
         </div>
         <div class="input-group mb-3 col-12">
             <div class="input-group-prepend">
@@ -30,7 +29,7 @@
             </div>
             <select class="form-control" name="forWho" required>
                 <option selected disabled>Выберите на кого расчитана тренировка</option>
-                <option th:each="forWho:${forWhos}" th:value="${forWho}" th:text="${forWho.getWorld()}"></option>
+                <option th:each="forWho:${forWhos}" th:value="${forWho}" th:text="${forWho.getWord()}"></option>
             </select>
 
             <div class="input-group-prepend ml-4">

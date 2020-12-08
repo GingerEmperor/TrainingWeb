@@ -39,7 +39,7 @@ public class MuscleGroupService {
         } catch (NotFoundException e) {
             return true;
         }
-        throw new AlreadyExistsException("Такое упражнение уже существует");
+        throw new AlreadyExistsException("Такое группа мышц уже существует");
     }
 
     private MuscleGroup createNewMuscleGroup(String name) {
