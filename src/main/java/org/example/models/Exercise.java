@@ -37,6 +37,10 @@ public class Exercise implements Comparable<Exercise> {
 
     private String image;
 
+    private String imageStart;
+
+    private String imageFinish;
+
     private Equipment equipmentNeed;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "exercise")

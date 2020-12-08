@@ -2,6 +2,8 @@ package org.example.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.example.models.Exercise;
 import org.example.models.Training;
@@ -150,7 +152,13 @@ public class TrainingController {
 
     @GetMapping("/{id}")
     public String showTrainingDetails(@PathVariable Long id, Model model) {
+        Training training = trainingService.findById(id);
+        model.addAttribute("training", training);
 
+        List<TrainingElement> trainingElements=training.getTrainingElements();
+        final Set<Exercise> exerciseSet = trainingElements.stream().map(TrainingElement::getExercise).collect(Collectors.toSet());
+
+        model.addAttribute("exerciseSet",exerciseSet);
         return "trainingTemplates/trainingDetails";
     }
 

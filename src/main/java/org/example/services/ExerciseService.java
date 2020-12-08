@@ -8,7 +8,6 @@ import java.util.Set;
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.exeptions.NotFoundException;
-import org.example.exeptions.SearchFailException;
 import org.example.models.Exercise;
 import org.example.models.ExerciseInfo;
 import org.example.models.enums.Equipment;
@@ -32,12 +31,10 @@ public class ExerciseService {
     @Value("${upload.exercisePath}")
     private String uploadPath;
 
-
     public Exercise findByTitle(final String exerciseTitle) {
         return exerciseRepository.findByTitle(exerciseTitle)
                 .orElseThrow(() -> new NotFoundException("Такое упраднения нет в БД"));
     }
-
 
     public boolean checkIfExistsExerciseByTitle(String title) {
         try {
@@ -55,6 +52,29 @@ public class ExerciseService {
     public Exercise findById(Long id) {
         return exerciseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Такого упражнения не существует"));
+    }
+
+    private Exercise createNewExercise(
+            String title,
+            Set<Muscle> primaryMuscles,
+            Set<Muscle> secondaryMuscles,
+            String exerciseInfo,
+            String howToDo,
+            String videoLink,
+            Equipment equipment,
+            String imageStart,
+            String imageFinish,
+            String image
+            ) {
+
+        Exercise exercise = createNewExercise(
+                title, primaryMuscles, secondaryMuscles,
+                exerciseInfo, howToDo, videoLink, equipment
+        );
+        exercise.setImage(image);
+        exercise.setImageStart(imageStart);
+        exercise.setImageFinish(imageFinish);
+        return exercise;
     }
 
     private Exercise createNewExercise(
@@ -108,16 +128,34 @@ public class ExerciseService {
             String howToDo,
             String videoLink,
             Equipment equipment,
-            MultipartFile imgFile
+            MultipartFile imgFile,
+            MultipartFile imgFile1,
+            MultipartFile imgFile2
     ) {
         Exercise newExerciseToAdd;
         checkIfExistsExerciseByTitle(exerciseTitle);
         try {
-            newExerciseToAdd = createNewExercise(
-                    exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
-                    exerciseInfo, howToDo, videoLink, equipment,
-                    globalService.saveImgToPathWithPrefixName(imgFile, uploadPath, exerciseTitle));
+            try {
+                newExerciseToAdd = createNewExercise(
+                        exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
+                        exerciseInfo, howToDo, videoLink, equipment,
+                        globalService.saveImgToPathWithPrefixName(imgFile1, uploadPath, exerciseTitle + "_start"),
+                        globalService.saveImgToPathWithPrefixName(imgFile2, uploadPath, exerciseTitle + "_finish"),
+                        globalService.saveImgToPathWithPrefixName(imgFile, uploadPath, exerciseTitle)
+                        );
+            }catch (FileCanNotSaveException | IOException f){
+                System.out.println("Cant add image but ok");
+                f.printStackTrace();
+                System.out.println("Cant add image but ok");
+                newExerciseToAdd = createNewExercise(
+                        exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
+                        exerciseInfo, howToDo, videoLink, equipment,
+                        globalService.saveImgToPathWithPrefixName(imgFile, uploadPath, exerciseTitle));
+            }
         } catch (FileCanNotSaveException | IOException f) {
+            System.out.println("Cant add image but ok");
+            f.printStackTrace();
+            System.out.println("Cant add image but ok");
             newExerciseToAdd = createNewExercise(exerciseTitle, primaryMuscleSet, secondaryMuscleSet,
                     exerciseInfo, howToDo, videoLink, equipment);
         }
@@ -155,7 +193,11 @@ public class ExerciseService {
         exerciseToDelete.getPrimaryWorkingMuscles().clear();
         exerciseToDelete.getSecondWorkingMuscles().clear();
         File imgFile = new File((uploadPath + "/" + exerciseToDelete.getImage()));
+        File imgStartFile = new File((uploadPath + "/" + exerciseToDelete.getImageStart()));
+        File imgFinishFile = new File((uploadPath + "/" + exerciseToDelete.getImageFinish()));
         imgFile.delete();
+        imgStartFile.delete();
+        imgFinishFile.delete();
         exerciseRepository.delete(exerciseToDelete);
     }
 
@@ -207,18 +249,24 @@ public class ExerciseService {
             final MultipartFile previewImg) {
         Exercise exerciseToUpdate = findById(exerciseToUpdateId);
         Exercise updatedExercise = exerciseToUpdate;
+        File oldImageToDelete=new File((uploadPath + "/" + exerciseToUpdate.getImage()));
+        oldImageToDelete.delete();
         try {
             updatedExercise = updateExercise(exerciseToUpdate, exerciseTitle,
                     primaryMuscleSet, secondaryMuscleSet, exerciseInfo,
                     howToDo, videoLink, equipment,
                     globalService.saveImgToPathWithPrefixName(previewImg, uploadPath, exerciseTitle));
+
+
         } catch (Exception e) {
+            System.out.println("Cant update image");
             updatedExercise = updateExercise(exerciseToUpdate, exerciseTitle,
                     primaryMuscleSet, secondaryMuscleSet, exerciseInfo,
                     howToDo, videoLink, equipment);
         }
-
         save(updatedExercise);
+
+
         return updatedExercise;
     }
 }

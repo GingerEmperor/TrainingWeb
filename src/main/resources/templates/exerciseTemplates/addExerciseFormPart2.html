@@ -12,7 +12,7 @@
     <form method="post" action="/exercises/add" enctype="multipart/form-data">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
-<!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
+        <!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
@@ -31,7 +31,7 @@
                             th:value="${muscle.getId()}"
                             th:text="${muscle.getName()}"
                             th:disabled="${muscle.getName().contains('---')?'true':'false'}"
-                             >
+                    >
 
                         <!--                        th:text="${muscle.getName()!='-&#45;&#45;'} ? ${muscle.getName()} :'&#45;&#45;&#45;&#45;'" >-->
                     </option>
@@ -72,7 +72,14 @@
             <label for="previewImg" class="input-group-text mb-1">Browse exercise preview image
                 <input type="file" name="previewImg" class="input-group-text ml-2 mr-2" id="previewImg">
             </label>
-
+            <div>
+                <label for="img1" class="input-group-text mb-1 col">Browse exercise start image
+                    <input type="file" name="img1" class="input-group-text ml-2 mr-2" id="img1">
+                </label>
+                <label for="img2" class="input-group-text mb-1 col">Browse exercise finish image
+                    <input type="file" name="img2" class="input-group-text ml-2 mr-2" id="img2">
+                </label>
+            </div>
             <input type="hidden" name="equipment" class="input-group-text ml-2 mr-2" id="equipment" th:value="${equip}">
 
             <a href="/exercises/add" class="btn btn-success mb-2 mt-2"><- Previous</a>

@@ -7,14 +7,16 @@
 <div class="container-lg mt-5 bg-dark text-white rounded">
     <h2 align="center" th:text="${muscle.getName()}"></h2>
     <div class="card">
-        <img th:src="${'/img/'+muscle.getImage()}"
-             th:alt="${muscle.getName()}"
-             class="text-center" style="background: #55595c" height="600">
+        <div class="container text-center" style="background: #55595c">
+            <img th:src="${'/img/'+muscle.getImage()}"
+                 th:alt="${muscle.getName()}+'(NO IMAGE)'"
+                 class="col mx-auto d-block">
+        </div>
         <div class="card-body" style="background: #C0C0C0">
             <form th:action="'/muscles/'+${muscle.getId()}" th:method="PATCH" enctype="multipart/form-data">
 
                 <div class="input-group">
-                    <div class="input-group-prepend" >
+                    <div class="input-group-prepend">
                         <span class="input-group-text bg-secondary text-white">TITLE</span>
                     </div>
                     <input type="text" name="newName" id="newName" class="form-control text-center" th:value="${muscle.getName()}" readonly>
@@ -24,13 +26,13 @@
                     <button type="submit" id="updateNameButton" sec:authorize="hasAuthority('ADMIN')" class="input-group-text" hidden>✓</button>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-prepend" >
+                    <div class="input-group-prepend">
                         <span class="input-group-text bg-secondary text-white">INFO</span>
                     </div>
                     <textarea class="form-control" id="muscleInfo" name="newInfo" aria-label="With textarea" th:text="${muscle.getInfo()}" rows="10" readonly></textarea>
                 </div>
                 <div class="input-group" th:if="${muscle.getFunctions()!=null}">
-                    <div class="input-group-prepend" >
+                    <div class="input-group-prepend">
                         <span class="input-group-text bg-secondary text-white">Функции</span>
                     </div>
                     <textarea class="form-control" id="muscleFunctions" name="newFunctions" aria-label="With textarea" th:text="${muscle.getFunctions()}" readonly></textarea>
@@ -38,7 +40,7 @@
                 <!--                ///-->
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
-                        <span class="input-group-text bg-secondary text-white" >Принадлежит группе</span>
+                        <span class="input-group-text bg-secondary text-white">Принадлежит группе</span>
                     </div>
                     <a th:href="'/muscleGroups/'+${muscle.getMuscleGroup().getId()}"><span class="input-group-text" style="color: darkblue" th:text="${muscle.getMuscleGroup().getName()}"/></a>
                 </div>
@@ -68,9 +70,9 @@
 
             <form th:method="DELETE" th:action="'/muscles/'+${muscle.getId()}+'/delete'" class="mt-2">
                 <a class="btn btn-outline-secondary" onclick="goBack()">Назад</a>
-                <a class="btn btn-outline-secondary" th:href="'/exercises/byMuscle/'+${muscle.getId()}">Показать все  упражнения с этой мышцей</a>
+                <a class="btn btn-outline-secondary" th:href="'/exercises/byMuscle/'+${muscle.getId()}">Показать все упражнения с этой мышцей</a>
                 <input type="hidden" th:value="${muscle.getMuscleGroup().getId()}" name="groupId">
-<!--                <button type="submit" class="btn btn-outline-danger float-right" sec:authorize="hasAuthority('ADMIN')">Delete</button>-->
+                <!--                <button type="submit" class="btn btn-outline-danger float-right" sec:authorize="hasAuthority('ADMIN')">Delete</button>-->
                 <button type="button" class="btn btn btn-outline-danger float-right" data-toggle="modal" th:data-target="'#myModal'+${muscle.getId()}">
                     Delete
                 </button><!-- Modal -->
@@ -81,7 +83,7 @@
                         <!-- Modal content-->
                         <div class="modal-content bg-dark" style="border-style: solid ">
                             <div class="modal-header">
-                                <h4 class="modal-title text-center text-white " >Delete confirm</h4>
+                                <h4 class="modal-title text-center text-white ">Delete confirm</h4>
                                 <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
@@ -89,7 +91,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-danger" >Delete</button>
+                                <button type="submit" class="btn btn-outline-danger">Delete</button>
                             </div>
                         </div>
 
@@ -111,7 +113,7 @@
         document.getElementById("muscleInfo").readOnly = false;
         document.getElementById("imageFile").hidden = false;
         document.getElementById("updateNameButton").hidden = false;
-        document.getElementById("muscleFunctions").readOnly=false;
+        document.getElementById("muscleFunctions").readOnly = false;
     }
 
     function goBack() {

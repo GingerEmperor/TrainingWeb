@@ -1,6 +1,5 @@
 package org.example.models.enums;
 
-import lombok.Data;
 import lombok.Getter;
 
 @Getter
@@ -11,11 +10,11 @@ public enum ForWho {
     PROFESSIONAL("Професионал","#c95f6c");
     // MONSTER("Монстр");
 
-    String world;
+    String word;
     String colorCode;
 
     ForWho(final String word,final String colorCode) {
-        this.world = word;
+        this.word = word;
         this.colorCode=colorCode;
     }
 }

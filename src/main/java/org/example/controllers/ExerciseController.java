@@ -260,7 +260,9 @@ public class ExerciseController {
             @RequestParam(name = "someInfo") String exerciseInfo,
             @RequestParam(name = "howToDo") String howToDo,
             @RequestParam(name = "videoLink") String videoLink,
-            @RequestParam(name = "previewImg") MultipartFile previewImg
+            @RequestParam(name = "previewImg") MultipartFile previewImg,
+            @RequestParam(name = "img1") MultipartFile startImg,
+            @RequestParam(name = "img2") MultipartFile finishImg
     ) {
         // Equipment equipment=Equipment.;
         Set<Muscle> primaryMuscleSet = new HashSet<>();
@@ -281,7 +283,7 @@ public class ExerciseController {
         try {
             globalService.checkIfNameIsValid(exerciseTitle);
             exerciseService.createNewExercise(exerciseTitle, primaryMuscleSet,
-                    secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg);
+                    secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg, startImg, finishImg);
             return "redirect:/exercises";
         } catch (Exception e) {
             e.printStackTrace();

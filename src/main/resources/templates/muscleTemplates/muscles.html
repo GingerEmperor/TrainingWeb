@@ -3,57 +3,58 @@
 <head th:insert="common/commonHead::commonHead"></head>
 
 <body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <header th:insert="parts/header::header"></header>
-    <p>Muscles</p>
-    <a href="/muscles/csv">MusclesCSV</a>
+<p>Muscles</p>
+<a href="/muscles/csv">MusclesCSV</a>
 
-    <!--//-->
-    <p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
-    <div class="container-lg" >
-        <div th:each="muscleGroup:${muscleGroupMusclesMap.keySet()}" th:if="${!muscleGroup.getMuscleSet().isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
-            <h4 th:text="${muscleGroup.getName()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
-            <div th:each="el:${muscleGroupMusclesMap.get(muscleGroup)}" class="col-lg-4 col-md-12">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card">
-                        <img th:src="${'/img/'+el.getImage()}" class="card-img-top"
-                             th:alt="${el.getName()}"
-                             align="center" style="background: #55595c" height="225">
-                        <div class="card-body" style="background: #C0C0C0">
-                            <p class="card-text text-dark" th:text="${el.getName()}"></p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
+<!--//-->
+<p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
+<div class="container-lg">
+    <div th:each="muscleGroup:${muscleGroupMusclesMap.keySet()}" th:if="${!muscleGroup.getMuscleSet().isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
+        <h4 th:text="${muscleGroup.getName()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
+        <div th:each="el:${muscleGroupMusclesMap.get(muscleGroup)}" class="col-lg-4 col-md-12">
+            <div class="card mb-4 shadow-sm">
+                <div class="card">
+                    <img th:src="${'/img/'+el.getImage()}" class="card-img-top"
+                         th:alt="${el.getName()}"
+                         align="center" style="background: #55595c" height="225">
+                    <div class="card-body" style="background: #C0C0C0">
+                        <p class="card-text text-dark" th:text="${el.getName()}"></p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
 
-                                    <form th:action="'/muscles/'+${el.getId()}">
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                                    </form>
-                                    <form th:method="DELETE" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                                        <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
-<!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
+                                <form th:action="'/muscles/'+${el.getId()}">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                </form>
+                                <form th:method="DELETE" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                    <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
+                                    <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
 
-                                        <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
-                                            <div class="modal-dialog ">
+                                    <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
+                                        <div class="modal-dialog ">
 
-                                                <!-- Modal content-->
-                                                <div class="modal-content bg-dark" style="border-style: solid ">
-                                                    <div class="modal-header">
-                                                        <h4 class="modal-title text-center text-white " >Delete confirm</h4>
-                                                        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p class="text-white" th:text="'Are you sure you want to delete <<'+${el.getName()}+'>> ?'">Are you sure you want to delete</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-outline-danger" >Delete</button>
-                                                    </div>
+                                            <!-- Modal content-->
+                                            <div class="modal-content bg-dark" style="border-style: solid ">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center text-white ">Delete confirm</h4>
+                                                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                                                 </div>
-
+                                                <div class="modal-body">
+                                                    <p class="text-white" th:text="'Are you sure you want to delete <<'+${el.getName()}+'>> ?'">Are you sure you want to delete</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                    </form>
-                                </div>
+                                        </div>
+                                    </div>
+
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -61,12 +62,17 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
-         sec:authorize="hasAuthority('ADMIN')">
-        <h5>Добавить мышцу</h5>
-        <form th:method="POST" action="/muscles/add" enctype="multipart/form-data">
-            <div >
+<div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
+     sec:authorize="hasAuthority('ADMIN')">
+    <!--        <h5>Добавить мышцу</h5>-->
+    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <h5 class="text-white"> Добавить мышцу</h5>
+    </button>
+<!--    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">-->
+        <form class="collapse" id="collapseOne" th:method="POST" action="/muscles/add" enctype="multipart/form-data">
+            <div>
 
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
@@ -106,7 +112,8 @@
             </div>
 
         </form>
-    </div>
+<!--    </div>-->
+</div>
 
 <footer th:insert="parts/footer::footer"></footer>
 </body>
