@@ -37,7 +37,10 @@ public class Training {
     private List<TrainingElement> trainingElements;
 
     @ManyToMany
-    private List<MuscleGroup> muscleGroups;
+    private List<MuscleGroup> primaryMuscleGroups;
+
+    @ManyToMany
+    private List<MuscleGroup> secondaryMuscleGroups;
 
     @Lob
     private String advice;

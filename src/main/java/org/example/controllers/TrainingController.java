@@ -1,6 +1,9 @@
 package org.example.controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,6 +44,15 @@ public class TrainingController {
     private final TrainingElementService trainingElementService;
 
     @GetMapping()
+    public String showAllByAlphabeticalOrder(Model model) {
+        List<Training> trainings = trainingService.findAll();
+        Collections.sort(trainings,(t1, t2) -> t1.getName().toLowerCase().compareTo(t2.getName().toLowerCase()));
+        model.addAttribute("allTrainings", trainings);
+        model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        return "trainingTemplates/trainings";
+    }
+
+    @GetMapping("/all")
     public String showAll(Model model) {
         model.addAttribute("allTrainings", trainingService.findAll());
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
@@ -49,19 +61,28 @@ public class TrainingController {
 
     @GetMapping("/add")
     public String addTrainingPage(
-            @RequestParam(name = "muscleGroups") String stringWithMuscleGroupIds,
+            @RequestParam(name = "primaryMuscleGroup") String stringWithPrimaryMuscleGroupIds,
+            @RequestParam(name = "secondaryMuscleGroup") String stringWithSecondaryMuscleGroupIds,
             Model model
     ) {
         //Add muscles
-        List<MuscleGroup> muscleGroups = new ArrayList<>();
+        List<MuscleGroup> primaryMuscleGroup = new ArrayList<>();
+        List<MuscleGroup> secondaryMuscleGroup = new ArrayList<>();
         List<Muscle> muscles = new ArrayList<>();
         List<Exercise> exercises = new ArrayList<>();
 
-        String[] arrOfMuscleGroupId = stringWithMuscleGroupIds.split(",");
+        String[] arrOfPrimaryMuscleGroupId = stringWithPrimaryMuscleGroupIds.split(",");
+        String[] arrOfSecondaryMuscleGroupId = stringWithSecondaryMuscleGroupIds.split(",");
 
-        for (String muscleGroupId : arrOfMuscleGroupId) {
+        for (String muscleGroupId : arrOfPrimaryMuscleGroupId) {
             MuscleGroup muscleGroup = muscleGroupService.findById(Long.parseLong(muscleGroupId));
-            muscleGroups.add(muscleGroup);
+            primaryMuscleGroup.add(muscleGroup);
+            muscles.addAll(muscleGroup.getMuscleSet());
+        }
+
+        for (String muscleGroupId : arrOfSecondaryMuscleGroupId) {
+            MuscleGroup muscleGroup = muscleGroupService.findById(Long.parseLong(muscleGroupId));
+            secondaryMuscleGroup.add(muscleGroup);
             muscles.addAll(muscleGroup.getMuscleSet());
         }
 
@@ -73,7 +94,8 @@ public class TrainingController {
             exercises.addAll(exerciseService.findAllByPrimaryWorkingMuscle(muscle));
         }
 
-        model.addAttribute("muscleGroups", muscleGroups);
+        model.addAttribute("primaryMuscleGroup", primaryMuscleGroup);
+        model.addAttribute("secondaryMuscleGroup", secondaryMuscleGroup);
         model.addAttribute("muscles", muscles);
         model.addAttribute("exercises", exercises);
         model.addAttribute("forWhos", ForWho.values());
@@ -85,7 +107,8 @@ public class TrainingController {
     @PostMapping()
     public String addTraining(
             @RequestParam(name = "trainingName") String trainingName,
-            @RequestParam(name = "muscleGroups") String mainGroups,
+            @RequestParam(name = "primaryMuscleGroup") String mainMuscleGroups,
+            @RequestParam(name = "secondaryMuscleGroup",required = false) String secondaryMuscleGroups,
             @RequestParam(name = "forWho") String forWho,
             @RequestParam(name = "difficulty") String difficulty,
             @RequestParam(name = "goal") String goal,
@@ -96,8 +119,10 @@ public class TrainingController {
             @RequestParam(name = "rest") String timeToRest,
             @RequestParam(name = "someAdvice") String someAdvice
     ) {
-        System.out.println(mainGroups);
+        System.out.println(mainMuscleGroups);
         //TODO to not save trainings with same title
+
+        trainingService.checkIfExistsTrainingByName(trainingName);
 
         final String[] exercisesNameArr = exerciseName.split(",");
         final String[] howMuchToDoArr = howMuchToDo.split(",");
@@ -105,8 +130,11 @@ public class TrainingController {
         final String[] trailsArr = trailsCount.split(",");
         final String[] timeToRestArr = timeToRest.split(",");
 
-        final String mainGroupsIndexesString = mainGroups.substring(1, mainGroups.length() - 1);
+        final String mainGroupsIndexesString = mainMuscleGroups.substring(1, mainMuscleGroups.length() - 1);
         final String[] mainGroupsNamesArr = mainGroupsIndexesString.split(",");
+
+        final String secondaryGroupsIndexesString = secondaryMuscleGroups.substring(1, secondaryMuscleGroups.length() - 1);
+        final String[] secondaryGroupsNamesArr = secondaryGroupsIndexesString.split(",");
 
         List<TrainingElement> trainingElements = new ArrayList<>();
         System.out.println(mainGroupsIndexesString);
@@ -136,12 +164,19 @@ public class TrainingController {
                 .advice(someAdvice)
                 .build();
 
-        List<MuscleGroup> muscleGroups = new ArrayList<>();
+        List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
         for (int i = 0; i < mainGroupsNamesArr.length; i++) {
-            muscleGroups.add(muscleGroupService.
+            primaryMuscleGroups.add(muscleGroupService.
                     findByName(mainGroupsNamesArr[i].trim()));
         }
-        training.setMuscleGroups(muscleGroups);
+
+        List<MuscleGroup> secondaryMuscleGroupsList = new ArrayList<>();
+        for (int i = 0; i < secondaryGroupsNamesArr.length; i++) {
+            secondaryMuscleGroupsList.add(muscleGroupService.
+                    findByName(secondaryGroupsNamesArr[i].trim()));
+        }
+        training.setPrimaryMuscleGroups(primaryMuscleGroups);
+        training.setSecondaryMuscleGroups(secondaryMuscleGroupsList);
 
         //TODO to add image
 
@@ -156,7 +191,9 @@ public class TrainingController {
         model.addAttribute("training", training);
 
         List<TrainingElement> trainingElements=training.getTrainingElements();
-        final Set<Exercise> exerciseSet = trainingElements.stream().map(TrainingElement::getExercise).collect(Collectors.toSet());
+        final Set<Exercise> exerciseSet = new LinkedHashSet<>();
+        trainingElements.forEach(trainingElement -> exerciseSet.add(trainingElement.getExercise()));
+                // trainingElements.stream().map(TrainingElement::getExercise).collect(Collectors.toSet());
 
         model.addAttribute("exerciseSet",exerciseSet);
         return "trainingTemplates/trainingDetails";
