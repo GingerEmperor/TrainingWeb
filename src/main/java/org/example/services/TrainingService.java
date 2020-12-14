@@ -2,8 +2,10 @@ package org.example.services;
 
 import java.util.List;
 
+import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.NotFoundException;
 import org.example.models.Training;
+import org.example.models.muscles.Muscle;
 import org.example.repository.TrainingRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,20 @@ public class TrainingService {
 
     public Training save(Training training){
         return trainingRepository.save(training);
+    }
+
+
+    public Training findByName(String name) {
+        return trainingRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundException("Такой тренировки нет в базе двнных"));
+    }
+
+    public boolean checkIfExistsTrainingByName(String name) {
+        try {
+            findByName(name);
+        } catch (NotFoundException e) {
+            return true;
+        }
+        throw new AlreadyExistsException("Такая тренировка уже существует");
     }
 }

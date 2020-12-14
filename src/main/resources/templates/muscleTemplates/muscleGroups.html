@@ -39,7 +39,7 @@
                          align="center" style="background: #55595c" height="225">
                     <div class="card-body" style="background: #C0C0C0">
                         <div class="row mb-2 ">
-                            <form class="col"  th:action="'/muscleGroups/'+${el.getId()}" th:method="PATCH" enctype="multipart/form-data">
+                            <form class="col" th:action="'/muscleGroups/'+${el.getId()}" th:method="PATCH" enctype="multipart/form-data">
 
 
                                 <div class="input-group" th:id="'imageFile_'+${el.getId()}" hidden>
@@ -53,12 +53,13 @@
                                     </div>
                                 </div>
 
-<!--                                <input type="file" class="input-group-text" th:id="'imageFile_'+${el.getId()}" name="imageFile" text="change image" hidden>-->
+                                <!--                                <input type="file" class="input-group-text" th:id="'imageFile_'+${el.getId()}" name="imageFile" text="change image" hidden>-->
                                 <div class="input-group">
 
                                     <input type="text" th:id="'changeName_'+${el.getId()}" name="newName" class="form-control" th:value="${el.getName()}" readonly>
                                     <button type="button" th:onclick="'changeReadOnly(\'' +${el.getId()} +'\');'" th:id="'editButton_'+${el.getId()}" sec:authorize="hasAuthority('ADMIN')"
-                                            class="input-group-text">✎</button>
+                                            class="input-group-text">✎
+                                    </button>
                                     <button type="submit" th:id="'updateNameButton_'+${el.getId()}" sec:authorize="hasAuthority('ADMIN')" class="input-group-text" hidden>✓</button>
                                 </div>
                             </form>
@@ -73,11 +74,11 @@
                             <!--                                //TODO add endpoint "'/exercises/muscleGroup/'+${el.getId()}"-->
                             <form th:action="'/exercises/byMuscleGroups/'+${el.getId()}" method="get">
                                 <button class="btn btn-sm btn-outline-secondary">Show exercises
-<!--                                    <span class="badge badge-pill badge-secondary" th:text="${el.getMuscleSet().size()}"></span>&lt;!&ndash;//TODO change to exercises size&ndash;&gt;-->
+                                    <!--                                    <span class="badge badge-pill badge-secondary" th:text="${el.getMuscleSet().size()}"></span>&lt;!&ndash;//TODO change to exercises size&ndash;&gt;-->
                                 </button>
                             </form>
                             <form th:method="DELETE" th:action="'/muscleGroups/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-<!--                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>-->
+                                <!--                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>-->
                                 <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
 
                                 <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
@@ -86,7 +87,7 @@
                                         <!-- Modal content-->
                                         <div class="modal-content bg-dark" style="border-style: solid ">
                                             <div class="modal-header">
-                                                <h4 class="modal-title text-center text-white " >Delete confirm</h4>
+                                                <h4 class="modal-title text-center text-white ">Delete confirm</h4>
                                                 <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                                             </div>
                                             <div class="modal-body">
@@ -94,7 +95,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-outline-danger" >Delete</button>
+                                                <button type="submit" class="btn btn-outline-danger">Delete</button>
                                             </div>
                                         </div>
 
@@ -115,8 +116,11 @@
 
 <!--//add muscle group-->
 <div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white" sec:authorize="hasAuthority('ADMIN')">
-    <h5>Добавить группу мышц</h5>
-    <form method="post" action="/muscleGroups/add" enctype="multipart/form-data">
+    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <h5 class="text-white">Добавить группу мышц</h5>
+    </button>
+
+    <form class="collapse" id="collapseOne" method="post" action="/muscleGroups/add" enctype="multipart/form-data">
 
         <div style="display:inline-block">
             <div class="input-group mb-2">
@@ -145,10 +149,10 @@
         document.getElementById("editButton_".concat(id)).hidden = true;
         document.getElementById("changeName_".concat(id)).readOnly = false;
         document.getElementById("updateNameButton_".concat(id)).hidden = false;
-        document.getElementById("imageFile_".concat(id)).hidden=false;
+        document.getElementById("imageFile_".concat(id)).hidden = false;
     }
 
-    function ifConfirmTr(){
+    function ifConfirmTr() {
 
     }
 </script>
