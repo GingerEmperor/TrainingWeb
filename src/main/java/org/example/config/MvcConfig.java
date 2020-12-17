@@ -18,6 +18,9 @@ public class MvcConfig implements WebMvcConfigurer {
     @Value("${upload.exercisePath}")
     private String uploadExercisePath;
 
+    @Value("${upload.trainingPath}")
+    private String uploadTrainingPath;
+
     public void addViewControllers(ViewControllerRegistry registry) {
         //        registry.addViewController("/home").setViewName("home");
         ////        registry.addViewController("/").setViewName("home");
@@ -30,6 +33,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/img/**")
                 .addResourceLocations("file://" + uploadMuscleGroupPath + "/")
                 .addResourceLocations("file://" + uploadMusclePath + "/")
-                .addResourceLocations("file://" +uploadExercisePath+"/");
+                .addResourceLocations("file://" +uploadExercisePath+"/")
+                .addResourceLocations("file://" +uploadTrainingPath+"/");
     }
 }

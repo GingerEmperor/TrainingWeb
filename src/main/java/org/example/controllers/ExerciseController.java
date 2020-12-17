@@ -283,7 +283,8 @@ public class ExerciseController {
         try {
             globalService.checkIfNameIsValid(exerciseTitle);
             exerciseService.createNewExercise(exerciseTitle, primaryMuscleSet,
-                    secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg, startImg, finishImg);
+                    secondaryMuscleSet, exerciseInfo, howToDo, videoLink,
+                    equipment, previewImg, startImg, finishImg);
             return "redirect:/exercises";
         } catch (Exception e) {
             e.printStackTrace();
@@ -394,7 +395,6 @@ public class ExerciseController {
     @DeleteMapping("/{id}/delete")
     public String deleteMuscleById(@PathVariable long id) {
         try {
-            System.out.println("DELETE WORK");
             exerciseService.deleteExerciseById(id);
             return "redirect:/exercises";
         } catch (Exception e) {

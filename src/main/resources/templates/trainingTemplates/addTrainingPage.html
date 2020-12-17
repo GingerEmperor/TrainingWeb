@@ -9,13 +9,13 @@
 <h1>This is training page</h1>
 
 <div class="container rounded text-white bg-dark">
-    <form action="/trainings" method="post">
+    <form action="/trainings" method="post" enctype="multipart/form-data">
         <div class="input-group mb-3 col-12">
             <div class="input-group-prepend">
                 <span class="input-group-text">Тренировка для </span>
             </div>
-            <input type="text" name="primaryMuscleGroup" th:value="${primaryMuscleGroup}"  class="form-control" aria-describedby="basic-addon3" readonly >
-            <input type="text" name="secondaryMuscleGroup" th:value="${secondaryMuscleGroup}"  class="form-control" aria-describedby="basic-addon3" readonly >
+            <input type="text" name="primaryMuscleGroup" th:value="${primaryMuscleGroup}" class="form-control" aria-describedby="basic-addon3" readonly>
+            <input type="text" name="secondaryMuscleGroup" th:value="${secondaryMuscleGroup}" class="form-control" aria-describedby="basic-addon3" readonly>
         </div>
         <div class="input-group mb-3 col-12">
             <div class="input-group-prepend">
@@ -110,6 +110,11 @@
                     <textarea type="text" id="someAdvice" name="someAdvice" class="form-control"
                               aria-describedby="basic-addon3" placeholder="..."></textarea>
                 </div>
+            </div>
+            <div>
+                <label for="trainingImage" class="input-group-text mb-1">Browse training preview image
+                    <input type="file" name="trainingImage" class="input-group-text ml-2 mr-2" id="trainingImage">
+                </label>
             </div>
         </div>
         <div class="text-center col">
