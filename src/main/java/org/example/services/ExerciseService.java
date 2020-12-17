@@ -141,7 +141,7 @@ public class ExerciseService {
                         exerciseInfo, howToDo, videoLink, equipment,
                         globalService.saveImgToPathWithPrefixName(imgFile1, uploadPath, exerciseTitle + "_start"),
                         globalService.saveImgToPathWithPrefixName(imgFile2, uploadPath, exerciseTitle + "_finish"),
-                        globalService.saveImgToPathWithPrefixName(imgFile, uploadPath, exerciseTitle)
+                        globalService.saveImgToPathWithPrefixName(imgFile, uploadPath, exerciseTitle)//
                         );
             }catch (FileCanNotSaveException | IOException f){
                 System.out.println("Cant add image but ok");
@@ -265,7 +265,6 @@ public class ExerciseService {
                     howToDo, videoLink, equipment);
         }
         save(updatedExercise);
-
 
         return updatedExercise;
     }
