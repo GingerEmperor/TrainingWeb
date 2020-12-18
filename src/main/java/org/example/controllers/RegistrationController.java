@@ -1,5 +1,7 @@
 package org.example.controllers;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Collections;
 
 import org.example.models.User;
@@ -12,16 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RegistrationController {
     @Autowired
     private  UserRepo userRepo;
-    // @Autowired
-    // private RoleService roleService;
-
-    // @Autowired
-    // private RoleRepository roleRepo;
 
     @GetMapping("/registration")
     public String registration(){
@@ -29,7 +27,9 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(User user, Model model){//TODO can not принять user because birthDate
+    public String addUser(User user, @RequestParam String birthDateStr, Model model){
+        System.out.println(birthDateStr);
+        System.out.println(Date.valueOf(birthDateStr));
 
         User userFromDb= userRepo.findByUsername(user.getUsername());
         if(userFromDb != null){
@@ -39,8 +39,9 @@ public class RegistrationController {
         System.out.println("regWork");
         user.setActive(true);
         user.setStatus(Status.ACTIVE);
+        user.setBirthDate(Date.valueOf(birthDateStr));
         user.setRoles(Collections.singleton(Role.USER));
-        // user.setRoles(Collections.singleton(roleRepo.findByRoleType(Role.USER)));
+        user.setRegisteredAt(Date.valueOf(LocalDate.now()));
         userRepo.save(user);
 
         return "redirect:/login";
