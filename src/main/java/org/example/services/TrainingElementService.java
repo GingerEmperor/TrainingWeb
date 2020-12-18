@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.example.models.Exercise;
@@ -18,6 +19,10 @@ public class TrainingElementService {
 
     public TrainingElement save(TrainingElement trainingElement) {
         return trainingElementRepository.save(trainingElement);
+    }
+
+    public List<TrainingElement> findAllByExercise(Exercise exercise){
+        return trainingElementRepository.findAllByExercise(exercise);
     }
 
     @Transactional
@@ -42,5 +47,9 @@ public class TrainingElementService {
         trainingElement.setTimeToRest(timeToRestAfter);
 
         return trainingElement;
+    }
+
+    public void delete(TrainingElement trainingElement){
+        trainingElementRepository.delete(trainingElement);
     }
 }

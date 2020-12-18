@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.example.models.Exercise;
@@ -11,5 +12,7 @@ public interface TrainingElementRepository extends CrudRepository<TrainingElemen
     Optional<TrainingElement> findByExerciseAndHowMuchToDoAndRecommendedTimeToDoAndTimeToRest(
             Exercise exercise, int howMuchToDo, int recommendedTimeToDo, int timeToRest
     );
+
+    List<TrainingElement> findAllByExercise(Exercise e);
 
 }

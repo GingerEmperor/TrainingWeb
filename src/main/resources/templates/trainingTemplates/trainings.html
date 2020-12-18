@@ -5,8 +5,6 @@
 <header th:insert="parts/header::header"></header>
 <p>Trainings</p>
 
-
-<h1>This is training page</h1>
 <div class="container-lg">
     <!--    TODO search by <criteria>-->
     <form action="/trainings/searchBy" th:method="GET" class="form-inline my-2 my-lg-0">
@@ -25,108 +23,107 @@
         </div>
     </form>
 
-    <div th:if="${allTrainings.size()==0}">
-        <div class="alert alert-warning" role="alert">
-            Треннировок нет
-        </div>
-    </div>
-    <div class="row">
-        <div th:each="training:${allTrainings}" class="col-lg-4 col-md-12">
-            <div class="card mb-4 shadow-sm">
 
-                <div class="card">
-                    <img th:src="${'/img/'+training.getImage()}" class="card-img-top"
-                         th:alt="${training.getName()}"
-                         align="center" style="background: #55595c" height="225">
-                    <div class="card-body" style="background: #C0C0C0">
-                        <div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Название:</span>
-                                </div>
-                                <input type="text" class="form-control" th:value="${training.getName()}" aria-describedby="basic-addon1" readonly>
+    <div th:each="criteria :${sortCriteria_TrainingMap.keySet()}">
+        <div th:if="${!sortCriteria_TrainingMap.get(criteria).isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
 
-                                <!--                                <span class="card-text text-white bg-primary rounded mr-2 ml-2" th:text="${training.getName()}"></span>-->
-                            </div>
-                        </div>
-                        <div>
-                            <div>Расчитана на:
-                                <span class="badge text-white" th:style="'background-color:'+${training.getForWho().getColorCode()}"
-                                      th:text="${training.getForWho().getWord()} ">
-                                </span>
-                            </div>
-                            <div>Цель:
-                                <span class="badge text-white" th:style="'background-color:'+${training.getGoal().getColorCode()}"
-                                      th:text="${training.getGoal().getWord()} ">
-                                    </span>
-                            </div>
-                            <div>Сложность:
-                                <span class="badge text-white" th:style="'background-color:'+${training.getDifficulty().getColorCode()}"
-                                      th:text="${training.getDifficulty().getWord()} ">
-                                    </span>
-                            </div>
-                            <div>Группы главных тненируемых мышц:
-                                <span th:each="mainMuscl:${training.getPrimaryMuscleGroups()}" class="badge badge-danger"
-                                      th:text="${mainMuscl} ">
-                                    </span>
-                            </div>
-                            <div>Группы тненируемых мышц:
-                                <span th:each="secMuscl:${training.getSecondaryMuscleGroups()}" class="badge badge-danger"
-                                      th:text="${secMuscl} ">
-                                    </span>
-                            </div>
-                        </div>
+            <h4 th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
+            <div th:each="training:${sortCriteria_TrainingMap.get(criteria)}" class="col-lg-4 col-md-12">
+                <div class="card mb-4 shadow-sm">
 
-                        <!--                                                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}"-->
-                        <!--                                                              class="badge badge-danger" style="float:right"-->
-                        <!--                                                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                        <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}"-->
-                        <!--                              class="badge badge-warning" style="float:right"-->
-                        <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                        <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}"-->
-                        <!--                              class="badge badge-info" style="float:right"-->
-                        <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                        <!--                        <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}"-->
-                        <!--                              class="badge badge-primary" style="float:right"-->
-                        <!--                              th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                        <!--                            </div>-->
-                        <!--                    </div>-->
-                        <hr/>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group mt-4">
-                                <form th:action="'/trainings/'+${training.getId()}">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                                </form>
-                                <!--                            TODO-->
-                                <form th:method="DELETE" th:action="'/trainings/'+${training.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                                    <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
-                                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${training.getId()}">Delete</button><!-- Modal -->
-
-                                    <div class="modal fade" th:id="'myModal'+${training.getId()}" role="dialog">
-                                        <div class="modal-dialog ">
-
-                                            <!-- Modal content-->
-                                            <div class="modal-content bg-dark" style="border-style: solid ">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title text-center text-white ">Delete confirm</h4>
-                                                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p class="text-white" th:text="'Are you sure you want to delete <<'+${training.getName()}+'>> ?'">Are you sure you want to delete</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
-                                                </div>
-                                            </div>
-
-                                        </div>
+                    <div class="card">
+                        <img th:src="${'/img/'+training.getImage()}" class="card-img-top"
+                             th:alt="${training.getName()}"
+                             align="center" style="background: #55595c" height="225">
+                        <div class="card-body" style="background: #C0C0C0">
+                            <div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Название:</span>
                                     </div>
+                                    <input type="text" class="form-control" th:value="${training.getName()}" aria-describedby="basic-addon1" readonly>
+                                </div>
+                            </div>
+                            <div>
+                                <div>Расчитана на:
+                                    <span class="badge text-white" th:style="'background-color:'+${training.getForWho().getColorCode()}"
+                                          th:text="${training.getForWho().getWord()} ">
+                                </span>
+                                </div>
+                                <div>Цель:
+                                    <span class="badge text-white" th:style="'background-color:'+${training.getGoal().getColorCode()}"
+                                          th:text="${training.getGoal().getWord()} ">
+                                    </span>
+                                </div>
+                                <div>Сложность:
+                                    <span class="badge text-white" th:style="'background-color:'+${training.getDifficulty().getColorCode()}"
+                                          th:text="${training.getDifficulty().getWord()} ">
+                                    </span>
+                                </div>
+                                <div>Группы главных тненируемых мышц:
+                                    <span th:each="mainMuscl:${training.getPrimaryMuscleGroups()}" class="badge badge-danger"
+                                          th:text="${mainMuscl} ">
+                                    </span>
+                                </div>
+                                <div>Группы тненируемых мышц:
+                                    <span th:each="secMuscl:${training.getSecondaryMuscleGroups()}" class="badge badge-danger"
+                                          th:text="${secMuscl} ">
+                                    </span>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group mt-4">
+                                    <form th:action="'/trainings/'+${training.getId()}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </form>
+                                    <!--                            TODO-->
+                                    <form th:method="DELETE" th:action="'/trainings/'+${training.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                                        <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${training.getId()}">Delete</button>
+                                        <!-- Modal -->
 
-                                </form>
+                                        <div class="modal fade" th:id="'myModal'+${training.getId()}" role="dialog">
+                                            <div class="modal-dialog ">
+
+                                                <!-- Modal content-->
+                                                <div class="modal-content bg-dark" style="border-style: solid ">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title text-center text-white ">Delete confirm</h4>
+                                                        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="text-white" th:text="'Are you sure you want to delete <<'+${training.getName()}+'>> ?'">Are you sure you want to delete</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${sortCriteria_TrainingMap.keySet().size()==1}">
+        <div th:each="criteria :${sortCriteria_TrainingMap.keySet()}">
+            <div th:if="${sortCriteria_TrainingMap.get(criteria).isEmpty()}">
+                <!--&lt;!&ndash;                <div th:if="${criteria.toString().contains('(')&&criteria.toString().contains(',')}">&ndash;&gt;-->
+                <!--                    <h1 th:text="${criteria.toString().substring(0,criteria.toString().indexOf('('))}"></h1>-->
+                <!--&lt;!&ndash;                </div>&ndash;&gt;-->
+                <!--                <div th:unless="${criteria.toString().contains('(')&&criteria.toString().contains(',')}">-->
+                <h1 th:text="${criteria.toString()}"></h1>
+                <!--                </div>-->
+                <div class="alert alert-warning" role="alert">
+                    Тренировок нет
                 </div>
             </div>
         </div>

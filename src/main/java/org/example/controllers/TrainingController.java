@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.example.models.Exercise;
@@ -46,21 +48,66 @@ public class TrainingController {
 
     private final TrainingElementService trainingElementService;
 
+    @GetMapping("/{id}")
+    public String showTrainingDetails(@PathVariable Long id, Model model) {
+        Training training = trainingService.findById(id);
+        model.addAttribute("training", training);
+
+        List<TrainingElement> trainingElements=training.getTrainingElements();
+        final Set<Exercise> exerciseSet = new LinkedHashSet<>();
+        trainingElements.forEach(trainingElement -> exerciseSet.add(trainingElement.getExercise()));
+
+        model.addAttribute("exerciseSet",exerciseSet);
+        return "trainingTemplates/trainingDetails";
+    }
+
     @GetMapping()
     public String showAllByAlphabeticalOrder(Model model) {
+        Map<String, List<Training>> criteria_trainingMap = new TreeMap<>();
+
         List<Training> trainings = trainingService.findAll();
         Collections.sort(trainings,(t1, t2) -> t1.getName().toLowerCase().compareTo(t2.getName().toLowerCase()));
-        model.addAttribute("allTrainings", trainings);
+        criteria_trainingMap.put("All",trainings);
+        // model.addAttribute("allTrainings", trainings);
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        model.addAttribute("sortCriteria_TrainingMap",criteria_trainingMap);
         return "trainingTemplates/trainings";
     }
 
-    @GetMapping("/all")
+    @GetMapping("/allDebug")
     public String showAll(Model model) {
-        model.addAttribute("allTrainings", trainingService.findAll());
+        Map<String, List<Training>> criteria_trainingMap = new TreeMap<>();
+        criteria_trainingMap.put("All(DEBUG)",trainingService.findAll());
+
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        model.addAttribute("sortCriteria_TrainingMap",criteria_trainingMap);
         return "trainingTemplates/trainings";
     }
+
+    @GetMapping("/byMuscleGroups")
+    public String showAllByMuscleGroups(Model model){
+        Map<String, List<Training>> muscleGroup_trainingMap = new TreeMap<>();
+
+        muscleGroupService.findAll().forEach(muscleGroup ->
+                muscleGroup_trainingMap.put(muscleGroup.getName(),trainingService.findAllByPrimaryMuscleGroups(muscleGroup)));
+
+        model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        model.addAttribute("sortCriteria_TrainingMap",muscleGroup_trainingMap);
+        return "trainingTemplates/trainings";
+    }
+
+    @GetMapping("/byMuscleGroups/{id}")//TODO add frontend link
+    public String showByConcreteMuscleGroup(@PathVariable Long id,Model model){
+        Map<String, List<Training>> muscleGroup_trainingMap = new TreeMap<>();
+
+        MuscleGroup muscleGroup=muscleGroupService.findById(id);
+        muscleGroup_trainingMap.put(muscleGroup.getName(),trainingService.findAllByPrimaryMuscleGroups(muscleGroup));
+
+        model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        model.addAttribute("sortCriteria_TrainingMap",muscleGroup_trainingMap);
+        return "trainingTemplates/trainings";
+    }
+
 
     @GetMapping("/add")
     public String addTrainingPage(
@@ -182,19 +229,6 @@ public class TrainingController {
         System.out.println(trainingService.save(training));
 
         return "redirect:/trainings";
-    }
-
-    @GetMapping("/{id}")
-    public String showTrainingDetails(@PathVariable Long id, Model model) {
-        Training training = trainingService.findById(id);
-        model.addAttribute("training", training);
-
-        List<TrainingElement> trainingElements=training.getTrainingElements();
-        final Set<Exercise> exerciseSet = new LinkedHashSet<>();
-        trainingElements.forEach(trainingElement -> exerciseSet.add(trainingElement.getExercise()));
-
-        model.addAttribute("exerciseSet",exerciseSet);
-        return "trainingTemplates/trainingDetails";
     }
 
     @DeleteMapping("/{id}/delete")

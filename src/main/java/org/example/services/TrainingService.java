@@ -7,6 +7,7 @@ import java.util.List;
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.exeptions.NotFoundException;
+import org.example.models.Exercise;
 import org.example.models.Training;
 import org.example.models.TrainingElement;
 import org.example.models.enums.Difficulty;
@@ -31,6 +32,8 @@ public class TrainingService {
 
     private final TrainingRepository trainingRepository;
 
+    private final TrainingElementService trainingElementService;
+
     private final GlobalService globalService;
 
     public List<Training> findAll() {
@@ -41,6 +44,15 @@ public class TrainingService {
         return trainingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Такой тренировки не существует"));
     }
+
+    public List<Training> findAllByPrimaryMuscleGroups(MuscleGroup muscleGroup){
+        return trainingRepository.findAllByPrimaryMuscleGroups(muscleGroup);
+    }
+    //
+    // public List<Training> findAllContainsExercise(Exercise exercise){
+    //     trainingElementService.findAllByExercise(exercise);
+    //     return trainingRepository.findAllByTrainingElements();
+    // }
 
     public Training save(Training training) {
         return trainingRepository.save(training);

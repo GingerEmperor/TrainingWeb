@@ -15,11 +15,10 @@
                                 class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item dropdown">
-                        <!--                        <a class="nav-link" href="/exercises">Exercises</a>-->
-                        <a class="nav-link dropdown-toggle" href="/exercises" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="/exercises" id="navbarDropdownExercises" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Exercises
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownExercises">
                             <a class="dropdown-item" href="/exercises/">All</a>
                             <a class="dropdown-item" href="/exercises/byMuscleGroups">By muscle group</a>
                             <a class="dropdown-item" href="/exercises/byEquipmentNeed">By equipment need</a>
@@ -27,28 +26,22 @@
                             <a class="dropdown-item" href="/exercises/all">all(for debug)</a>
                         </div>
                     </li>
-
-
-<!--                    &lt;!&ndash;                    //TODO add dropDownFor trainings&ndash;&gt;-->
-<!--                    <li class="nav-item dropdown">-->
-<!--                        &lt;!&ndash;                        <a class="nav-link" href="/exercises">Exercises</a>&ndash;&gt;-->
-<!--                        <a class="nav-link dropdown-toggle" href="/exercises" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--                            Exercises-->
-<!--                        </a>-->
-<!--                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-<!--                            <a class="dropdown-item" href="/exercises/">All</a>-->
-<!--                            <a class="dropdown-item" href="/exercises/byMuscleGroups">By muscle group</a>-->
-<!--                            <a class="dropdown-item" href="/exercises/byEquipmentNeed">By equipment need</a>-->
-<!--                            <div class="dropdown-divider"></div>-->
-<!--                            <a class="dropdown-item" href="/exercises/all">all(for debug)</a>-->
-<!--                        </div>-->
-<!--                    </li>-->
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/trainings">Trainings</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="/trainings" id="navbarDropdownTrainings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Trainings
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownTrainings">
+                            <a class="dropdown-item" href="/trainings/">All</a>
+                            <a class="dropdown-item" href="/trainings/byMuscleGroups">By muscle group</a>
+                            <!--                            //TODO-->
+                            <a class="dropdown-item" href="/trainings/byDifficulty">By difficulty</a>
+                            <a class="dropdown-item" href="/trainings/byGrade">By grade</a>
+                            <a class="dropdown-item" href="/trainings/byGoal">By goal</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/trainings/allDebug">all(for debug)</a>
+                        </div>
                     </li>
 
-                    <!--                    <li class="nav-item" th:if="${#strings.contains(#authentication.principal,'ADMIN')}" >-->
                     <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
                         <a class="nav-link" href="/users">Users</a>
                     </li>

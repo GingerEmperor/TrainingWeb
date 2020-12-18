@@ -3,6 +3,7 @@ package org.example.services;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.example.exeptions.AlreadyExistsException;
@@ -10,12 +11,14 @@ import org.example.exeptions.FileCanNotSaveException;
 import org.example.exeptions.NotFoundException;
 import org.example.models.Exercise;
 import org.example.models.ExerciseInfo;
+import org.example.models.TrainingElement;
 import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.repository.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -28,12 +31,16 @@ public class ExerciseService {
 
     private final GlobalService globalService;
 
+    private final TrainingService trainingService;
+
+    private final TrainingElementService trainingElementService;
+
     @Value("${upload.exercisePath}")
     private String uploadPath;
 
     public Exercise findByTitle(final String exerciseTitle) {
         return exerciseRepository.findByTitle(exerciseTitle)
-                .orElseThrow(() -> new NotFoundException("Такое упраднения нет в БД"));
+                .orElseThrow(() -> new NotFoundException("Такого упраднения нет в БД"));
     }
 
     public boolean checkIfExistsExerciseByTitle(String title) {
@@ -188,17 +195,24 @@ public class ExerciseService {
         exerciseRepository.save(exercise);
     }
 
+    @Transactional
     public void deleteExerciseById(final long id) {
         Exercise exerciseToDelete = findById(id);
-        exerciseToDelete.getPrimaryWorkingMuscles().clear();
-        exerciseToDelete.getSecondWorkingMuscles().clear();
-        File imgFile = new File((uploadPath + "/" + exerciseToDelete.getImage()));
-        File imgStartFile = new File((uploadPath + "/" + exerciseToDelete.getImageStart()));
-        File imgFinishFile = new File((uploadPath + "/" + exerciseToDelete.getImageFinish()));
-        imgFile.delete();
-        imgStartFile.delete();
-        imgFinishFile.delete();
-        exerciseRepository.delete(exerciseToDelete);
+        try {
+            trainingElementService.findAllByExercise(exerciseToDelete).forEach(trainingElementService::delete);
+            exerciseToDelete.getPrimaryWorkingMuscles().clear();
+            exerciseToDelete.getSecondWorkingMuscles().clear();
+            File imgFile = new File((uploadPath + "/" + exerciseToDelete.getImage()));
+            File imgStartFile = new File((uploadPath + "/" + exerciseToDelete.getImageStart()));
+            File imgFinishFile = new File((uploadPath + "/" + exerciseToDelete.getImageFinish()));
+            imgFile.delete();
+            imgStartFile.delete();
+            imgFinishFile.delete();
+            exerciseRepository.delete(exerciseToDelete);
+        }catch (Exception e){
+            System.out.println("CANNOT DELETE EXERCISE");
+            e.printStackTrace();
+        }
     }
 
     private Exercise updateExercise(Exercise exerciseToUpdate,
