@@ -39,21 +39,6 @@
                         <div class="card-body" style="background: #C0C0C0">
                             <div>
                                 <span class="card-text text-dark" th:text="${exercise.getTitle()}"></span>
-                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('OWN_WEIGHT')}"-->
-                                <!--                                      class="badge badge-success" style="float:right"-->
-                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('SPORT_GROUND')}"-->
-                                <!--                                      class="badge badge-danger" style="float:right"-->
-                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('DUMBBELLS')}"-->
-                                <!--                                      class="badge badge-warning" style="float:right"-->
-                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('BARBELL')}"-->
-                                <!--                                      class="badge badge-info" style="float:right"-->
-                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
-                                <!--                                <span th:if="${exercise.getEquipmentNeed()==exercise.getEquipmentNeed().valueOf('TRAINING_APPARATUS')}"-->
-                                <!--                                      class="badge badge-primary" style="float:right"-->
-                                <!--                                      th:text="${exercise.getEquipmentNeed().getWord()} "></span>-->
                                 <span class="badge badge-primary" th:style="'background-color:'+${exercise.getEquipmentNeed().getColorCode()}+'; float:right;'"
                                       th:text="${exercise.getEquipmentNeed().getWord()} "></span>
                             </div>

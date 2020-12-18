@@ -55,13 +55,13 @@ public class ExerciseController {
     @GetMapping()
     public String showAllByAlphabeticalOrder(Model model) {
 
-        Map<String, List<Exercise>> muscleGroup_ExerciseMap = new TreeMap<>();
+        Map<String, List<Exercise>> criteria_exerciseMap = new TreeMap<>();
 
         List<Exercise> allExercises = new ArrayList<>(exerciseService.findAll());
         Collections.sort(allExercises, (o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
-        muscleGroup_ExerciseMap.put("All", allExercises);
+        criteria_exerciseMap.put("All", allExercises);
 
-        model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
+        model.addAttribute("sortCriteria_ExerciseMap", criteria_exerciseMap);
 
         return "exerciseTemplates/exercises";
     }
