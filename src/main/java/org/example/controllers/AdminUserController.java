@@ -14,6 +14,7 @@ import org.example.services.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +26,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/admin/users")
 @PreAuthorize("hasAuthority('ADMIN')")
-public class UserController {
+public class AdminUserController {
 
     private final UserService userService;
 
@@ -45,26 +46,15 @@ public class UserController {
             @RequestParam Map<String, String> form,
             @RequestParam("userId") User user
     ) {
-        System.out.println(form);
-
-        System.out.println("work edit");
-        System.out.println(user.getId());
-        System.out.println(user.getUsername());
-        user.getRoles().forEach(System.out::println);
-        System.out.println(" ");
-
         Set<String> roles = Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
-
         user.getRoles().clear();
         for (String key : form.keySet()) {
             if (roles.contains(key)) {
-                System.out.println(Role.valueOf(key));
                 user.getRoles().add(Role.valueOf(key));
-                System.out.println();
             }
         }
         userService.save(user);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 
     @PatchMapping("{id}/ban")
@@ -75,7 +65,7 @@ public class UserController {
         userToBan.setStatus(Status.BANNED);
         userToBan.setActive(false);
         userService.save(userToBan);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 
     @PatchMapping("{id}/unban")
@@ -86,6 +76,16 @@ public class UserController {
         userToUnBan.setStatus(Status.ACTIVE);
         userToUnBan.setActive(true);
         userService.save(userToUnBan);
-        return "redirect:/users";
+        return "redirect:/admin/users";
+    }
+
+    @DeleteMapping("{id}")
+    public String delete(
+            @PathVariable("id") Long userId
+    ) {
+        User userToDelete=userService.findById(userId);
+        System.out.println("Deleting"+userToDelete.getFirstName());
+        userService.delete(userToDelete);
+        return "redirect:/admin/users";
     }
 }

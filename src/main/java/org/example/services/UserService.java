@@ -31,4 +31,8 @@ public class UserService {
         userRepo.save(user);
         return user;
     }
+
+    public void delete(final User userToDelete) {
+        userRepo.delete(userToDelete);
+    }
 }

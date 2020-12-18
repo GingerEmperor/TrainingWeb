@@ -56,7 +56,7 @@
                                 <i style='font-size:24px' class='far'>&#xf2bb;</i>
                             </span>
                         </div>
-                        <input type="date" class="form-control" placeholder="Birth date" name="birthDate"
+                        <input type="date" id="datePickerId" class="form-control" placeholder="Birth date" name="birthDateStr"
                                title="Enter your birth date" required>
 
                         <div class="input-group-prepend">
@@ -113,6 +113,7 @@
         }
         return true;
     }
+    datePickerId.max = new Date().toISOString().split("T")[0];
 </script>
 
 <footer th:insert="parts/footer::footer"></footer>
