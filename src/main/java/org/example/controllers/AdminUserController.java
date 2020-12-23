@@ -1,11 +1,13 @@
 package org.example.controllers;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.example.exeptions.CanNotDeleteException;
 import org.example.models.User;
 import org.example.models.enums.Role;
 import org.example.models.enums.Status;
@@ -83,9 +85,12 @@ public class AdminUserController {
     public String delete(
             @PathVariable("id") Long userId
     ) {
-        User userToDelete=userService.findById(userId);
-        System.out.println("Deleting"+userToDelete.getFirstName());
-        userService.delete(userToDelete);
+        try {
+            userService.deleteById(userId);
+        }catch (CanNotDeleteException e){
+            //TODO to handle exception
+            e.printStackTrace();
+        }
         return "redirect:/admin/users";
     }
 }

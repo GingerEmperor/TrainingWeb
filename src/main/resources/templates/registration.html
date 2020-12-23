@@ -17,8 +17,6 @@
 <style class="darkreader darkreader--sync" media="screen"></style>
 
 
-
-
 <div class="container mt-5">
     <div class="d-flex justify-content-center h-100">
         <div class="card">
@@ -31,7 +29,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <form onSubmit = "return checkPassword(this)"  th:action="@{/registration}" method="post">
+                <form onSubmit="return checkPassword(this)" th:action="@{/registration}" method="post" enctype="multipart/form-data">
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -43,14 +41,24 @@
                         <input type="text" class="form-control" placeholder="Last name" name="lastName"
                                title="Enter your last name" required>
                     </div>
+
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-image"></i>
+                            </span>
+                        </div>
+                        <input type="file" name="image" class="input-group-text" id="image">
+                    </div>
+
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
                                 @
                             </span>
                         </div>
-                            <input type="text" class="form-control" placeholder="Email" name="email"
-                                   title="Enter your email" required>
+                        <input type="text" class="form-control" placeholder="Email" name="email"
+                               title="Enter your email" required>
                         <div class="input-group-prepend">
                             <span class="input-group-text">
                                 <i style='font-size:24px' class='far'>&#xf2bb;</i>
@@ -60,7 +68,7 @@
                                title="Enter your birth date" required>
 
                         <div class="input-group-prepend">
-                            <span class="input-group-text" title="Choose your gender" >
+                            <span class="input-group-text" title="Choose your gender">
                                 <i style="font-size:24px" class="fa">&#xf228;</i>
                             </span>
                             <div class="form-check form-check-inline ml-2">
@@ -76,7 +84,6 @@
                                 <label class="form-check-label" for="inlineRadio3">none</label>
                             </div>
                         </div>
-
                     </div>
 
 
@@ -104,15 +111,16 @@
     // is same or not.
     function checkPassword(form) {
 
-        var password1=form.password.value;
-        var password2=form.passwordConf.value;
-                // // If Not same return False.
+        var password1 = form.password.value;
+        var password2 = form.passwordConf.value;
+        // // If Not same return False.
         if (password1 != password2) {
             alert("\nPassword did not match: Please try again...")
             return false;
         }
         return true;
     }
+
     datePickerId.max = new Date().toISOString().split("T")[0];
 </script>
 

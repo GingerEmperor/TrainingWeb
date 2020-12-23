@@ -48,6 +48,18 @@ public class TrainingService {
     public List<Training> findAllByPrimaryMuscleGroups(MuscleGroup muscleGroup){
         return trainingRepository.findAllByPrimaryMuscleGroups(muscleGroup);
     }
+
+    public List<Training> findAllByDifficulty(Difficulty difficulty){
+        return trainingRepository.findAllByDifficulty(difficulty);
+    }
+
+    public List<Training> findAllByGrade(final ForWho grade) {
+        return trainingRepository.findAllByForWho(grade);
+    }
+
+    public List<Training> findAllByGoal(final Goal goal) {
+        return trainingRepository.findAllByGoal(goal);
+    }
     //
     // public List<Training> findAllContainsExercise(Exercise exercise){
     //     trainingElementService.findAllByExercise(exercise);

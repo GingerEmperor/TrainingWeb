@@ -9,7 +9,6 @@
 <p>Muscles</p>
 <a href="/muscles/csv">MusclesCSV</a>
 
-<!--//-->
 <p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
 <div class="container-lg">
     <div th:each="muscleGroup:${muscleGroupMusclesMap.keySet()}" th:if="${!muscleGroup.getMuscleSet().isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
@@ -24,18 +23,16 @@
                         <p class="card-text text-dark" th:text="${el.getName()}"></p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-
                                 <form th:action="'/muscles/'+${el.getId()}">
                                     <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                 </form>
                                 <form th:method="DELETE" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                     <input type="hidden" th:value="${el.getMuscleGroup().getId()}" name="groupId">
                                     <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
-                                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
-
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button>
+                                    <!-- Modal -->
                                     <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
                                         <div class="modal-dialog ">
-
                                             <!-- Modal content-->
                                             <div class="modal-content bg-dark" style="border-style: solid ">
                                                 <div class="modal-header">
@@ -50,7 +47,6 @@
                                                     <button type="submit" class="btn btn-outline-danger">Delete</button>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
 
@@ -70,10 +66,8 @@
     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
         <h5 class="text-white"> Добавить мышцу</h5>
     </button>
-<!--    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">-->
         <form class="collapse" id="collapseOne" th:method="POST" action="/muscles/add" enctype="multipart/form-data">
             <div>
-
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">Группа мышц</span>
@@ -83,7 +77,6 @@
                            th:value=" ${currentMuscleGroup.getName()}"
                            aria-describedby="basic-addon3" readonly>
                 </div>
-
                 <div class="input-group mb-2 ">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Название мышц</span>
@@ -106,13 +99,9 @@
                 <div class="input-group mb-2">
                     <input type="file" name="file" class="input-group-text" id="file">
                 </div>
-
-
                 <button type="submit" class="btn btn-secondary mb-1">Add muscle</button>
             </div>
-
         </form>
-<!--    </div>-->
 </div>
 
 <footer th:insert="parts/footer::footer"></footer>
