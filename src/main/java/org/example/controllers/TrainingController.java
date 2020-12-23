@@ -3,13 +3,17 @@ package org.example.controllers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.example.models.Exercise;
 import org.example.models.Training;
@@ -81,6 +85,40 @@ public class TrainingController {
 
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
         model.addAttribute("sortCriteria_TrainingMap",criteria_trainingMap);
+        return "trainingTemplates/trainings";
+    }
+
+    @GetMapping("/byDifficulty")
+    public String showAllByDifficulty(Model model){
+        Map<String, List<Training>> difficulty_trainingMap = new LinkedHashMap<>();
+        Stream.of(Difficulty.values())
+                .forEach(difficulty -> difficulty_trainingMap.put(difficulty.getWord(),trainingService.findAllByDifficulty(difficulty)));
+
+        model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        model.addAttribute("sortCriteria_TrainingMap",difficulty_trainingMap);
+        difficulty_trainingMap.keySet().forEach(System.out::println);
+        return "trainingTemplates/trainings";
+    }
+
+    @GetMapping("/byGrade")
+    public String showAllByGrade(Model model){
+        Map<String, List<Training>> grade_trainingMap = new TreeMap<>();
+        Stream.of(ForWho.values())
+                .forEach(grade -> grade_trainingMap.put(grade.getWord(),trainingService.findAllByGrade(grade)));
+
+        model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        model.addAttribute("sortCriteria_TrainingMap",grade_trainingMap);
+        grade_trainingMap.keySet().forEach(System.out::println);
+        return "trainingTemplates/trainings";
+    }
+
+    @GetMapping("/byGoal")
+    public String showAllByGoal(Model model){
+        Map<String, List<Training>> goal_trainingMap = new TreeMap<>();
+        Stream.of(Goal.values())
+                .forEach(goal -> goal_trainingMap.put(goal.getWord(),trainingService.findAllByGoal(goal)));
+        model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
+        model.addAttribute("sortCriteria_TrainingMap",goal_trainingMap);
         return "trainingTemplates/trainings";
     }
 

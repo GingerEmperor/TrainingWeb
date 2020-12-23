@@ -18,12 +18,18 @@ import javax.persistence.Table;
 import java.sql.Date;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "usr")
 public class User {
     @Id
@@ -36,6 +42,8 @@ public class User {
     private Date birthDate;
     private String email;
     private String gender;
+
+    private String image;
 
     private String password;
 
