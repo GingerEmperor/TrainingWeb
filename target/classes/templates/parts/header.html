@@ -56,8 +56,9 @@
                 <div class="text-center">
                     <span class="text-light mr-1">Hello </span>
                     <span class="text-light mr-3" sec:authorize="!isAuthenticated()"> user</span>
-                    <a th:href="'/users/'+${#authentication.name}"  class="text-light mr-3" sec:authorize="isAuthenticated()" sec:authentication="name"></a>
-
+                    <span sec:authorize="isAuthenticated()">
+                         <a th:href="'/users/'+${#authentication.name}" class="text-light mr-3" sec:authentication="name"></a>
+                    </span>
 
                 </div>
                 <form class="form-inline mt-2 mt-md-0" sec:authorize="!isAuthenticated()" th:action="@{/login}">

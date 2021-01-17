@@ -3,12 +3,12 @@
 <head th:insert="common/commonHead::commonHead"></head>
 <body>
 <header th:insert="parts/header::header"></header>
-<p>Trainings</p>
+<!--<p>Trainings</p>-->
 
 <div class="container-lg">
     <!--    TODO search by <criteria>-->
     <form action="/trainings/searchBy" th:method="GET" class="form-inline my-2 my-lg-0">
-        <div class="input-group mb-2 mr-sm-2">
+        <div class="input-group mt-5 mb-2 mr-sm-2">
             <div class="input-group-prepend">
                 <div class="input-group-text">Search by</div>
                 <select class="custom-select" id="search_by" name="search_by" required>
@@ -25,7 +25,7 @@
 
 
     <div th:each="criteria :${sortCriteria_TrainingMap.keySet()}">
-        <div th:if="${!sortCriteria_TrainingMap.get(criteria).isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
+        <div th:if="${!sortCriteria_TrainingMap.get(criteria).isEmpty()}" class="row mt-4 mb-5" style="border-style: solid">
 
             <h4 th:text="${criteria.toString()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
             <div th:each="training:${sortCriteria_TrainingMap.get(criteria)}" class="col-lg-4 col-md-12">

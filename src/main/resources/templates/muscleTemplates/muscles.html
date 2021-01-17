@@ -6,10 +6,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <header th:insert="parts/header::header"></header>
-<p>Muscles</p>
-<a href="/muscles/csv">MusclesCSV</a>
+<!--<p>Muscles</p>-->
+<!--&lt;!&ndash;<a href="/muscles/csv">MusclesCSV</a>&ndash;&gt;-->
 
-<p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>
+<!--<p th:if="${currentMuscleGroup!=null}" th:text="${currentMuscleGroup.getName()}"></p>-->
 <div class="container-lg">
     <div th:each="muscleGroup:${muscleGroupMusclesMap.keySet()}" th:if="${!muscleGroup.getMuscleSet().isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
         <h4 th:text="${muscleGroup.getName()}" class="align-middle col-12" style="color: #C0C0C0"></h4>
@@ -49,7 +49,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </form>
                             </div>
                         </div>
