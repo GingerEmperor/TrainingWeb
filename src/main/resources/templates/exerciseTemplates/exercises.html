@@ -3,11 +3,11 @@
 <head th:insert="common/commonHead::commonHead"></head>
 <body>
 <header th:insert="parts/header::header"></header>
-<p>Exercises</p>
+<!--<p>Exercises</p>-->
 <div class="container-lg">
 
     <form action="/exercises/searchBy" th:method="GET" class="form-inline my-2 my-lg-0">
-        <div class="input-group mb-2 mr-sm-2">
+        <div class="input-group mt-5 mb-2 mr-sm-2">
             <div class="input-group-prepend">
                 <div class="input-group-text">Search by</div>
                 <select class="custom-select" id="search_by" name="search_by" required>
@@ -23,7 +23,7 @@
     </form>
 
     <div th:each="criteria :${sortCriteria_ExerciseMap.keySet()}">
-        <div th:if="${!sortCriteria_ExerciseMap.get(criteria).isEmpty()}" class="row mt-5 mb-5" style="border-style: solid">
+        <div th:if="${!sortCriteria_ExerciseMap.get(criteria).isEmpty()}" class="row mt-4 mb-5" style="border-style: solid">
 
 
             <!--            <h4 th:if="${!criteria.toString().contains('(')&&!criteria.toString().contains(',')}"-->

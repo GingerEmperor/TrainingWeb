@@ -15,7 +15,6 @@ import lombok.ToString;
 @Setter
 @Getter
 @Entity
-@ToString
 public class Muscle {
 
     @Id
@@ -33,7 +32,11 @@ public class Muscle {
     private String image;
 
     @ManyToOne
-    @JoinColumn(name = "muscle_group_id",referencedColumnName = "id")
+    @JoinColumn(name = "muscle_group_id", referencedColumnName = "id")
     private MuscleGroup muscleGroup;
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
