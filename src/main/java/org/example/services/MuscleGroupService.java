@@ -25,6 +25,8 @@ public class MuscleGroupService {
 
     private final GlobalService globalService;
 
+    private final ExerciseService exerciseService;
+
     @Value("${upload.muscleGroupPath}")
     private String uploadPath;
 
@@ -70,7 +72,7 @@ public class MuscleGroupService {
     }
 
     public MuscleGroup updateMuscleGroup(long id, String muscleGroupName) {
-        MuscleGroup updatedMuscleGroup=findById(id);
+        MuscleGroup updatedMuscleGroup = findById(id);
         updatedMuscleGroup.setName(muscleGroupName);
         return updatedMuscleGroup;
     }
@@ -79,7 +81,7 @@ public class MuscleGroupService {
         MuscleGroup updatedMuscleGroup = updateMuscleGroup(id, muscleGroupName);
         try {
             final String img = globalService.saveImgToPathWithPrefixName(image, uploadPath, muscleGroupName);
-            new File(uploadPath+"/"+updatedMuscleGroup.getName()).delete();
+            new File(uploadPath + "/" + updatedMuscleGroup.getName()).delete();
             updatedMuscleGroup.setImage(img);
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,17 +106,30 @@ public class MuscleGroupService {
 
     public boolean deleteMuscleGroup(MuscleGroup muscleGroup) {
         MuscleGroup muscleGroupToDelete = findById(muscleGroup.getId());
-        if (muscleGroupToDelete.getMuscleSet().isEmpty()) {
-            File imgFile=new File((uploadPath+"/"+muscleGroupToDelete.getImage()));
-            imgFile.delete();
-            muscleGroupRepository.delete(muscleGroupToDelete);
-            return true;
-        } else {
-            throw new CanNotDeleteException("Группв мышц содержит мышцы");
-        }
+        tryToDeleteMuscleGroup(muscleGroupToDelete);
+        exerciseService.checkIfExistsExercisesByMuscleGroup(muscleGroupToDelete);
+        File imgFile = new File((uploadPath + "/" + muscleGroupToDelete.getImage()));
+        imgFile.delete();
+        muscleGroupRepository.delete(muscleGroupToDelete);
+        return true;
     }
 
     public void save(final MuscleGroup muscleGroup) {
         muscleGroupRepository.save(muscleGroup);
+    }
+
+    public boolean isAnyExerciseWithThisMuscleGroup(MuscleGroup muscleGroup) {
+        return !exerciseService.findAllByAnyWorkingMuscleGroup(muscleGroup).isEmpty();
+    }
+
+    public void tryToDeleteMuscleGroup(MuscleGroup muscleGroupTryToDelete) {
+        if (!muscleGroupTryToDelete.getMuscleSet().isEmpty()) {
+            throw new CanNotDeleteException("Группа - " + muscleGroupTryToDelete.getName() +
+                    " мышц содержит мышцы - " + muscleGroupTryToDelete.getMuscleSet());
+        }
+        if (exerciseService.checkIfExistsExercisesByMuscleGroup(muscleGroupTryToDelete)) {
+            throw new CanNotDeleteException("Есть упражнения с этой  " + muscleGroupTryToDelete.getName() +
+                    "  группой мышц " + exerciseService.findAllByAnyWorkingMuscleGroup(muscleGroupTryToDelete));
+        }
     }
 }

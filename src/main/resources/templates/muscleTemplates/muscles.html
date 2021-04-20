@@ -60,7 +60,8 @@
 </div>
 
 <div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
-     sec:authorize="hasAuthority('ADMIN')">
+     sec:authorize="isAuthenticated()">
+<!--     sec:authorize="hasAuthority('ADMIN')">-->
     <!--        <h5>Добавить мышцу</h5>-->
     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
         <h5 class="text-white"> Добавить мышцу</h5>

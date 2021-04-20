@@ -1,0 +1,183 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:insert="common/commonHead::commonHead"></head>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <title>Секундомер со звуком. Интервальный таймер онлайн. Таймер обратного отсчёта бесплатно</title>-->
+    <meta name="description" content="Электронный секундомер со звуком онлайн. Таймер для интервальных тренировок Табата или фитнеса. Таймер обратного отсчёта со звуком.">
+    <meta name="keywords" content="">
+    <link rel="canonical" href="https://gsgen.ru/tools/sekundomer-online-timer/">
+    <meta name="yandex-verification" content="6d6575594860ad9e">
+    <meta name="google-site-verification" content="2kyncxXRVfH4_UGKeIdgxF0-owmWYcl8y_HdY0yYA3E">
+    <!-- link href="https://gsgen.ru/gs-views/gsgen-ru/img/favicon.ico" type='image/x-icon' / rel="shortcut icon" -->
+    <link href="https://gsgen.ru/gs-views/gsgen-ru/img/favicon.png" type="image/png" rel="shortcut icon">
+    <!-- base href="https://gsgen.ru/" -->
+    <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"-->
+    <link href="https://gsgen.ru/gs-views/gsgen-ru/css/fonts.roboto.css" rel="stylesheet">
+    <link href="https://gsgen.ru/gs-views/gsgen-ru/css/styles.css" rel="stylesheet">
+</head>
+<body>
+<header th:insert="parts/header::header"></header>
+<!--<div class="wrapper">-->
+    <div>
+<!--        <div class="container mt-5">-->
+<!--            <main class="content" style="align-content: center">-->
+                <div class="intro_text">
+                    <h1>Секундомер или таймер онлайн</h1>
+                    <p>Секундомер со звуком, обратный отсчёт, интервальный таймер.</p>
+                </div>
+                <div class="app_content">
+                    <div class="app_wrapper">
+                        <div class="app_main app_timer">
+                            <div class="app_form_block">
+                                <audio id="audio_beep">
+                                    <source src="https://gsgen.ru/gs-views/gsgen-ru/media/1-pause-u-u-u.ogg" type="audio/ogg">
+                                    <source src="https://gsgen.ru/gs-views/gsgen-ru/media/1-pause-u-u-u.mp3" type="audio/mp3">
+                                    Ваш браузер не поддерживает тег audio!
+                                </audio>
+                                <form name="timer_form" id="timer_form" action="">
+                                    <input type="hidden" name="template_url" value="https://gsgen.ru/gs-views/gsgen-ru">
+                                    <div class="block_row">
+                                        <div class="col-1-1">
+                                            <h3 th:text="${training.getName()}"></h3>
+                                            <div class="timer_types">
+<!--                                                <span class="timer_types_btn " data-type="up_timer">Секундомер</span>-->
+                                                <span class="timer_types_btn activeT" data-type="down_timer" >Таймер</span>
+                                                <span class="timer_types_btn"  data-type="interval_timer">Интервальный таймер</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="block_row">
+                                        <div class="col-1-1 cell text_center">
+                                            <div class="app_console">
+                                                <div class="timer_panel">
+                                                    <div class="timer_panel_info hide">
+                                                        <span class="timer_interval_work">
+                                                            <span class="timer_interval_nums minutes green" contenteditable="true">00</span>
+                                                            <span class="timer_sep">:</span>
+                                                            <span class="timer_interval_nums seconds green" contenteditable="true">25</span>
+                                                        </span>
+                                                        <span class="timer_interval_count">
+                                                            <span class="timer_interval_nums noedit times">1</span>
+                                                            <span class="timer_sep">/</span>
+                                                            <span class="timer_interval_nums all_times" contenteditable="true"><i th:text="${training.getTrainingElements().size()}"></i></span>
+                                                        </span>
+                                                        <span class="timer_interval_rest">
+                                                            <span class="timer_interval_nums minutes red" contenteditable="true">00</span>
+                                                            <span class="timer_sep">:</span>
+                                                            <span class="timer_interval_nums seconds red" contenteditable="true">10</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="timer_panel_nums">
+                                                        <span class="timer_nums hours" contenteditable="false">00</span>
+                                                        <span class="timer_sep">:</span>
+                                                        <span class="timer_nums minutes" contenteditable="true">00</span>
+                                                        <span class="timer_sep">:</span>
+                                                        <span class="timer_nums seconds" contenteditable="true">00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="block_row">
+                                        <div class="col-1-1 cell text_center">
+                                            <!--                                            <input value="Очистить" name="timer_clear" id="timer_clear" class="timer_btn" type="button">-->
+                                            <input value="Старт" name="timer_run" id="timer_run" class="timer_btn run" type="button">
+                                            <input value="Пауза" name="timer_pause" id="timer_pause" class="timer_btn pause hide" type="button">
+                                            <!--                                            <input value="Интервал" name="timer_interval" id="timer_interval" class="timer_btn" type="button">-->
+                                        </div>
+                                    </div>
+                                    <div class="block_row">
+                                        <!--                                        <div class="col-2-1 text_left">-->
+                                        <!--                                            <span>Название таймера: </span>-->
+                                        <!--                                            <span id="timer_name" class="text_bold" contenteditable="true">Секундомер</span>-->
+                                        <!--                                        </div>-->
+                                        <div class="col-2-2 text_right">
+                                            <label>
+                                                <!--                                                <span>Выбор схемы звука: </span>-->
+                                                <select name="timer_sound" id="timer_sound" hidden>
+                                                    <option value="1-pause-u-u-u" selected="selected">У-У-У</option>
+                                                    <option value="2-pause-u-i-p">У-И-П</option>
+                                                    <option value="3-pause-t-d-t-d">Т-Д-Т-Д</option>
+                                                    <option value="4-pause-u-u-t">У-У-Т</option>
+                                                    <option value="5-pause-u-d-d">У-Д-Д</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<!--            </main> &lt;!&ndash; .content &ndash;&gt;-->
+<!--        </div> &lt;!&ndash; .container &ndash;&gt;-->
+    </div> <!-- .main_block -->
+<!--</div>-->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" type="text/javascript" defer=""></script>
+<script src="https://gsgen.ru/gs-views/gsgen-ru/js/jquery.cookie.js" type="text/javascript" defer=""></script>
+<script src="https://gsgen.ru/gs-views/gsgen-ru/js/gs-main.js" type="text/javascript" defer=""></script>
+<script type="text/javascript" src="https://gsgen.ru/gs-views/gsgen-ru/js/gs-apps.js" defer=""></script>
+<script type="text/javascript" src="https://gsgen.ru/gs-views/gsgen-ru/js/share42/share42.js" defer=""></script>
+<!-- Yandex.Metrika counter -->
+<!--<script type="text/javascript">-->
+<!--    (function (d, w, c) {-->
+<!--        (w[c] = w[c] || []).push(function () {-->
+<!--            try {-->
+<!--                w.yaCounter12272134 = new Ya.Metrika({-->
+<!--                    id: 12272134,-->
+<!--                    clickmap: true,-->
+<!--                    trackLinks: true,-->
+<!--                    accurateTrackBounce: true,-->
+<!--                    webvisor: true,-->
+<!--                    trackHash: true-->
+<!--                });-->
+<!--            } catch (e) {-->
+<!--            }-->
+<!--        });-->
+
+<!--        var n = d.getElementsByTagName("script")[0],-->
+<!--            s = d.createElement("script"),-->
+<!--            f = function () {-->
+<!--                n.parentNode.insertBefore(s, n);-->
+<!--            };-->
+<!--        s.type = "text/javascript";-->
+<!--        s.async = true;-->
+<!--        s.src = "https://mc.yandex.ru/metrika/watch.js";-->
+
+<!--        if (w.opera == "[object Opera]") {-->
+<!--            d.addEventListener("DOMContentLoaded", f, false);-->
+<!--        } else {-->
+<!--            f();-->
+<!--        }-->
+<!--    })(document, window, "yandex_metrika_callbacks");-->
+<!--</script>-->
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/12272134" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+
+<script type="text/javascript" src="//cdn-rtb.sape.ru/rtb-b/js/564/2/62564.js" async=""></script>
+<script src="https://ssp-rtb.sape.ru/data/?callback=sapeRTB_602fa85ca_1107082&amp;srtbid=62564&amp;scids=161161666&amp;sx=1536&amp;sy=694&amp;ref=https%3A%2F%2Fwww.google.com%2F&amp;u=https%3A%2F%2Fgsgen.ru%2Ftools%2Fsekundomer-online-timer%2F&amp;allimps=1&amp;fl=0&amp;v=2&amp;tz=%2B02%3A00"
+        data-srtb-id="16" data-srtb-type="partnerId"></script>
+<script type="text/javascript" async="" src="//p1.dircont3.com/nv.js"></script>
+<script src="https://ssp-rtb.sape.ru/data/?callback=sapeRTB_602fa85ca_4259034&amp;srtbid=95403&amp;scids=93390459&amp;sx=1536&amp;sy=694&amp;ref=https%3A%2F%2Fwww.google.com%2F&amp;allimps=0&amp;fl=0&amp;v=2&amp;tz=%2B02%3A00&amp;u=https%3A%2F%2Fgsgen.ru%2Ftools%2Fsekundomer-online-timer%2F"
+        async=""></script>
+<iframe src="//www.acint.net/mc/?dp=14" style="width:1px;height:1px;display:none;" width="0" height="0" frameborder="0"></iframe>
+<img src="https://redirect.frontend.weborama.fr/rd?url=https%3A%2F%2Fut.rktch.com%2Fmatchspm%3Fpi%3D1000006%26pui%3D{WEBO_CID}" style="display: none;" alt="" width="1" height="1"><img
+        src="https://ut.rktch.com/matchspm?pi=2&amp;pui=01a411b17dfc4911bafb3183338b2b08" style="display: none;" alt="" width="1" height="1"><img src="https://ut.rktch.com/matchbt?bi=29"
+                                                                                                                                                  style="display: none;" alt="" width="1"
+                                                                                                                                                  height="1"><img
+        src="https://ut.rktch.com/matchbt?bi=27" style="display: none;" alt="" width="1" height="1"><img src="https://ut.rktch.com/matchbt?bi=50" style="display: none;" alt="" width="1"
+                                                                                                         height="1"><img src="https://ut.rktch.com/matchbt?bi=39" style="display: none;" alt=""
+                                                                                                                         width="1" height="1">
+<script type="text/javascript" async="" charset="UTF-8" src="https://ssp-rtb.sape.ru/crypme/?callback=sapeRTBreadBtwResponse_62564&amp;place=254017&amp;partner=7" data-srtb-id="254017"
+        data-srtb-type="sectionId"></script>
+</body>
+</html>

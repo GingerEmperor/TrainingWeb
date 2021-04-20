@@ -151,6 +151,9 @@
                     </div>
 
                 </form>
+                <form th:method="GET" th:action="'/trainings/'+${training.getId()}+'/start'" sec:authorize="hasAuthority('ADMIN')">
+                    <button type="submit" class="btn btn-outline-success">START</button>
+                </form>
             </div>
         </div>
     </div>

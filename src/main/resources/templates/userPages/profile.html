@@ -18,7 +18,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex flex-column align-items-center text-center">
-                                    <img th:if="${user.getImage()==null || user.getImage().isEmpty()}" th:src="@{'/img/'+'default_avatar2.png'}"
+                                    <img th:if="${user.getImage()==null || user.getImage().isEmpty()}" th:src="@{'/img/'+'default_avatar.png'}"
                                          alt="UserImage" class="rounded-circle" width="150">
                                     <img th:unless="${user.getImage()==null || user.getImage().isEmpty()}" th:src="${'/img/'+user.getImage()}"
                                          alt="UserImage" class="rounded-circle" width="150">
