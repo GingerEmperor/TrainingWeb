@@ -13,7 +13,7 @@
             <div class="card mb-4 shadow-sm">
                 <!--//TODO add image-->
                 <div class="card">
-                    <img th:src="@{/img/allMus.jpg}" class="card-img-top"
+                    <img th:src="@{/img/Arnold_Schwarzenegger_1974.jpg}" class="card-img-top"
                          alt="All"
                          align="center" style="background: #55595c" height="225">
                     <div class="card-body" style="background: #C0C0C0">
@@ -117,7 +117,7 @@
 
 
 <!--//add muscle group-->
-<div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white" sec:authorize="hasAuthority('ADMIN')">
+<div class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white" sec:authorize="isAuthenticated()">
     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
         <h5 class="text-white">Добавить группу мышц</h5>
     </button>

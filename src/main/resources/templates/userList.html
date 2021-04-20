@@ -20,7 +20,14 @@
 
                             <input type="hidden" name="userId" th:value="${user.getId()}">
                             <p class="card-text" th:text="${user.getUsername()}+'  |  '+${user.getPassword()}+'  |'"/>
-
+                            <img th:if="${user.getImage()==null || user.getImage().isEmpty()}" th:src="@{'/img/'+'default_avatar.png'}"
+                                 class=" mb-3 mt-1"
+                                 th:alt="${user.getUsername()}"
+                                 height="150">
+                            <img th:unless="${user.getImage()==null || user.getImage().isEmpty()}" th:src="${'/img/'+user.getImage()}"
+                                 class="mb-3 mt-1"
+                                 th:alt="${user.getUsername()}"
+                                 height="150">
                             <div th:if="${user.getStatus()!=null}" class="text-white text-center">
                                 <h4 th:style="'background-color:'+${user.getStatus().getColorCode()}"
                                     th:text="'STATUS: '+${user.getStatus().name()} "></h4>
@@ -34,22 +41,37 @@
                             </br>
                             <p class="card-text" th:text="'Registered  at: '+${user.getRegisteredAt()}"/>
                             <p class="card-text" th:text="'Birth date: '+${user.getBirthDate()}"/>
-                            <div class="d-flex justify-content-between align-items-center">
+<!--                            <div class="d-flex justify-content-between align-items-center">-->
                                 <!--//TODO make buttons work-->
-                                <button type="submit" class="btn btn-outline-warning mt-2">Submit</button>
-                                <button type="button" class="btn btn-outline-success mt-2">Watch</button>
-                                <!--                                <p th:text="${user.getStatus()== allStatus.get(0).valueOf('BANNED')}"/>-->
-                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" th:formaction="'/admin/users/'+${user.getId()}+'/ban'" type="submit"
-                                        class="btn btn-outline-danger mt-2">Ban
-                                </button>
-                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" th:formaction="'/admin/users/'+${user.getId()}+'/unban'" type="submit"
-                                        class="btn btn-outline-danger mt-2">UnBan
-                                </button>
+                                <!--                                <button type="submit" class="btn btn-outline-warning mt-2">Submit</button>-->
+                                <!--                                <button type="submit" th:method="GET" th:formaction="'/users/'+${user.getUsername()}" class="btn btn-outline-success mt-2">Watch</button>-->
+                                <!--                                &lt;!&ndash;                                <p th:text="${user.getStatus()== allStatus.get(0).valueOf('BANNED')}"/>&ndash;&gt;-->
+                                <!--                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" th:formaction="'/admin/users/'+${user.getId()}+'/ban'" type="submit"-->
+                                <!--                                        class="btn btn-outline-danger mt-2">Ban-->
+                                <!--                                </button>-->
+                                <!--                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" th:formaction="'/admin/users/'+${user.getId()}+'/unban'" type="submit"-->
+                                <!--                                        class="btn btn-outline-danger mt-2">UnBan-->
+                                <!--                                </button>-->
                                 <!--                                <a  type="button" th:action="'/users/'+${user.getId()}+'/ban'"  class="btn btn-outline-danger mt-2">Delete</a>-->
                                 <!--                                <button type="button" class="btn btn-outline-danger mt-2">Delete</button>-->
                                 <!--                                -->
 
-                            </div>
+                                <div class="btn-group d-flex justify-content-between align-items-center">
+                                    <form th:action="'/users/'+${user.getUsername()}">
+                                        <button type="button" class="btn btn-outline-warning mt-2">Submit</button>
+                                    </form>
+                                    <form th:action="'/users/'+${user.getUsername()}">
+                                        <button type="submit" class="btn btn-outline-success mt-2">View</button>
+                                    </form>
+                                    <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" th:formaction="'/admin/users/'+${user.getId()}+'/ban'" type="submit"
+                                            class="btn btn-outline-danger mt-2">Ban
+                                    </button>
+                                    <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" th:formaction="'/admin/users/'+${user.getId()}+'/unban'" type="submit"
+                                            class="btn btn-outline-danger mt-2">UnBan
+                                    </button>
+                                </div>
+
+<!--                            </div>-->
                         </form>
                         <form th:method="DELETE" th:action="'/admin/users/'+${user.getId()}">
                             <button type="button" class="btn btn-outline-danger mt-2" data-toggle="modal" th:data-target="'#myModal'+${user.getId()}">Delete</button>

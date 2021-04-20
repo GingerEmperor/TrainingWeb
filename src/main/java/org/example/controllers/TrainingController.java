@@ -3,16 +3,12 @@ package org.example.controllers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.example.models.Exercise;
@@ -57,11 +53,11 @@ public class TrainingController {
         Training training = trainingService.findById(id);
         model.addAttribute("training", training);
 
-        List<TrainingElement> trainingElements=training.getTrainingElements();
+        List<TrainingElement> trainingElements = training.getTrainingElements();
         final Set<Exercise> exerciseSet = new LinkedHashSet<>();
         trainingElements.forEach(trainingElement -> exerciseSet.add(trainingElement.getExercise()));
 
-        model.addAttribute("exerciseSet",exerciseSet);
+        model.addAttribute("exerciseSet", exerciseSet);
         return "trainingTemplates/trainingDetails";
     }
 
@@ -70,87 +66,86 @@ public class TrainingController {
         Map<String, List<Training>> criteria_trainingMap = new TreeMap<>();
 
         List<Training> trainings = trainingService.findAll();
-        Collections.sort(trainings,(t1, t2) -> t1.getName().toLowerCase().compareTo(t2.getName().toLowerCase()));
-        criteria_trainingMap.put("All",trainings);
+        Collections.sort(trainings, (t1, t2) -> t1.getName().toLowerCase().compareTo(t2.getName().toLowerCase()));
+        criteria_trainingMap.put("All", trainings);
         // model.addAttribute("allTrainings", trainings);
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
-        model.addAttribute("sortCriteria_TrainingMap",criteria_trainingMap);
+        model.addAttribute("sortCriteria_TrainingMap", criteria_trainingMap);
         return "trainingTemplates/trainings";
     }
 
     @GetMapping("/allDebug")
     public String showAll(Model model) {
         Map<String, List<Training>> criteria_trainingMap = new TreeMap<>();
-        criteria_trainingMap.put("All(DEBUG)",trainingService.findAll());
+        criteria_trainingMap.put("All(DEBUG)", trainingService.findAll());
 
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
-        model.addAttribute("sortCriteria_TrainingMap",criteria_trainingMap);
+        model.addAttribute("sortCriteria_TrainingMap", criteria_trainingMap);
         return "trainingTemplates/trainings";
     }
 
     @GetMapping("/byDifficulty")
-    public String showAllByDifficulty(Model model){
+    public String showAllByDifficulty(Model model) {
         Map<String, List<Training>> difficulty_trainingMap = new LinkedHashMap<>();
         Stream.of(Difficulty.values())
-                .forEach(difficulty -> difficulty_trainingMap.put(difficulty.getWord(),trainingService.findAllByDifficulty(difficulty)));
+                .forEach(difficulty -> difficulty_trainingMap.put(difficulty.getWord(), trainingService.findAllByDifficulty(difficulty)));
 
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
-        model.addAttribute("sortCriteria_TrainingMap",difficulty_trainingMap);
+        model.addAttribute("sortCriteria_TrainingMap", difficulty_trainingMap);
         difficulty_trainingMap.keySet().forEach(System.out::println);
         return "trainingTemplates/trainings";
     }
 
     @GetMapping("/byGrade")
-    public String showAllByGrade(Model model){
+    public String showAllByGrade(Model model) {
         Map<String, List<Training>> grade_trainingMap = new TreeMap<>();
         Stream.of(ForWho.values())
-                .forEach(grade -> grade_trainingMap.put(grade.getWord(),trainingService.findAllByGrade(grade)));
+                .forEach(grade -> grade_trainingMap.put(grade.getWord(), trainingService.findAllByGrade(grade)));
 
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
-        model.addAttribute("sortCriteria_TrainingMap",grade_trainingMap);
+        model.addAttribute("sortCriteria_TrainingMap", grade_trainingMap);
         grade_trainingMap.keySet().forEach(System.out::println);
         return "trainingTemplates/trainings";
     }
 
     @GetMapping("/byGoal")
-    public String showAllByGoal(Model model){
+    public String showAllByGoal(Model model) {
         Map<String, List<Training>> goal_trainingMap = new TreeMap<>();
         Stream.of(Goal.values())
-                .forEach(goal -> goal_trainingMap.put(goal.getWord(),trainingService.findAllByGoal(goal)));
+                .forEach(goal -> goal_trainingMap.put(goal.getWord(), trainingService.findAllByGoal(goal)));
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
-        model.addAttribute("sortCriteria_TrainingMap",goal_trainingMap);
+        model.addAttribute("sortCriteria_TrainingMap", goal_trainingMap);
         return "trainingTemplates/trainings";
     }
 
     @GetMapping("/byMuscleGroups")
-    public String showAllByMuscleGroups(Model model){
+    public String showAllByMuscleGroups(Model model) {
         Map<String, List<Training>> muscleGroup_trainingMap = new TreeMap<>();
 
         muscleGroupService.findAll().forEach(muscleGroup ->
-                muscleGroup_trainingMap.put(muscleGroup.getName(),trainingService.findAllByPrimaryMuscleGroups(muscleGroup)));
+                muscleGroup_trainingMap.put(muscleGroup.getName(), trainingService.findAllByPrimaryMuscleGroups(muscleGroup)));
 
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
-        model.addAttribute("sortCriteria_TrainingMap",muscleGroup_trainingMap);
+        model.addAttribute("sortCriteria_TrainingMap", muscleGroup_trainingMap);
         return "trainingTemplates/trainings";
     }
 
     @GetMapping("/byMuscleGroups/{id}")//TODO add frontend link
-    public String showByConcreteMuscleGroup(@PathVariable Long id,Model model){
+    public String showByConcreteMuscleGroup(@PathVariable Long id, Model model) {
         Map<String, List<Training>> muscleGroup_trainingMap = new TreeMap<>();
 
-        MuscleGroup muscleGroup=muscleGroupService.findById(id);
-        muscleGroup_trainingMap.put(muscleGroup.getName(),trainingService.findAllByPrimaryMuscleGroups(muscleGroup));
+        MuscleGroup muscleGroup = muscleGroupService.findById(id);
+        muscleGroup_trainingMap.put(muscleGroup.getName(), trainingService.findAllByPrimaryMuscleGroups(muscleGroup));
 
         model.addAttribute("allMuscleGroups", muscleGroupService.findAll());
-        model.addAttribute("sortCriteria_TrainingMap",muscleGroup_trainingMap);
+        model.addAttribute("sortCriteria_TrainingMap", muscleGroup_trainingMap);
         return "trainingTemplates/trainings";
     }
-
 
     @GetMapping("/add")
     public String addTrainingPage(
             @RequestParam(name = "primaryMuscleGroup") String stringWithPrimaryMuscleGroupIds,
-            @RequestParam(name = "secondaryMuscleGroup",required = false) String stringWithSecondaryMuscleGroupIds,
+            @RequestParam(name = "secondaryMuscleGroup", required = false) String stringWithSecondaryMuscleGroupIds,
             Model model
     ) {
         //Add muscles
@@ -167,7 +162,7 @@ public class TrainingController {
             muscles.addAll(muscleGroup.getMuscleSet());
         }
 
-        if(stringWithSecondaryMuscleGroupIds!=null) {
+        if (stringWithSecondaryMuscleGroupIds != null) {
             String[] arrOfSecondaryMuscleGroupId = stringWithSecondaryMuscleGroupIds.split(",");
             for (String muscleGroupId : arrOfSecondaryMuscleGroupId) {
                 MuscleGroup muscleGroup = muscleGroupService.findById(Long.parseLong(muscleGroupId));
@@ -198,7 +193,7 @@ public class TrainingController {
     public String addTraining(
             @RequestParam(name = "trainingName") String trainingName,
             @RequestParam(name = "primaryMuscleGroup") String mainMuscleGroups,
-            @RequestParam(name = "secondaryMuscleGroup",required = false) String secondaryMuscleGroups,
+            @RequestParam(name = "secondaryMuscleGroup", required = false) String secondaryMuscleGroups,
             @RequestParam(name = "forWho") String forWho,
             @RequestParam(name = "difficulty") String difficulty,
             @RequestParam(name = "goal") String goal,
@@ -208,7 +203,7 @@ public class TrainingController {
             @RequestParam(name = "trial") String trailsCount,
             @RequestParam(name = "rest") String timeToRest,
             @RequestParam(name = "someAdvice") String someAdvice,
-            @RequestParam(name = "trainingImage",required = false) MultipartFile image
+            @RequestParam(name = "trainingImage", required = false) MultipartFile image
     ) {
         System.out.println(image);
         System.out.println(image.getName());
@@ -241,7 +236,6 @@ public class TrainingController {
             }
         }
 
-
         List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
         for (int i = 0; i < mainGroupsNamesArr.length; i++) {
             primaryMuscleGroups.add(muscleGroupService.
@@ -249,10 +243,10 @@ public class TrainingController {
         }
 
         List<MuscleGroup> secondaryMuscleGroupsList = new ArrayList<>();
-        System.out.println("-----"+secondaryGroupsIndexesString);
-        if(!secondaryGroupsIndexesString.trim().isEmpty()) {
+        System.out.println("-----" + secondaryGroupsIndexesString);
+        if (!secondaryGroupsIndexesString.trim().isEmpty()) {
             final String[] secondaryGroupsNamesArr = secondaryGroupsIndexesString.split(",");
-           Arrays.stream(secondaryGroupsNamesArr).forEach(System.out::println);
+            Arrays.stream(secondaryGroupsNamesArr).forEach(System.out::println);
             System.out.println(secondaryGroupsNamesArr.length);
             if (secondaryGroupsNamesArr.length != 0) {
                 for (int i = 0; i < secondaryGroupsNamesArr.length; i++) {
@@ -261,16 +255,16 @@ public class TrainingController {
                 }
             }
         }
-        Training training=trainingService.createTraining(
-                trainingName,forWho,difficulty,goal,trainingElements,
-                someAdvice,image,primaryMuscleGroups,secondaryMuscleGroupsList);
+        Training training = trainingService.createTraining(
+                trainingName, forWho, difficulty, goal, trainingElements,
+                someAdvice, image, primaryMuscleGroups, secondaryMuscleGroupsList);
         System.out.println(trainingService.save(training));
 
         return "redirect:/trainings";
     }
 
     @DeleteMapping("/{id}/delete")
-    public String deleteTraining(@PathVariable long id){
+    public String deleteTraining(@PathVariable long id) {
         try {
             trainingService.deleteById(id);
             return "redirect:/trainings";
@@ -278,6 +272,21 @@ public class TrainingController {
             e.printStackTrace();
             return "redirect:/";
         }
+    }
+
+    @Deprecated
+    @GetMapping("/timer")
+    public String startTrainingDebug() {
+        System.out.println("timer");
+        return "trainingTemplates/startTrainingPage";
+    }
+
+    @GetMapping("/{id}/start")
+    public String startTraining(@PathVariable Long id, Model model) {
+
+        Training training = trainingService.findById(id);
+        model.addAttribute("training", training);
+        return "trainingTemplates/startTrainingPage";
     }
 
 }

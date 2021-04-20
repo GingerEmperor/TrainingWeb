@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.example.exeptions.AlreadyExistsException;
+import org.example.exeptions.CanNotDeleteException;
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.exeptions.NotFoundException;
 import org.example.models.Exercise;
 import org.example.models.ExerciseInfo;
+import org.example.models.Training;
 import org.example.models.TrainingElement;
 import org.example.models.enums.Equipment;
 import org.example.models.muscles.Muscle;
@@ -178,11 +180,27 @@ public class ExerciseService {
         return exerciseRepository.findAllBySecondWorkingMusclesContaining(muscle);
     }
 
+    public Set<Exercise> findAllByAnyWorkingMuscleGroup(MuscleGroup muscleGroup){
+        Set<Exercise> resultEx = new HashSet<>();
+        resultEx.addAll(findAllByPrimaryWorkingMuscleGroup(muscleGroup));
+        resultEx.addAll(findAllBySecondaryWorkingMuscleGroup(muscleGroup));
+        return resultEx;
+    }
+
     public Set<Exercise> findAllByPrimaryWorkingMuscleGroup(MuscleGroup muscleGroup) {
         Set<Exercise> resultEx = new HashSet<>();
         for (Muscle m : muscleGroup.getMuscleSet()) {
             final Set<Exercise> allByPrimaryWorkingMuscle = findAllByPrimaryWorkingMuscle(m);
             resultEx.addAll(allByPrimaryWorkingMuscle);
+        }
+        return resultEx;
+    }
+
+    public Set<Exercise> findAllBySecondaryWorkingMuscleGroup(MuscleGroup muscleGroup) {
+        Set<Exercise> resultEx = new HashSet<>();
+        for (Muscle m : muscleGroup.getMuscleSet()) {
+            final Set<Exercise> allBySecondaryWorkingMuscle = findAllBySecondaryWorkingMuscle(m);//
+            resultEx.addAll(allBySecondaryWorkingMuscle);
         }
         return resultEx;
     }
@@ -198,6 +216,10 @@ public class ExerciseService {
     @Transactional
     public void deleteExerciseById(final long id) {
         Exercise exerciseToDelete = findById(id);
+        final List<Training> trainingsWithThisExercise = trainingService.findByExercise(exerciseToDelete);
+        if(trainingsWithThisExercise!=null && !trainingsWithThisExercise.isEmpty()){
+            throw new CanNotDeleteException("Нельзя удалить упражнение "+exerciseToDelete.getTitle()+" есть тренировки с ним "+trainingsWithThisExercise);
+        }
         try {
             trainingElementService.findAllByExercise(exerciseToDelete).forEach(trainingElementService::delete);
             exerciseToDelete.getPrimaryWorkingMuscles().clear();
@@ -212,6 +234,7 @@ public class ExerciseService {
         }catch (Exception e){
             System.out.println("CANNOT DELETE EXERCISE");
             e.printStackTrace();
+            throw new CanNotDeleteException("CANNOT DELETE EXERCISE");
         }
     }
 
@@ -281,5 +304,12 @@ public class ExerciseService {
         save(updatedExercise);
 
         return updatedExercise;
+    }
+
+    public boolean checkIfExistsExercisesByMuscleGroup(final MuscleGroup muscleGroupToCheck) {
+        if (findAllByAnyWorkingMuscleGroup(muscleGroupToCheck).isEmpty()) {
+            return false;
+        }else
+            return true;
     }
 }

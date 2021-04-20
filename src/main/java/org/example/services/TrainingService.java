@@ -2,7 +2,10 @@ package org.example.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.FileCanNotSaveException;
@@ -74,6 +77,16 @@ public class TrainingService {
     public Training findByName(String name) {
         return trainingRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Такой тренировки нет в базе двнных"));
+    }
+
+    public List<Training> findByExercise(Exercise exercise){
+        Set<Training> trainings=new HashSet<>();
+        trainingElementService.findAllByExercise(exercise).stream().forEach(trainingElement -> trainings.addAll(trainingRepository.findAllByTrainingElements(trainingElement)));
+        System.out.println("============");
+        System.out.println(trainings);
+        // trainings.addAll(trainingRepository.findAllByTrainingElements())
+        // trainingRepository.findAllByTrainingElements(trainingElementService.findAllByExercise(exercise))
+        return null;
     }
 
     public boolean checkIfExistsTrainingByName(String name) {
