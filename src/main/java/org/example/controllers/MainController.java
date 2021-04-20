@@ -13,10 +13,15 @@ public class MainController {
 
     // private final CSVService csvService;
 
-    @GetMapping("/")
-    public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
+    @GetMapping("/main")
+    public String main(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
         model.addAttribute("name", name);
         return "mainPage";
+    }
+
+    @GetMapping("/")
+    public String greeting( Model model) {
+        return "greetings";
     }
 
 }

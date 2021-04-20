@@ -13,7 +13,7 @@
                 <div class="card" style="background-color: #C0C0C0">
                     <!--                    <img src="https://images.wallpaperscraft.ru/image/ganteli_sportzal_ves_diski_118338_1920x1080.jpg" alt="Cover" class="card-img-top">-->
                     <div class="card-body text-center">
-                        <img th:if="${user.getImage()==null || user.getImage().isEmpty()}" th:src="@{'/img/'+'default_avatar2.png'}" style="width:200px;margin-top:-65px"
+                        <img th:if="${user.getImage()==null || user.getImage().isEmpty()}" th:src="@{'/img/'+'default_avatar.png'}" style="width:200px;margin-top:-65px"
                              class="img-fluid img-thumbnail rounded-circle border-0 mb-3"
                              th:alt="${user.getUsername()}"
                              height="225">

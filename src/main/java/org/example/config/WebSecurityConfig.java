@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -27,6 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/registration").permitAll()
+                .antMatchers("/muscleGroups","/muscleGroups/**").permitAll()
+                .antMatchers("/muscles","/muscles/**").permitAll()
+                .antMatchers("/exercises","/exercises/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -39,6 +43,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //        http
         //                .authorizeRequests()
         //                .anyRequest().permitAll();
+    }
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers(
+
+                // статика
+                // "/css/**",
+                // "/js/**",
+                // "/fonts/**",
+                // "images/all/**",
+                "images/**",
+                "/images/all/**",
+                "/images/all/muscleGroups/",
+                "/images/all/muscleGroups/**",
+                "/img/all/**",
+                "/img/**"
+
+        );
     }
 
     @Override

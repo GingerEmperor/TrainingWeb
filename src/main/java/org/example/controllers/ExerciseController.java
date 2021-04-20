@@ -81,7 +81,7 @@ public class ExerciseController {
 
     }
 
-    @GetMapping("/byMuscleGroups/{id}")//TODO to add frontend link for this
+    @GetMapping("/byMuscleGroups/{id}")
     public String showAllByConcreteMuscleGroup(
             @PathVariable(name = "id") long id,
             Model model) {
@@ -395,7 +395,11 @@ public class ExerciseController {
     @DeleteMapping("/{id}/delete")
     public String deleteMuscleById(@PathVariable long id) {
         try {
+            // if ()
+            // if(exerciseService.findById(id))
+            // exerciseService.
             exerciseService.deleteExerciseById(id);
+
             return "redirect:/exercises";
         } catch (Exception e) {
             e.printStackTrace();
