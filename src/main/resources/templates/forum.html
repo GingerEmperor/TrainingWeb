@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div th:insert="common/commonHead::commonHead"></div>
 <body>
 <header th:insert="parts/header::header"></header>
@@ -7,9 +7,61 @@
     <p>This is FORUM page</p>
 </div>
 
+<div class="container mt-5">
+    <div th:each="el :${allPosts}" class="col-lg-12 col-md-12">
+        <div class="card mb-4 shadow-sm">
+            <div class="card" style="background: #55595c">
+                <div class="row">
+                    <img th:src="${'/img/'+el.getTrainingImage()}" class="card-img-top col-8"
+                         th:alt="${el.getShortText()}"
+                         align="center">
+                    <img th:src="${'/img/'+el.getUserImage()}" class="card-img-top col-4"
+                         th:alt="${el.getShortText()}"
+                         align="center">
+                </div>
+                <div class="card-body" style="background: #C0C0C0">
+                    <div class="mb-2 ">
+                        <p class="card-text text-dark mt-1"> ShortText: <span class="font-weight-bold ml-5" th:text="${el.getShortText()}"></span></p>
+                        <p class="card-text text-dark mt-1"> Text: <span class="font-weight-bold ml-5" th:text="${el.getText()}"></span></p>
+                        <p class="card-text text-dark mt-1"> Date: <span class="font-weight-bold ml-5" th:text="${el.getPostTime()}"></span></p>
+                        <p class="card-text text-dark mt-1"> Author: <span class="font-weight-bold ml-5"
+                                                                           th:text="${el.getAuthor().getUsername()+' '+el.getAuthor().getFirstName()+' '+el.getAuthor().getLastName()}"
+                        ></span></p>
+                    </div>
 
+                    <div class="btn-group ">
 
+                        <form th:method="DELETE" th:action="'/post/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
 
-<footer  th:insert="parts/footer::footer"></footer>
+                            <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
+                                <div class="modal-dialog ">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content bg-dark" style="border-style: solid ">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title text-center text-white ">Delete confirm</h4>
+                                            <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-white" th:text="'Are you sure you want to delete <<'+${el.getShortText()}+'>> ?'">Are you sure you want to delete</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:insert="parts/footer::footer"></footer>
 </body>
 </html>
