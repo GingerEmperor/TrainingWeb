@@ -152,7 +152,11 @@
 
                 </form>
                 <form th:method="GET" th:action="'/trainings/'+${training.getId()}+'/start'" sec:authorize="hasAuthority('ADMIN')">
-                    <button type="submit" class="btn btn-outline-success">START</button>
+                    <button disabled type="submit" class="btn btn-outline-success">START</button>
+                </form>
+                <form class="float-right" th:method="PUT" th:action="'/trainings/'+${training.getId()}+'/done'">
+                    <input name="username" th:value="${#authentication.name}" hidden>
+                    <button type="submit" class="btn btn-outline-success" data-toggle="modal">DONE</button>
                 </form>
             </div>
         </div>

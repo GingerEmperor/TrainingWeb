@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.example.models.Exercise;
 import org.example.models.Training;
 import org.example.models.TrainingElement;
+import org.example.models.User;
 import org.example.models.enums.Difficulty;
 import org.example.models.enums.ForWho;
 import org.example.models.enums.Goal;
@@ -21,14 +22,17 @@ import org.example.models.muscles.Muscle;
 import org.example.models.muscles.MuscleGroup;
 import org.example.services.ExerciseService;
 import org.example.services.MuscleGroupService;
+import org.example.services.PostService;
 import org.example.services.TrainingElementService;
 import org.example.services.TrainingService;
+import org.example.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +51,10 @@ public class TrainingController {
     private final ExerciseService exerciseService;
 
     private final TrainingElementService trainingElementService;
+
+    private final UserService userService;
+
+    private final PostService postService;
 
     @GetMapping("/{id}")
     public String showTrainingDetails(@PathVariable Long id, Model model) {
@@ -287,6 +295,17 @@ public class TrainingController {
         Training training = trainingService.findById(id);
         model.addAttribute("training", training);
         return "trainingTemplates/startTrainingPage";
+    }
+
+    @PutMapping("/{id}/done")
+    public String finishTraining(@PathVariable(name = "id") Long trainingId, String username, Model model) {
+        final User user = userService.findByUsername(username);
+        final Training training = trainingService.findById(trainingId);
+
+        System.out.println("User - "+user.getUsername()+" finished training "+training.getName());
+        postService.createPost(user,training.getName()+" is done","FullText",training);
+        //todo add js "Good job"
+        return "redirect:/";
     }
 
 }

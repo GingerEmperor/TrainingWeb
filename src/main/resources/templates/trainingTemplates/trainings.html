@@ -6,22 +6,22 @@
 <!--<p>Trainings</p>-->
 
 <div class="container-lg">
-    <!--    TODO search by <criteria>-->
-    <form action="/trainings/searchBy" th:method="GET" class="form-inline my-2 my-lg-0">
-        <div class="input-group mt-5 mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-                <div class="input-group-text">Search by</div>
-                <select class="custom-select" id="search_by" name="search_by" required>
-                    <option selected disabled>Chose option</option>
-                    <option value="muscleGroup">Muscle group</option>
-                    <option value="muscle">Muscle</option>
-                    <option value="exercise">Exercise title</option>
-                </select>
-                <input name="inputSearch" id="inputSearch" class="form-control mr-sm-2" type="search" placeholder="..." aria-label="Search" required>
-            </div>
-            <button class="btn btn-outline-success " type="submit">Search</button>
-        </div>
-    </form>
+<!--    &lt;!&ndash;    TODO search by <criteria>&ndash;&gt;-->
+<!--    <form action="/trainings/searchBy" th:method="GET" class="form-inline my-2 my-lg-0">-->
+<!--        <div class="input-group mt-5 mb-2 mr-sm-2">-->
+<!--            <div class="input-group-prepend">-->
+<!--                <div class="input-group-text">Search by</div>-->
+<!--                <select class="custom-select" id="search_by" name="search_by" required>-->
+<!--                    <option selected disabled>Chose option</option>-->
+<!--                    <option value="muscleGroup">Muscle group</option>-->
+<!--                    <option value="muscle">Muscle</option>-->
+<!--                    <option value="exercise">Exercise title</option>-->
+<!--                </select>-->
+<!--                <input name="inputSearch" id="inputSearch" class="form-control mr-sm-2" type="search" placeholder="..." aria-label="Search" required>-->
+<!--            </div>-->
+<!--            <button class="btn btn-outline-success " type="submit">Search</button>-->
+<!--        </div>-->
+<!--    </form>-->
 
 
     <div th:each="criteria :${sortCriteria_TrainingMap.keySet()}">
