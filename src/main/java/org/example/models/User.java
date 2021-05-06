@@ -32,15 +32,21 @@ import lombok.Setter;
 @Builder
 @Table(name = "usr")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String username;
+
     private String firstName;
+
     private String lastName;
+
     private Date birthDate;
+
     private String email;
+
     private String gender;
 
     private String image;
@@ -54,9 +60,13 @@ public class User {
 
     private Date registeredAt;
 
-    @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    public boolean isAdmin(){
+        return roles.contains(Role.ADMIN);
+    }
 
 }

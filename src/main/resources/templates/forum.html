@@ -21,40 +21,57 @@
                 </div>
                 <div class="card-body" style="background: #C0C0C0">
                     <div class="mb-2 ">
-                        <p class="card-text text-dark mt-1"> ShortText: <span class="font-weight-bold ml-5" th:text="${el.getShortText()}"></span></p>
-                        <p class="card-text text-dark mt-1"> Text: <span class="font-weight-bold ml-5" th:text="${el.getText()}"></span></p>
-                        <p class="card-text text-dark mt-1"> Date: <span class="font-weight-bold ml-5" th:text="${el.getPostTime()}"></span></p>
-                        <p class="card-text text-dark mt-1"> Author: <span class="font-weight-bold ml-5"
-                                                                           th:text="${el.getAuthor().getUsername()+' '+el.getAuthor().getFirstName()+' '+el.getAuthor().getLastName()}"
-                        ></span></p>
+
+                        <div class="row">
+                            <div class="col-sm-3 text-secondary"><h6 class="mb-0">ShortText:</h6></div>
+                            <div class="col-sm-9 " th:text="${el.getShortText()}"></div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3 text-secondary"><h6 class="mb-0">Text:</h6></div>
+                            <div class="col-sm-9 " th:text="${el.getText()}"></div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3 text-secondary"><h6 class="mb-0">Date:</h6></div>
+                            <div class="col-sm-9 " th:text="${el.getPostTime()}"></div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3 text-secondary"><h6 class="mb-0">Author:</h6></div>
+                            <div class="col-sm-9 "
+                                 th:text="${el.getAuthor().getUsername()+' '+el.getAuthor().getFirstName()+' '+el.getAuthor().getLastName()}"></div>
+                        </div>
+                        <hr>
                     </div>
 
                     <div class="btn-group ">
 
-                        <form th:method="DELETE" th:action="'/post/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
-                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
+                        <div th:if="${#authorization.expression('hasAuthority(''ADMIN'')') || el.getAuthor().getUsername().equals(#authentication.name)}">
+                            <form th:method="DELETE" th:action="'/post/'+${el.getId()}+'/delete'">
+                                <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" th:data-target="'#myModal'+${el.getId()}">Delete</button><!-- Modal -->
+                                <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
+                                    <div class="modal-dialog ">
 
-                            <div class="modal fade" th:id="'myModal'+${el.getId()}" role="dialog">
-                                <div class="modal-dialog ">
+                                        <!-- Modal content-->
+                                        <div class="modal-content bg-dark" style="border-style: solid ">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title text-center text-white ">Delete confirm</h4>
+                                                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="text-white" th:text="'Are you sure you want to delete <<'+${el.getShortText()}+'>> ?'">Are you sure you want to delete</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                            </div>
+                                        </div>
 
-                                    <!-- Modal content-->
-                                    <div class="modal-content bg-dark" style="border-style: solid ">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title text-center text-white ">Delete confirm</h4>
-                                            <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p class="text-white" th:text="'Are you sure you want to delete <<'+${el.getShortText()}+'>> ?'">Are you sure you want to delete</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-outline-danger">Delete</button>
-                                        </div>
                                     </div>
-
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

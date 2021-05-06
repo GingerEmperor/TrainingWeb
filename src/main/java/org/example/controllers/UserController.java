@@ -3,6 +3,8 @@ package org.example.controllers;
 import java.util.List;
 
 import org.example.models.User;
+import org.example.models.forum.Post;
+import org.example.services.PostService;
 import org.example.services.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,17 +23,22 @@ public class UserController {
 
     private final UserService userService;
 
+    private final PostService postService;
+
     @GetMapping("")
-    public String getUsers(Model model){
+    public String getUsers(Model model) {
         List<User> allUsers = userService.findAll();
-        model.addAttribute("users",allUsers);
+
+        model.addAttribute("users", allUsers);
         return "userPages/users";
     }
 
     @GetMapping("/{username}")
-    public String getUserInfoByUsername(@PathVariable String username,Model model){
+    public String getUserInfoByUsername(@PathVariable String username, Model model) {
         User user = userService.findByUsername(username);
-        model.addAttribute("user",user);
+        final List<Post> allUserPosts = postService.findAllByAuthorId(user.getId());
+        model.addAttribute("user", user);
+        model.addAttribute("allUserPosts", allUserPosts);
         return "userPages/profile";
     }
 }
