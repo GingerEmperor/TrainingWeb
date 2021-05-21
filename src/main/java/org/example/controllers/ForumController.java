@@ -1,6 +1,8 @@
 package org.example.controllers;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.example.models.forum.Post;
 import org.example.services.PostService;
@@ -21,8 +23,9 @@ public class ForumController {
     @GetMapping()
     public String showForum(Model model) {
         final List<Post> allPosts = postService.findAll();
+        final List<Post> sortedPosts = allPosts.stream().sorted(Comparator.comparing(Post::getPostTime).reversed()).collect(Collectors.toList());
 
-        model.addAttribute("allPosts", allPosts);
+        model.addAttribute("allPosts", sortedPosts);
         return "forum";
     }
 

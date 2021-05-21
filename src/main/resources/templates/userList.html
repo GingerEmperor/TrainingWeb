@@ -19,7 +19,7 @@
                         <form th:method="PATCH" th:action="@{/admin/users/edit}">
 
                             <input type="hidden" name="userId" th:value="${user.getId()}">
-                            <p class="card-text" th:text="${user.getUsername()}+'  |  '+${user.getPassword()}+'  |'"/>
+                            <p class="card-text" th:text="${user.getUsername()}+'  |  '+${user.getPassword()}+'  |'"></p>
                             <img th:if="${user.getImage()==null || user.getImage().isEmpty()}" th:src="@{'/img/'+'default_avatar.png'}"
                                  class=" mb-3 mt-1"
                                  th:alt="${user.getUsername()}"
@@ -32,29 +32,29 @@
                                 <h4 th:style="'background-color:'+${user.getStatus().getColorCode()}"
                                     th:text="'STATUS: '+${user.getStatus().name()} "></h4>
                             </div>
-                            <p class="card-text" th:text="'Name: '+${user.getFirstName()}+'   '+${user.getLastName()}"/>
-                            <p class="card-text" th:text="'Email: '+${user.getEmail()}"/>
+                            <p class="card-text" th:text="'Name: '+${user.getFirstName()}+'   '+${user.getLastName()}"></p>
+                            <p class="card-text" th:text="'Email: '+${user.getEmail()}"></p>
                             <div th:each="role :${allRoles}" class="row">
                                 <input type="checkbox" th:name="${role}" th:checked="${user.roles.contains(role)}" class="ml-3">
-                                <p class="card-text ml-2" th:text="${role.name()}"/>
+                                <p class="card-text ml-2" th:text="${role.name()}"></p>
                             </div>
                             </br>
-                            <p class="card-text" th:text="'Registered  at: '+${user.getRegisteredAt()}"/>
-                            <p class="card-text" th:text="'Birth date: '+${user.getBirthDate()}"/>
+                            <p class="card-text" th:text="'Registered  at: '+${user.getRegisteredAt()}"></p>
+                            <p class="card-text" th:text="'Birth date: '+${user.getBirthDate()}"></p>
 <!--                            <div class="d-flex justify-content-between align-items-center">-->
                                 <!--//TODO make buttons work-->
-                                <!--                                <button type="submit" class="btn btn-outline-warning mt-2">Submit</button>-->
-                                <!--                                <button type="submit" th:method="GET" th:formaction="'/users/'+${user.getUsername()}" class="btn btn-outline-success mt-2">Watch</button>-->
-                                <!--                                &lt;!&ndash;                                <p th:text="${user.getStatus()== allStatus.get(0).valueOf('BANNED')}"/>&ndash;&gt;-->
-                                <!--                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" th:formaction="'/admin/users/'+${user.getId()}+'/ban'" type="submit"-->
-                                <!--                                        class="btn btn-outline-danger mt-2">Ban-->
-                                <!--                                </button>-->
-                                <!--                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" th:formaction="'/admin/users/'+${user.getId()}+'/unban'" type="submit"-->
-                                <!--                                        class="btn btn-outline-danger mt-2">UnBan-->
-                                <!--                                </button>-->
-                                <!--                                <a  type="button" th:action="'/users/'+${user.getId()}+'/ban'"  class="btn btn-outline-danger mt-2">Delete</a>-->
-                                <!--                                <button type="button" class="btn btn-outline-danger mt-2">Delete</button>-->
-                                <!--                                -->
+<!--                                                                <button type="submit" class="btn btn-outline-warning mt-2">Submit</button>-->
+<!--                                                                <button type="submit" th:method="GET" th:formaction="'/users/'+${user.getUsername()}" class="btn btn-outline-success mt-2">Watch</button>-->
+<!--                                                                &lt;!&ndash;                                <p th:text="${user.getStatus()== allStatus.get(0).valueOf('BANNED')}"/>&ndash;&gt;-->
+<!--                                                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" th:formaction="'/admin/users/'+${user.getId()}+'/ban'" type="submit"-->
+<!--                                                                        class="btn btn-outline-danger mt-2">Ban-->
+<!--                                                                </button>-->
+<!--                                                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" th:formaction="'/admin/users/'+${user.getId()}+'/unban'" type="submit"-->
+<!--                                                                        class="btn btn-outline-danger mt-2">UnBan-->
+<!--                                                                </button>-->
+<!--                                                                <a  type="button" th:action="'/users/'+${user.getId()}+'/ban'"  class="btn btn-outline-danger mt-2">Delete</a>-->
+<!--                                                                <button type="button" class="btn btn-outline-danger mt-2">Delete</button>-->
+
 
                                 <div class="btn-group d-flex justify-content-between align-items-center">
                                     <form th:action="'/users/'+${user.getUsername()}">

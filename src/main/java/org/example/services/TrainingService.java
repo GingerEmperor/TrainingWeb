@@ -2,7 +2,6 @@ package org.example.services;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,44 +47,36 @@ public class TrainingService {
                 .orElseThrow(() -> new NotFoundException("Такой тренировки не существует"));
     }
 
-    public List<Training> findAllByPrimaryMuscleGroups(MuscleGroup muscleGroup){
+    public List<Training> findAllByPrimaryMuscleGroups(MuscleGroup muscleGroup) {
         return trainingRepository.findAllByPrimaryMuscleGroups(muscleGroup);
     }
 
-    public List<Training> findAllByDifficulty(Difficulty difficulty){
+    public List<Training> findAllByDifficulty(Difficulty difficulty) {
         return trainingRepository.findAllByDifficulty(difficulty);
     }
 
-    public List<Training> findAllByGrade(final ForWho grade) {
-        return trainingRepository.findAllByForWho(grade);
+    public List<Training> findAllByGrade(final ForWho forWho) {
+        return trainingRepository.findAllByForWho(forWho);
     }
 
     public List<Training> findAllByGoal(final Goal goal) {
         return trainingRepository.findAllByGoal(goal);
     }
-    //
-    // public List<Training> findAllContainsExercise(Exercise exercise){
-    //     trainingElementService.findAllByExercise(exercise);
-    //     return trainingRepository.findAllByTrainingElements();
-    // }
 
     public Training save(Training training) {
         return trainingRepository.save(training);
     }
-
 
     public Training findByName(String name) {
         return trainingRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Такой тренировки нет в базе двнных"));
     }
 
-    public List<Training> findByExercise(Exercise exercise){
-        Set<Training> trainings=new HashSet<>();
+    public List<Training> findByExercise(Exercise exercise) {
+        Set<Training> trainings = new HashSet<>();
         trainingElementService.findAllByExercise(exercise).stream().forEach(trainingElement -> trainings.addAll(trainingRepository.findAllByTrainingElements(trainingElement)));
         System.out.println("============");
         System.out.println(trainings);
-        // trainings.addAll(trainingRepository.findAllByTrainingElements())
-        // trainingRepository.findAllByTrainingElements(trainingElementService.findAllByExercise(exercise))
         return null;
     }
 
@@ -116,7 +107,7 @@ public class TrainingService {
                 .build();
         try {
             training.setImage(globalService.saveImgToPathWithPrefixName(image, uploadPath, trainingName));
-        } catch (FileCanNotSaveException | IOException e ) {
+        } catch (FileCanNotSaveException | IOException e) {
             e.printStackTrace();
         }
         return training;

@@ -29,75 +29,27 @@
                 </div>
             </div>
             <div class="card-body">
-                <form onSubmit="return checkPassword(this)" th:action="@{/registration}" method="post" enctype="multipart/form-data">
+                <form onSubmit="return checkPassword(this)" th:action="@{/registration}" method="post">
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
                         <input type="text" class="form-control" placeholder="username" name="username"
                                title="Enter your username" required>
-                        <input type="text" class="form-control" placeholder="First name" name="firstName"
-                               title="Enter your first name" required>
-                        <input type="text" class="form-control" placeholder="Last name" name="lastName"
-                               title="Enter your last name" required>
-                    </div>
 
-                    <div class="input-group form-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-image"></i>
-                            </span>
-                        </div>
-                        <input type="file" name="image" class="input-group-text" id="image">
-                    </div>
 
-                    <div class="input-group form-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                @
-                            </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Email" name="email"
-                               title="Enter your email" required>
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i style='font-size:24px' class='far'>&#xf2bb;</i>
-                            </span>
-                        </div>
-                        <input type="date" id="datePickerId" class="form-control" placeholder="Birth date" name="birthDateStr"
-                               title="Enter your birth date" required>
-
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" title="Choose your gender">
-                                <i style="font-size:24px" class="fa">&#xf228;</i>
-                            </span>
-                            <div class="form-check form-check-inline ml-2">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                                <label class="form-check-label" for="inlineRadio1">Male</label>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                <label class="form-check-label" for="inlineRadio2">Female</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
-                                <label class="form-check-label" for="inlineRadio3">none</label>
-                            </div>
+                            <input type="password" class="form-control" placeholder="password" name="password"
+                                   title="Enter the password" required>
+                            <input type="password" class="form-control" placeholder="confirm password" name="passwordConf"
+                                   title="Confirm the password" required>
                         </div>
-                    </div>
-
-
-                    <div class="input-group form-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        <div class="form-group">
+                            <input type="submit" value="SignUp" class="btn float-right login_btn">
                         </div>
-                        <input type="password" class="form-control" placeholder="password" name="password"
-                               title="Enter the password" required>
-                        <input type="password" class="form-control" placeholder="confirm password" name="passwordConf"
-                               title="Confirm the password" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="SignUp" class="btn float-right login_btn">
                     </div>
                 </form>
             </div>

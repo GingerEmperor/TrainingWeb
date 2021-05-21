@@ -1,5 +1,7 @@
 package org.example.config;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -28,9 +28,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/registration").permitAll()
-                .antMatchers("/muscleGroups","/muscleGroups/**").permitAll()
-                .antMatchers("/muscles","/muscles/**").permitAll()
-                .antMatchers("/exercises","/exercises/**").permitAll()
+                // .antMatchers("/users","/users/**").permitAll()
+                .antMatchers("/users/edit", "/users/edit/**").permitAll()
+                .antMatchers("/muscleGroups", "/muscleGroups/**").permitAll()
+                .antMatchers("/muscles", "/muscles/**").permitAll()
+                .antMatchers("/exercises", "/exercises/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -44,6 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //                .authorizeRequests()
         //                .anyRequest().permitAll();
     }
+
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(
@@ -76,9 +79,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "WHERE u.username=?");
     }
 
-
     @Bean
-    HiddenHttpMethodFilter hiddenHttpMethodFilter(){
+    HiddenHttpMethodFilter hiddenHttpMethodFilter() {
         return new HiddenHttpMethodFilter();
     }
 }
