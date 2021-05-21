@@ -23,7 +23,7 @@
                         <p class="card-text text-dark" th:text="${el.getName()}"></p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <form th:action="'/muscles/'+${el.getId()}">
+                                <form th:action="'/muscles/'+${el.getId()}" method="get">
                                     <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                 </form>
                                 <form th:method="DELETE" th:action="'/muscles/'+${el.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
@@ -61,8 +61,7 @@
 
 <div th:if="${currentMuscleGroup!=null}" class="container mt-5 mb-5 border border-secondary rounded bg-dark text-white"
      sec:authorize="isAuthenticated()">
-<!--     sec:authorize="hasAuthority('ADMIN')">-->
-    <!--        <h5>Добавить мышцу</h5>-->
+
     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
         <h5 class="text-white"> Добавить мышцу</h5>
     </button>

@@ -26,9 +26,16 @@
                                         <h4 th:text="${user.getFirstName()}+' '+${user.getLastName()}"></h4>
                                         <p class="text-dark mb-1" th:text="${user.getUsername()}"></p>
                                         <!--                                        TODO-->
-                                        <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
-                                        <button class="btn btn-primary">Follow</button>
-                                        <button class="btn btn-outline-primary">Message</button>
+                                        <p class="text-muted font-size-sm" th:text="'BMI:'+ ${user.getBMI()}"></p>
+                                        <p class="text-muted font-size-sm" th:text="${user.getCity()}+','+${user.getCountry()}" ></p>
+                                        <form>
+                                            <button formaction="/follow" class="btn btn-primary">Follow</button>
+                                            <button formaction="/message" class="btn btn-outline-primary">Message</button>
+                                            <button th:if="${user.getUsername().equals(#authentication.getName())}" th:formaction="'/users/edit/'+${user.getUsername()}" type="submit"
+                                                    th:method="GET"
+                                                    class="btn btn-outline-warning">Edit
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -102,13 +109,33 @@
                                 </div>
                                 <hr>
                                 <div class="row">
-                                    <div class="col-sm-3"><h6 class="mb-0">Email</h6></div>
-                                    <div class="col-sm-9 text-secondary" th:text="${user.getEmail()}"></div>
+                                    <div class="col-sm-3"><h6 class="mb-0">Country</h6></div>
+                                    <div class="col-sm-9 text-secondary" th:text="${user.getCountry()}"></div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3"><h6 class="mb-0">City</h6></div>
+                                    <div class="col-sm-9 text-secondary" th:text="${user.getCity()}"></div>
                                 </div>
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3"><h6 class="mb-0">Gender</h6></div>
                                     <div class="col-sm-9 text-secondary" th:text="${user.getGender()}"></div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3"><h6 class="mb-0">Height</h6></div>
+                                    <div class="col-sm-9 text-secondary" th:text="${user.getHeight()}"></div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3"><h6 class="mb-0">Weight</h6></div>
+                                    <div class="col-sm-9 text-secondary" th:text="${user.getWeight()}"></div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3"><h6 class="mb-0">BMI</h6></div>
+                                    <div class="col-sm-9 text-secondary" th:text="${user.getBMI()}"></div>
                                 </div>
                                 <hr>
                                 <div class="row">
@@ -125,7 +152,6 @@
 
                         <!--posts-->
                         <div class="row gutters-sm">
-                            <!--                            <div class="col-sm-6 mb-6">-->
                             <div>
                                 <div th:each="el :${allUserPosts}" class="col-lg-12 col-md-12">
                                     <div class="card mb-4 shadow-sm">

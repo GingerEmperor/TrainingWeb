@@ -1,7 +1,7 @@
 package org.example.models;
 
-import org.example.models.enums.Role;
-import org.example.models.enums.Status;
+import java.sql.Date;
+import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -15,15 +15,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
-import java.sql.Date;
-import java.util.Set;
+import org.example.models.enums.Gender;
+import org.example.models.enums.Role;
+import org.example.models.enums.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Data
@@ -47,13 +46,23 @@ public class User {
 
     private String email;
 
-    private String gender;
+    private Gender gender;
 
     private String image;
 
     private String password;
 
     private boolean active;
+
+    private int weight;
+
+    private int height;
+
+    private String country;
+
+    private String city;
+
+    private double BMI;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -65,7 +74,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    public boolean isAdmin(){
+    public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }
 

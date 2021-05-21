@@ -5,11 +5,15 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 import org.example.exeptions.AlreadyExistsException;
+import org.example.exeptions.CanNotCreateException;
 import org.example.exeptions.NotFoundException;
 import org.example.models.User;
+import org.example.models.dtos.UserDto;
+import org.example.models.enums.Gender;
 import org.example.models.enums.Role;
 import org.example.models.enums.Status;
 import org.example.repository.UserRepo;
@@ -62,34 +66,101 @@ public class UserService {
         userRepo.delete(userToDelete);
     }
 
-    public User createUser(String username, String firstName, String lastName,
-            String password, String email, String birthDateStr, MultipartFile image) {
+    public User createUser(UserDto userDto) {
         User user = User.builder()
-                .username(username)
-                .firstName(firstName)
-                .lastName(lastName)
-                .password(password)
-                .email(email)
-                .birthDate(Date.valueOf(birthDateStr))
+                .username(userDto.getUsername())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .password(userDto.getPassword())
+                .email(userDto.getEmail())
+                .birthDate(userDto.getBirthDate())
+                .gender(Gender.valueOf(userDto.getGender().toUpperCase()))
+                .weight(userDto.getWeight())
+                .height(userDto.getHeight())
+                .city(userDto.getCity())
+                .country(userDto.getCountry())
                 .active(true)
                 .status(Status.ACTIVE)
                 .roles(Collections.singleton(Role.USER))
                 .registeredAt(Date.valueOf(LocalDate.now()))
                 .build();
+        user.setBMI(calculateBMI(userDto));
 
-        try {
-            user.setImage(globalService.saveImgToPathWithPrefixName(image, uploadPath, username));
-        } catch (Exception e) {
-            System.out.println("Cannot create with avatar photo");
-            e.printStackTrace();
+        if (userDto.getImage() != null && !userDto.getImage().isEmpty()) {
+            user.setImage(createUserImage(userDto.getUsername(), userDto.getImage()));
         }
-
         return user;
+    }
+
+    private void updateUserImage(User userToUpdate, UserDto newUserDto) {
+        if (newUserDto.getImage() != null && !newUserDto.getImage().isEmpty()) {
+            userToUpdate.setImage(createUserImage(newUserDto.getUsername(), newUserDto.getImage()));
+        }
+    }
+
+    public User updateUser(User oldUser, UserDto userDto) {
+        User newUser = User.builder()
+                .id(oldUser.getId())
+                .username(ofNullable(userDto.getUsername()).orElse(oldUser.getUsername()))
+                .firstName(ofNullable(userDto.getFirstName()).orElse(oldUser.getFirstName()))
+                .lastName(ofNullable(userDto.getLastName()).orElse(oldUser.getLastName()))
+                .password(ofNullable(userDto.getPassword()).orElse(oldUser.getPassword()))
+                .email(ofNullable(userDto.getEmail()).orElse(oldUser.getEmail()))
+                .birthDate(ofNullable(userDto.getBirthDate()).orElse(oldUser.getBirthDate()))
+                .gender(Gender.valueOf(userDto.getGender().toUpperCase()))
+                .weight(userDto.getWeight())
+                .height(userDto.getHeight())
+                .city(ofNullable(userDto.getCity()).orElse(oldUser.getCity()))
+                .country(ofNullable(userDto.getCountry()).orElse(oldUser.getCountry()))
+                .active(true)
+                .status(Status.ACTIVE)
+                .roles(Collections.singleton(Role.USER))
+                .registeredAt(ofNullable(oldUser.getRegisteredAt()).orElse(Date.valueOf(LocalDate.now())))
+                .build();
+        newUser.setImage(oldUser.getImage());
+        updateUserImage(newUser, userDto);
+
+        newUser.setBMI(calculateBMI(newUser));
+
+        return newUser;
+    }
+
+    public User createUserTemplate(final UserDto userDto) {
+        return User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .build();
+    }
+
+    private String createUserImage(String username, MultipartFile image) {
+        if (image != null) {
+            try {
+                return globalService.saveImgToPathWithPrefixName(image, uploadPath, username);
+            } catch (Exception e) {
+                System.out.println("Cannot create with avatar photo");
+                e.printStackTrace();
+                throw new CanNotCreateException("Ошибка создания аватара пользователя");
+            }
+        } else {
+            return null;
+        }
     }
 
     public void deleteById(final Long id) {
         User userToDelete = findById(id);
         new File(uploadPath + "/" + userToDelete.getImage()).delete();
         userRepo.delete(userToDelete);
+    }
+
+    private double calculateBMI(UserDto userDto) {
+        return userDto.getWeight() / (((userDto.getHeight() / 100.0) * (userDto.getHeight() / 100.0)));
+    }
+
+    private double calculateBMI(User user) {
+        return user.getWeight() / (((user.getHeight() / 100.0) * (user.getHeight() / 100.0)));
+    }
+
+    private double calculateBMI(double weight, double height) {
+        return weight / (((height / 100.0) * (height / 100.0)));
     }
 }
