@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.example.models.enums.Gender;
@@ -22,10 +23,12 @@ import org.example.models.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"subscriptions", "followers"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -68,6 +71,12 @@ public class User {
     private Status status;
 
     private Date registeredAt;
+
+    @ManyToMany
+    private Set<User> subscriptions;
+
+    @ManyToMany
+    private Set<User> followers;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

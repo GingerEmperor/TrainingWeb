@@ -28,12 +28,20 @@
                                         <!--                                        TODO-->
                                         <p class="text-muted font-size-sm" th:text="'BMI:'+ ${user.getBMI()}"></p>
                                         <p class="text-muted font-size-sm" th:text="${user.getCity()}+','+${user.getCountry()}" ></p>
-                                        <form>
-                                            <button formaction="/follow" class="btn btn-primary">Follow</button>
-                                            <button formaction="/message" class="btn btn-outline-primary">Message</button>
+                                        <form th:method="GET">
+<!--                                            <button formaction="/follow" class="btn btn-primary">Follow</button>-->
+                                            <button th:if="${!user.getUsername().equals(#authentication.getName())}" formaction="/message" class="btn btn-outline-primary">Message</button>
                                             <button th:if="${user.getUsername().equals(#authentication.getName())}" th:formaction="'/users/edit/'+${user.getUsername()}" type="submit"
-                                                    th:method="GET"
                                                     class="btn btn-outline-warning">Edit
+                                            </button>
+                                        </form>
+                                        <form class="mt-2" th:method="PATCH">
+                                            <input hidden name="requestedUserName" th:value="${#authentication.getName()}">
+                                            <button th:if="${!user.getUsername().equals(#authentication.getName())}" th:formaction="'/users/'+${user.getUsername()}+'/follow'" type="submit"
+                                                    class="btn btn-outline-success">Follow
+                                            </button>
+                                            <button th:if="${!user.getUsername().equals(#authentication.getName())}" th:formaction="'/users/'+${user.getUsername()}+'/unfollow'" type="submit"
+                                                    class="btn btn-outline-danger">UnFollow
                                             </button>
                                         </form>
                                     </div>

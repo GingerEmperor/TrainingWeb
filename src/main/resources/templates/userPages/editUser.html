@@ -40,6 +40,7 @@
                         <input type="text" class="form-control" placeholder="Last name" name="lastName" th:value="${user.getLastName()}"
                                title="Enter your last name" required>
                     </div>
+                    <input hidden th:value="${user.getRoles()}" name="roles">
 
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
