@@ -12,9 +12,11 @@ import org.example.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,7 +58,7 @@ public class UserController {
     }
 
     @PutMapping("/edit/{username}")
-    public String editUserInfo(UserDto newUserDto, Model model) {
+    public String editUserInfo(UserDto newUserDto) {
         User updatedUser;
         try {
             User userToUpdate = userService.findByUsername(newUserDto.getUsername());
@@ -67,6 +69,24 @@ public class UserController {
         userService.save(updatedUser);
 
         return "redirect:/login";
+    }
+
+    @PatchMapping("/{username}/follow")
+    public String follow(@PathVariable(name = "username") String usernameToFollow, @RequestParam String requestedUserName) {
+        User requestedUser = userService.findByUsername(requestedUserName);
+        User userToFollow = userService.findByUsername(usernameToFollow);
+
+        userService.makeFollow(requestedUser, userToFollow);
+        return "redirect:/";
+    }
+
+    @PatchMapping("/{username}/unfollow")
+    public String unfollow(@PathVariable(name = "username") String usernameToFollow, @RequestParam String requestedUserName) {
+        User requestedUser = userService.findByUsername(requestedUserName);
+        User userToUnFollow = userService.findByUsername(usernameToFollow);
+
+        userService.makeUnFollow(requestedUser, userToUnFollow);
+        return "redirect:/";
     }
 }
 

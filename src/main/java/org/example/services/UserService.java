@@ -112,10 +112,12 @@ public class UserService {
                 .height(userDto.getHeight())
                 .city(ofNullable(userDto.getCity()).orElse(oldUser.getCity()))
                 .country(ofNullable(userDto.getCountry()).orElse(oldUser.getCountry()))
-                .active(true)
+                .active(oldUser.isActive())
                 .status(Status.ACTIVE)
-                .roles(Collections.singleton(Role.USER))
+                .roles(oldUser.getRoles())
                 .registeredAt(ofNullable(oldUser.getRegisteredAt()).orElse(Date.valueOf(LocalDate.now())))
+                .subscriptions(oldUser.getSubscriptions())
+                .followers(oldUser.getFollowers())
                 .build();
         newUser.setImage(oldUser.getImage());
         updateUserImage(newUser, userDto);
@@ -162,5 +164,19 @@ public class UserService {
 
     private double calculateBMI(double weight, double height) {
         return weight / (((height / 100.0) * (height / 100.0)));
+    }
+
+    public void makeFollow(final User requestedUser, final User userToFollow) {
+        requestedUser.getSubscriptions().add(userToFollow);
+        userToFollow.getFollowers().add(requestedUser);
+        save(requestedUser);
+        save(userToFollow);
+    }
+
+    public void makeUnFollow(final User requestedUser, final User userToUnFollow) {
+        requestedUser.getSubscriptions().remove(userToUnFollow);
+        userToUnFollow.getFollowers().remove(requestedUser);
+        save(requestedUser);
+        save(userToUnFollow);
     }
 }
