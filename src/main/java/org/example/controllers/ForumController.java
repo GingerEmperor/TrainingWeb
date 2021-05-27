@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,15 +27,16 @@ public class ForumController {
 
     private final UserService userService;
 
-    @GetMapping("/{requestedUserName}")
-    public String showSubscriptionsForum(@PathVariable String requestedUserName, Model model) {
+    @GetMapping("")
+    public String showSubscriptionsForum(Principal principal, Model model) {
         final List<Post> subscriptionPosts = new ArrayList<>();
-        System.out.println("");
 
-        User requestedUser = userService.findByUsername(requestedUserName);
+        User requestedUser = userService.findByUsername(principal.getName());
         requestedUser.getSubscriptions().forEach(subscription -> subscriptionPosts.addAll(postService.findAllByAuthorId(subscription.getId())));
 
-        model.addAttribute("allPosts", subscriptionPosts);
+        final List<Post> sortedPosts = subscriptionPosts.stream().sorted(Comparator.comparing(Post::getPostTime).reversed()).collect(Collectors.toList());
+
+        model.addAttribute("allPosts", sortedPosts);
         return "forum";
     }
 

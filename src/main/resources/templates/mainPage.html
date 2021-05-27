@@ -6,6 +6,14 @@
 
 <body>
 <header th:insert="parts/header::header"></header>
+<div class="container">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
 <div class="container mt-5">
     <p>Fitness App</p>
     <p th:text="'Hello, ' + ${name} + '!'"/>
@@ -13,7 +21,7 @@
 
 
 <div class="container mt-5">
-<!--    <p>Timer</p>-->
+    <!--    <p>Timer</p>-->
     <a href="/trainings/timer">TIMER</a>
 </div>
 

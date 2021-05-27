@@ -3,7 +3,17 @@
 <head th:insert="common/commonHead::commonHead"></head>
 <body>
 <header th:insert="parts/header::header"></header>
+<div th:insert="common/alert::alert"></div>
 <!--<p>Muscle Groups</p>-->
+
+<!--<div th:if="${alert!=null}">-->
+<!--    <div th:class="${alert.getAlertClassString()}" role="alert" align="center">-->
+<!--        <span th:text="${alert.getDescription()}"></span>-->
+<!--        <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--            <span aria-hidden="true">&times;</span>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</div>-->
 
 <div class="container-lg">
 
@@ -15,7 +25,7 @@
                 <div class="card">
                     <img th:src="@{/img/Arnold_Schwarzenegger_1974.jpg}" class="card-img-top"
                          alt="All"
-                         align="center" style="background: #55595c" height="225">
+                         align="center" style="background: #55595c" height="285">
                     <div class="card-body" style="background: #C0C0C0">
                         <p class="card-text text-dark">All</p>
                         <div class="d-flex justify-content-between align-items-center">
@@ -38,7 +48,7 @@
                 <div class="card">
                     <img th:src="${'/img/'+el.getImage()}" class="card-img-top"
                          th:alt="${el.getName()}"
-                         align="center" style="background: #55595c" height="225">
+                         align="center" style="background: #55595c" height="285">
                     <div class="card-body" style="background: #C0C0C0">
                         <div class="row mb-2 ">
                             <form class="col" th:action="'/muscleGroups/'+${el.getId()}" th:method="PATCH" enctype="multipart/form-data">
