@@ -41,7 +41,7 @@ public class MuscleGroupService {
         } catch (NotFoundException e) {
             return true;
         }
-        throw new AlreadyExistsException("Такое группа мышц уже существует");
+        throw new AlreadyExistsException("Такая группа мышц уже существует");
     }
 
     private MuscleGroup createNewMuscleGroup(String name) {
@@ -124,8 +124,8 @@ public class MuscleGroupService {
 
     public void tryToDeleteMuscleGroup(MuscleGroup muscleGroupTryToDelete) {
         if (!muscleGroupTryToDelete.getMuscleSet().isEmpty()) {
-            throw new CanNotDeleteException("Группа - " + muscleGroupTryToDelete.getName() +
-                    " мышц содержит мышцы - " + muscleGroupTryToDelete.getMuscleSet());
+            throw new CanNotDeleteException("Группа мышц - " + muscleGroupTryToDelete.getName() +
+                    " содержит мышцы - " + muscleGroupTryToDelete.getMuscleSet());
         }
         if (exerciseService.checkIfExistsExercisesByMuscleGroup(muscleGroupTryToDelete)) {
             throw new CanNotDeleteException("Есть упражнения с этой  " + muscleGroupTryToDelete.getName() +

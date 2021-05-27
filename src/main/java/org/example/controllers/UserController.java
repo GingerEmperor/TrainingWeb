@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.example.exeptions.NotFoundException;
@@ -9,6 +10,9 @@ import org.example.models.forum.Post;
 import org.example.services.GlobalService;
 import org.example.services.PostService;
 import org.example.services.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +36,9 @@ public class UserController {
     private final GlobalService globalService;
 
     @GetMapping("")
-    public String getUsers(Model model) {
+    public String getUsers(@AuthenticationPrincipal String username, Model model) {
         List<User> allUsers = userService.findAll();
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("users", allUsers);
         return "userPages/users";
     }
@@ -58,7 +62,7 @@ public class UserController {
     }
 
     @PutMapping("/edit/{username}")
-    public String editUserInfo(UserDto newUserDto) {
+    public String editUserInfo(UserDto newUserDto, @PathVariable String username) {
         User updatedUser;
         try {
             User userToUpdate = userService.findByUsername(newUserDto.getUsername());
@@ -68,7 +72,7 @@ public class UserController {
         }
         userService.save(updatedUser);
 
-        return "redirect:/login";
+        return "redirect:/users/"+username;
     }
 
     @PatchMapping("/{username}/follow")

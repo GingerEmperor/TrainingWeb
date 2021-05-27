@@ -1,0 +1,15 @@
+<div th:fragment="alert">
+    <!--      need for sec-->
+
+
+    ALERT>
+    <div th:if="${alert!=null}">
+        <div th:class="${alert.getAlertClassString()}" role="alert" align="center">
+            <span th:text="${alert.getDescription()}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    ALERT<
+</div>

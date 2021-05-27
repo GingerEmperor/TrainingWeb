@@ -35,8 +35,11 @@
                             <p class="card-text" th:text="'Name: '+${user.getFirstName()}+'   '+${user.getLastName()}"></p>
                             <p class="card-text" th:text="'Email: '+${user.getEmail()}"></p>
                             <div th:each="role :${allRoles}" class="row">
-                                <input type="checkbox" th:name="${role}" th:checked="${user.roles.contains(role)}" class="ml-3">
-                                <p class="card-text ml-2" th:text="${role.name()}"></p>
+                                <label>
+                                    <input type="checkbox" th:name="${role}" th:checked="${user.roles.contains(role)}" class="ml-3">
+                                    <span class="card-text ml-2 text-white" th:text="${role.name()}"></span>
+                                </label>
+
                             </div>
                             </br>
                             <p class="card-text" th:text="'Registered  at: '+${user.getRegisteredAt()}"></p>
