@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.CanNotDeleteException;
@@ -74,7 +75,7 @@ public class ExerciseService {
             String imageStart,
             String imageFinish,
             String image
-            ) {
+    ) {
 
         Exercise exercise = createNewExercise(
                 title, primaryMuscles, secondaryMuscles,
@@ -151,8 +152,8 @@ public class ExerciseService {
                         globalService.saveImgToPathWithPrefixName(imgFile1, uploadPath, exerciseTitle + "_start"),
                         globalService.saveImgToPathWithPrefixName(imgFile2, uploadPath, exerciseTitle + "_finish"),
                         globalService.saveImgToPathWithPrefixName(imgFile, uploadPath, exerciseTitle)//
-                        );
-            }catch (FileCanNotSaveException | IOException f){
+                );
+            } catch (FileCanNotSaveException | IOException f) {
                 System.out.println("Cant add image but ok");
                 f.printStackTrace();
                 System.out.println("Cant add image but ok");
@@ -180,7 +181,7 @@ public class ExerciseService {
         return exerciseRepository.findAllBySecondWorkingMusclesContaining(muscle);
     }
 
-    public Set<Exercise> findAllByAnyWorkingMuscleGroup(MuscleGroup muscleGroup){
+    public Set<Exercise> findAllByAnyWorkingMuscleGroup(MuscleGroup muscleGroup) {
         Set<Exercise> resultEx = new HashSet<>();
         resultEx.addAll(findAllByPrimaryWorkingMuscleGroup(muscleGroup));
         resultEx.addAll(findAllBySecondaryWorkingMuscleGroup(muscleGroup));
@@ -216,9 +217,10 @@ public class ExerciseService {
     @Transactional
     public void deleteExerciseById(final long id) {
         Exercise exerciseToDelete = findById(id);
-        final List<Training> trainingsWithThisExercise = trainingService.findByExercise(exerciseToDelete);
-        if(trainingsWithThisExercise!=null && !trainingsWithThisExercise.isEmpty()){
-            throw new CanNotDeleteException("Нельзя удалить упражнение "+exerciseToDelete.getTitle()+" есть тренировки с ним "+trainingsWithThisExercise);
+        final Set<Training> trainingsWithThisExercise = trainingService.findByExercise(exerciseToDelete);
+        if (trainingsWithThisExercise != null && !trainingsWithThisExercise.isEmpty()) {
+            throw new CanNotDeleteException("Нельзя удалить упражнение " + exerciseToDelete.getTitle() + " есть тренировки с ним "
+                    + trainingsWithThisExercise.stream().map(Training::getName).collect(Collectors.joining(",")));
         }
         try {
             trainingElementService.findAllByExercise(exerciseToDelete).forEach(trainingElementService::delete);
@@ -231,7 +233,7 @@ public class ExerciseService {
             imgStartFile.delete();
             imgFinishFile.delete();
             exerciseRepository.delete(exerciseToDelete);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("CANNOT DELETE EXERCISE");
             e.printStackTrace();
             throw new CanNotDeleteException("CANNOT DELETE EXERCISE");
@@ -286,14 +288,13 @@ public class ExerciseService {
             final MultipartFile previewImg) {
         Exercise exerciseToUpdate = findById(exerciseToUpdateId);
         Exercise updatedExercise = exerciseToUpdate;
-        File oldImageToDelete=new File((uploadPath + "/" + exerciseToUpdate.getImage()));
+        File oldImageToDelete = new File((uploadPath + "/" + exerciseToUpdate.getImage()));
         oldImageToDelete.delete();
         try {
             updatedExercise = updateExercise(exerciseToUpdate, exerciseTitle,
                     primaryMuscleSet, secondaryMuscleSet, exerciseInfo,
                     howToDo, videoLink, equipment,
                     globalService.saveImgToPathWithPrefixName(previewImg, uploadPath, exerciseTitle));
-
 
         } catch (Exception e) {
             System.out.println("Cant update image");
@@ -309,7 +310,8 @@ public class ExerciseService {
     public boolean checkIfExistsExercisesByMuscleGroup(final MuscleGroup muscleGroupToCheck) {
         if (findAllByAnyWorkingMuscleGroup(muscleGroupToCheck).isEmpty()) {
             return false;
-        }else
+        } else {
             return true;
+        }
     }
 }

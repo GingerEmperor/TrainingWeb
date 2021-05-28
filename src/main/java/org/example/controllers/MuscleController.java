@@ -83,7 +83,6 @@ public class MuscleController {
             System.out.println("OSIBKA");
             e.printStackTrace();
             alert.add(new DangerAlert(e.getMessage()));
-            model.addAttribute("alert", alert.poll());
             return "redirect:/muscles";
         }
     }
