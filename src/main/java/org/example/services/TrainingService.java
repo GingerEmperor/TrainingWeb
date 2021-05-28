@@ -72,12 +72,12 @@ public class TrainingService {
                 .orElseThrow(() -> new NotFoundException("Такой тренировки нет в базе двнных"));
     }
 
-    public List<Training> findByExercise(Exercise exercise) {
+    public Set<Training> findByExercise(Exercise exercise) {
         Set<Training> trainings = new HashSet<>();
         trainingElementService.findAllByExercise(exercise).stream().forEach(trainingElement -> trainings.addAll(trainingRepository.findAllByTrainingElements(trainingElement)));
         System.out.println("============");
         System.out.println(trainings);
-        return null;
+        return trainings;
     }
 
     public boolean checkIfExistsTrainingByName(String name) {

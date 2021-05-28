@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static java.lang.String.format;
+
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.SearchFailException;
 import org.example.models.Exercise;
@@ -22,6 +24,10 @@ import org.example.services.ExerciseService;
 import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
+import org.example.utill.alerts.DangerAlert;
+import org.example.utill.alerts.InfoAlert;
+import org.example.utill.alerts.SuccessAlert;
+import org.example.utill.alerts.WarningAlert;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +39,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import static org.example.services.GlobalService.alert;
+import static org.example.utill.StringsFormatsUtils.EXERCISE_WAS_ADDED_FORMAT;
+import static org.example.utill.StringsFormatsUtils.EXERCISE_WAS_DELETED_FORMAT;
+import static org.example.utill.StringsFormatsUtils.EXERCISE_WAS_UPDATED_FORMAT;
+import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_ADDED_FORMAT;
+import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_UPDATED_FORMAT;
 
 import lombok.Data;
 
@@ -62,6 +75,7 @@ public class ExerciseController {
         criteria_exerciseMap.put("All", allExercises);
 
         model.addAttribute("sortCriteria_ExerciseMap", criteria_exerciseMap);
+        model.addAttribute("alert", alert.poll());
 
         return "exerciseTemplates/exercises";
     }
@@ -142,8 +156,13 @@ public class ExerciseController {
     @GetMapping("/{id}")
     public String showExerciseInfoById(@PathVariable(name = "id") long id,
             Model model) {
-        model.addAttribute("exercise", exerciseService.findById(id));
-        return "exerciseTemplates/exerciseDetails";
+        try {
+            model.addAttribute("exercise", exerciseService.findById(id));
+            return "exerciseTemplates/exerciseDetails";
+        }catch (Exception e){
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/exercises";
+        }
     }
 
     @GetMapping("/searchBy")
@@ -209,7 +228,8 @@ public class ExerciseController {
             exerciseService.checkIfExistsExerciseByTitle(exerciseTitle);
         } catch (AlreadyExistsException e) {
             e.printStackTrace();
-            return "redirect:/";
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/exercises";
         }
 
         List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
@@ -285,9 +305,11 @@ public class ExerciseController {
             exerciseService.createNewExercise(exerciseTitle, primaryMuscleSet,
                     secondaryMuscleSet, exerciseInfo, howToDo, videoLink,
                     equipment, previewImg, startImg, finishImg);
+            alert.add(new SuccessAlert(format(EXERCISE_WAS_ADDED_FORMAT, exerciseTitle)));
             return "redirect:/exercises";
         } catch (Exception e) {
             e.printStackTrace();
+            alert.add(new DangerAlert(e.getMessage()));
             return "redirect:/";
         }
     }
@@ -313,46 +335,54 @@ public class ExerciseController {
             @RequestParam(required = true, name = "editExerciseId") Long editExerciseId,
             Model model) {
 
-        Exercise editExercise = exerciseService.findById(editExerciseId);
-
-        List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
-        List<MuscleGroup> secondaryMuscleGroups = new ArrayList<>();
-
-        String[] primIds = primaryMuscleIdArr.split(",");
-        for (final String primId : primIds) {
-            primaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(primId)));
-        }
-        List<Muscle> primaryMuscles = new ArrayList<>();
-        for (MuscleGroup mG : primaryMuscleGroups) {
-            Muscle separator = new Muscle();
-            separator.setName("---" + mG.getName() + "---");
-            primaryMuscles.add(separator);
-
-            primaryMuscles.addAll(mG.getMuscleSet());
-        }
-
-        if (secondMuscleIdArr != null) {
-            String[] secIds = secondMuscleIdArr.split(",");
-            for (final String secId : secIds) {
-                secondaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(secId)));
+        try {
+            Exercise editExercise = exerciseService.findById(editExerciseId);
+            if (editExercise != null && !editExercise.getTitle().equals(exerciseTitle)) {
+                exerciseService.checkIfExistsExerciseByTitle(exerciseTitle);
             }
+
+            List<MuscleGroup> primaryMuscleGroups = new ArrayList<>();
+            List<MuscleGroup> secondaryMuscleGroups = new ArrayList<>();
+
+            String[] primIds = primaryMuscleIdArr.split(",");
+            for (final String primId : primIds) {
+                primaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(primId)));
+            }
+            List<Muscle> primaryMuscles = new ArrayList<>();
+            for (MuscleGroup mG : primaryMuscleGroups) {
+                Muscle separator = new Muscle();
+                separator.setName("---" + mG.getName() + "---");
+                primaryMuscles.add(separator);
+
+                primaryMuscles.addAll(mG.getMuscleSet());
+            }
+
+            if (secondMuscleIdArr != null) {
+                String[] secIds = secondMuscleIdArr.split(",");
+                for (final String secId : secIds) {
+                    secondaryMuscleGroups.add(muscleGroupService.findById(Long.parseLong(secId)));
+                }
+            }
+            List<Muscle> secondaryMuscles = new ArrayList<>();
+            for (MuscleGroup mG : secondaryMuscleGroups) {
+                Muscle separator = new Muscle();
+                separator.setName("---" + mG.getName() + "---");
+                secondaryMuscles.add(separator);
+
+                secondaryMuscles.addAll(mG.getMuscleSet());
+            }
+
+            model.addAttribute("editExercise", editExercise);
+            model.addAttribute("exerciseTitle", exerciseTitle);
+            model.addAttribute("equip", equipment);
+            model.addAttribute("primaryMuscles", primaryMuscles);
+            model.addAttribute("secondaryMuscles", secondaryMuscles);
+
+            return "exerciseTemplates/editExerciseFormPart2";
+        }catch (Exception e){
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/exercises";
         }
-        List<Muscle> secondaryMuscles = new ArrayList<>();
-        for (MuscleGroup mG : secondaryMuscleGroups) {
-            Muscle separator = new Muscle();
-            separator.setName("---" + mG.getName() + "---");
-            secondaryMuscles.add(separator);
-
-            secondaryMuscles.addAll(mG.getMuscleSet());
-        }
-
-        model.addAttribute("editExercise", editExercise);
-        model.addAttribute("exerciseTitle", exerciseTitle);
-        model.addAttribute("equip", equipment);
-        model.addAttribute("primaryMuscles", primaryMuscles);
-        model.addAttribute("secondaryMuscles", secondaryMuscles);
-
-        return "exerciseTemplates/editExerciseFormPart2";
     }
 
     @PatchMapping("/edit")
@@ -385,10 +415,12 @@ public class ExerciseController {
         try {
             globalService.checkIfNameIsValid(exerciseTitle);
             exerciseService.updateExercise(editExerciseId, exerciseTitle, primaryMuscleSet, secondaryMuscleSet, exerciseInfo, howToDo, videoLink, equipment, previewImg);
+            alert.add(new InfoAlert(format(EXERCISE_WAS_UPDATED_FORMAT, exerciseTitle)));
             return "redirect:/exercises";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/";
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/exercises";
         }
     }
 
@@ -398,12 +430,14 @@ public class ExerciseController {
             // if ()
             // if(exerciseService.findById(id))
             // exerciseService.
+            final Exercise exerciseToDelete = exerciseService.findById(id);
             exerciseService.deleteExerciseById(id);
-
+            alert.add(new WarningAlert(format(EXERCISE_WAS_DELETED_FORMAT, exerciseToDelete.getTitle())));
             return "redirect:/exercises";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/";
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/exercises";
         }
     }
 
