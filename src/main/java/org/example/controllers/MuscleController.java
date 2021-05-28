@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.format;
+
 import org.example.exeptions.CanNotDeleteException;
 import org.example.exeptions.NotFoundException;
 import org.example.models.muscles.Muscle;
@@ -12,6 +14,10 @@ import org.example.models.muscles.MuscleGroup;
 import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
+import org.example.utill.alerts.DangerAlert;
+import org.example.utill.alerts.InfoAlert;
+import org.example.utill.alerts.SuccessAlert;
+import org.example.utill.alerts.WarningAlert;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,10 +25,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import static org.example.services.GlobalService.alert;
+import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_ADDED_FORMAT;
+import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_UPDATED_FORMAT;
+import static org.example.utill.StringsFormatsUtils.MUSCLE_WAS_DELETED_FORMAT;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +46,8 @@ public class MuscleController {
     private final MuscleGroupService muscleGroupService;
 
     private final GlobalService globalService;
+
+    // private final Queue<Alert> alert = new LinkedList<>();
 
     // @Autowired
     // CSVService csvService;
@@ -54,6 +66,7 @@ public class MuscleController {
             muscles.sort((o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
             muscleGroupMusclesMap.put(mG, muscles);
         }
+        model.addAttribute("alert", alert.poll());
         model.addAttribute("muscleGroupMusclesMap", muscleGroupMusclesMap);
         return "muscleTemplates/muscles";
     }
@@ -64,11 +77,14 @@ public class MuscleController {
         try {
             Muscle muscle = muscleService.findById(id);
             model.addAttribute("muscle", muscle);
+            // model.addAttribute("alert", alert.poll());
             return "muscleTemplates/muscleDetails";
         } catch (NotFoundException e) {
             System.out.println("OSIBKA");
             e.printStackTrace();
-            return "redirect:/";
+            alert.add(new DangerAlert(e.getMessage()));
+            model.addAttribute("alert", alert.poll());
+            return "redirect:/muscles";
         }
     }
 
@@ -82,9 +98,11 @@ public class MuscleController {
     ) {
         try {
             muscleService.addMuscle(muscleGroupName, muscleName, info,muscleFunctions, image);
+            alert.add(new SuccessAlert(format(MUSCLE_GROUP_WAS_ADDED_FORMAT, muscleName)));
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/";
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/muscles";
         }
         return "redirect:/muscleGroups/" + groupId;
     }
@@ -94,10 +112,14 @@ public class MuscleController {
             @RequestParam(name = "groupId") Long groupId) {
         System.out.println("DELETE MUSCLE");
         try {
+            final Muscle muscleToDelete = muscleService.findById(id);
             muscleService.deleteMuscleById(id);
+            alert.add(new WarningAlert(format(MUSCLE_WAS_DELETED_FORMAT, muscleToDelete.getName())));
         } catch (CanNotDeleteException e) {
-            System.out.println("OSIBKA");//TODO make smth with this
+            System.out.println("OSIBKA");
             e.printStackTrace();
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/muscles";
         }
         return "redirect:/muscleGroups/" + groupId;
     }
@@ -113,6 +135,10 @@ public class MuscleController {
     ) {
         try {
             globalService.checkIfNameIsValid(newName);
+            final Muscle muscleToUpdate = muscleService.findById(id);
+            if(muscleToUpdate!=null && !muscleToUpdate.getName().equals(newName)){
+                muscleService.checkIfExistsMuscleByName(newName);
+            }
             Muscle updatedMuscle;
             if(imageFile!=null && !imageFile.getOriginalFilename().isEmpty()){
                 updatedMuscle =muscleService.updateMuscle(id,newName,newInfo,newFunctions,imageFile);
@@ -120,10 +146,12 @@ public class MuscleController {
                 updatedMuscle=muscleService.updateMuscle(id,newName,newInfo,newFunctions);
             }
             muscleService.save(updatedMuscle);
+            alert.add(new InfoAlert(format(MUSCLE_GROUP_WAS_UPDATED_FORMAT, newName)));
             return "redirect:/muscleGroups/"+groupId;
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/";
+            alert.add(new DangerAlert(e.getMessage()));
+            return "redirect:/muscles";
         }
     }
 

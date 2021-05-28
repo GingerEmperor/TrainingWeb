@@ -54,7 +54,7 @@ public class MuscleService {
         } catch (NotFoundException e) {
             return true;
         }
-        throw new AlreadyExistsException("Такая мыщца уже существует");
+        throw new AlreadyExistsException("Такая мыщца уже существует -"+name);
     }
 
     public Muscle createMuscle(MuscleGroup group, String name, String info, String muscleFunctions) {
