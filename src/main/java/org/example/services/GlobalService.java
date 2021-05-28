@@ -2,17 +2,22 @@ package org.example.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.UUID;
 
 import org.example.exeptions.CanNotAccessException;
 import org.example.exeptions.FileCanNotSaveException;
 import org.example.exeptions.InvalidNameException;
+import org.example.utill.alerts.Alert;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class GlobalService {
+
+    public static final Queue<Alert> alert = new LinkedList<>();
 
     public String saveImgToPathWithPrefixName(
             MultipartFile file,

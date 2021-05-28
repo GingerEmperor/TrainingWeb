@@ -14,7 +14,6 @@ import org.example.models.muscles.MuscleGroup;
 import org.example.services.GlobalService;
 import org.example.services.MuscleGroupService;
 import org.example.services.MuscleService;
-import org.example.utill.StringsFormatsUtils;
 import org.example.utill.alerts.Alert;
 import org.example.utill.alerts.DangerAlert;
 import org.example.utill.alerts.InfoAlert;
@@ -31,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.example.services.GlobalService.alert;
 import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_ADDED_FORMAT;
 import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_DELETED_FORMAT;
 import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_UPDATED_FORMAT;
@@ -41,8 +41,6 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/muscleGroups")
 public class MuscleGroupController {
-
-    private final Queue<Alert> alert = new LinkedList<>();
 
     private final MuscleGroupService muscleGroupService;
 
@@ -77,6 +75,7 @@ public class MuscleGroupController {
 
         model.addAttribute("muscleGroupMusclesMap", muscleGroupMusclesMap);
         model.addAttribute("currentMuscleGroup", currentMuscleGroup);
+        model.addAttribute("alert", alert.poll());
 
         return "muscleTemplates/muscles";
     }
