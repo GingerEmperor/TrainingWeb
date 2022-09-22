@@ -44,8 +44,6 @@ import static org.example.services.GlobalService.alert;
 import static org.example.utill.StringsFormatsUtils.EXERCISE_WAS_ADDED_FORMAT;
 import static org.example.utill.StringsFormatsUtils.EXERCISE_WAS_DELETED_FORMAT;
 import static org.example.utill.StringsFormatsUtils.EXERCISE_WAS_UPDATED_FORMAT;
-import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_ADDED_FORMAT;
-import static org.example.utill.StringsFormatsUtils.MUSCLE_GROUP_WAS_UPDATED_FORMAT;
 
 import lombok.Data;
 
@@ -100,13 +98,13 @@ public class ExerciseController {
             @PathVariable(name = "id") long id,
             Model model) {
 
-        Map<MuscleGroup, List<Exercise>> muscleGroup_ExerciseMap = new LinkedHashMap<>();
-        MuscleGroup mG = muscleGroupService.findById(id);
-        List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscleGroup(mG));
+        Map<MuscleGroup, List<Exercise>> muscleGroupExerciseMap = new LinkedHashMap<>();
+        MuscleGroup foundedMuscleGroup = muscleGroupService.findById(id);
+        List<Exercise> exercisesByMuscleGroup = new ArrayList<>(exerciseService.findAllByPrimaryWorkingMuscleGroup(foundedMuscleGroup));
         exercisesByMuscleGroup.sort((o1, o2) -> o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase()));
-        muscleGroup_ExerciseMap.put(mG, exercisesByMuscleGroup);
+        muscleGroupExerciseMap.put(foundedMuscleGroup, exercisesByMuscleGroup);
 
-        model.addAttribute("sortCriteria_ExerciseMap", muscleGroup_ExerciseMap);
+        model.addAttribute("sortCriteria_ExerciseMap", muscleGroupExerciseMap);
         return "exerciseTemplates/exercises";
 
     }

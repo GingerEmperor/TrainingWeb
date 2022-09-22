@@ -77,6 +77,10 @@
                                     <form th:action="'/trainings/'+${training.getId()}">
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
                                     </form>
+                                    <!-- todo-->
+                                    <form th:action="'/posts/trainings/'+${training.getId()}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Posts</button>
+                                    </form>
                                     <!--                            TODO-->
                                     <form th:method="DELETE" th:action="'/trainings/'+${training.getId()}+'/delete'" sec:authorize="hasAuthority('ADMIN')">
                                         <!--                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>-->
