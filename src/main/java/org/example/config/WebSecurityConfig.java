@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/muscleGroups", "/muscleGroups/**").permitAll()
                 .antMatchers("/muscles", "/muscles/**").permitAll()
                 .antMatchers("/exercises", "/exercises/**").permitAll()
+                .antMatchers("/activate/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

@@ -49,6 +49,10 @@ public class User {
 
     private String email;
 
+    private String activationCode;
+
+    private boolean wasActivatedByEmail;
+
     private Gender gender;
 
     private String image;
@@ -86,5 +90,4 @@ public class User {
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }
-
 }

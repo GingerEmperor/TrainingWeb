@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
@@ -17,6 +18,7 @@ import org.example.models.enums.Gender;
 import org.example.models.enums.Role;
 import org.example.models.enums.Status;
 import org.example.repository.UserRepo;
+import org.example.utill.MailSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,16 +36,18 @@ public class UserService {
 
     private final UserRepo userRepo;
 
+    private final MailSender mailSender;
+
     public List<User> findAll() {
         return userRepo.findAll();
     }
 
-    public User findById(Long userId) {
+    public User findById(final Long userId) {
         return userRepo.findById(userId).orElseThrow(
                 () -> new NotFoundException("Юзера с таким id не существует " + userId));
     }
 
-    public User findByUsername(String username) {
+    public User findByUsername(final String username) {
         return userRepo.findByUsername(username).orElseThrow(
                 () -> new NotFoundException("Юзера с таким username не существует - " + username));
     }
@@ -66,7 +70,7 @@ public class UserService {
         userRepo.delete(userToDelete);
     }
 
-    public User createUser(UserDto userDto) {
+    public User createUser(final UserDto userDto) {
         User user = User.builder()
                 .username(userDto.getUsername())
                 .firstName(userDto.getFirstName())
@@ -92,13 +96,13 @@ public class UserService {
         return user;
     }
 
-    private void updateUserImage(User userToUpdate, UserDto newUserDto) {
+    private void updateUserImage(final User userToUpdate, final UserDto newUserDto) {
         if (newUserDto.getImage() != null && !newUserDto.getImage().isEmpty()) {
             userToUpdate.setImage(createUserImage(newUserDto.getUsername(), newUserDto.getImage()));
         }
     }
 
-    public User updateUser(User oldUser, UserDto userDto) {
+    public User updateUser(final User oldUser, final UserDto userDto) {
         User newUser = User.builder()
                 .id(oldUser.getId())
                 .username(ofNullable(userDto.getUsername()).orElse(oldUser.getUsername()))
@@ -134,7 +138,7 @@ public class UserService {
                 .build();
     }
 
-    private String createUserImage(String username, MultipartFile image) {
+    private String createUserImage(final String username, final MultipartFile image) {
         if (image != null) {
             try {
                 return globalService.saveImgToPathWithPrefixName(image, uploadPath, username);
@@ -154,11 +158,11 @@ public class UserService {
         userRepo.delete(userToDelete);
     }
 
-    private double calculateBMI(UserDto userDto) {
+    private double calculateBMI(final UserDto userDto) {
         return userDto.getWeight() / (((userDto.getHeight() / 100.0) * (userDto.getHeight() / 100.0)));
     }
 
-    private double calculateBMI(User user) {
+    private double calculateBMI(final User user) {
         return user.getWeight() / (((user.getHeight() / 100.0) * (user.getHeight() / 100.0)));
     }
 
@@ -178,5 +182,32 @@ public class UserService {
         userToUnFollow.getFollowers().remove(requestedUser);
         save(requestedUser);
         save(userToUnFollow);
+    }
+
+    public void sendActivationEmailTo(User userToSendActivationCode) {
+        String message = String.format(
+                "Hello, %s! \n"
+                        + "Welcome to FitnessWeb."
+                        + " Please visit next link to activate your account: http://localhost:8080/activate/%s",
+                userToSendActivationCode.getUsername(),
+                userToSendActivationCode.getActivationCode()
+        );
+
+        mailSender.send(userToSendActivationCode.getEmail(), "ActivationCode", message);
+    }
+
+    public boolean activateUser(final String activationCode) {
+        final Optional<User> user = userRepo.findByActivationCode(activationCode);
+        if (!user.isPresent()) {
+            return false;
+        }
+
+        final User activatedUser = user.get();
+        activatedUser.setActivationCode(null);
+        activatedUser.setWasActivatedByEmail(true);
+
+        userRepo.save(activatedUser);
+
+        return true;
     }
 }

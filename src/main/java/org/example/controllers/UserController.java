@@ -1,7 +1,7 @@
 package org.example.controllers;
 
-import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 import org.example.exeptions.NotFoundException;
 import org.example.models.User;
@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import static org.springframework.util.StringUtils.isEmpty;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,17 +64,29 @@ public class UserController {
     }
 
     @PutMapping("/edit/{username}")
-    public String editUserInfo(UserDto newUserDto, @PathVariable String username) {
-        User updatedUser;
-        try {
-            User userToUpdate = userService.findByUsername(newUserDto.getUsername());
-            updatedUser = userService.updateUser(userToUpdate, newUserDto);
-        } catch (NotFoundException e) {
-            updatedUser = userService.createUser(newUserDto);
-        }
-        userService.save(updatedUser);
+    public String editUserInfo(UserDto newUserData, @PathVariable String username) {
+        boolean toSendActivationCode = false;
+        User userToSave;
+        try {//update user
+            User userToUpdate = userService.findByUsername(newUserData.getUsername());
+            userToSave = userService.updateUser(userToUpdate, newUserData);
 
-        return "redirect:/users/"+username;
+            if (!isEmpty(userToSave.getEmail()) && !userToUpdate.getEmail().equals(newUserData.getEmail())) {
+                userToSave.setWasActivatedByEmail(false);
+                toSendActivationCode = true;
+            }
+        } catch (NotFoundException e) {//create user
+            userToSave = userService.createUser(newUserData);
+            toSendActivationCode = true;
+        }
+
+        if (!isEmpty(userToSave.getEmail()) && toSendActivationCode) {
+            userToSave.setActivationCode(UUID.randomUUID().toString());
+            userService.sendActivationEmailTo(userToSave);
+        }
+        userService.save(userToSave);
+
+        return "redirect:/users/" + username;
     }
 
     @PatchMapping("/{username}/follow")
