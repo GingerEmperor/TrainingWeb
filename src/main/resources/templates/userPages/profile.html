@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="common/commonHead::commonHead"></head>
 <body>
 <header th:insert="parts/header::header"></header>
@@ -25,13 +25,20 @@
                                     <div class="mt-3">
                                         <h4 th:text="${user.getFirstName()}+' '+${user.getLastName()}"></h4>
                                         <p class="text-dark mb-1" th:text="${user.getUsername()}"></p>
+                                        <span th:if="${user.isWasActivatedByEmail()}" class="badge badge-success">ACTIVATED</span>
+                                        <span th:unless="${user.isWasActivatedByEmail()}" class="badge badge-danger">NOT ACTIVATED</span>
+
                                         <!--                                        TODO-->
                                         <p class="text-muted font-size-sm" th:text="'BMI:'+ ${user.getBMI()}"></p>
-                                        <p class="text-muted font-size-sm" th:text="${user.getCity()}+','+${user.getCountry()}" ></p>
+                                        <p class="text-muted font-size-sm"
+                                           th:text="${user.getCity()}+','+${user.getCountry()}"></p>
                                         <form th:method="GET">
-<!--                                            <button formaction="/follow" class="btn btn-primary">Follow</button>-->
-                                            <button th:if="${!user.getUsername().equals(#authentication.getName())}" formaction="/message" class="btn btn-outline-primary">Message</button>
-                                            <button th:if="${user.getUsername().equals(#authentication.getName())}" th:formaction="'/users/edit/'+${user.getUsername()}" type="submit"
+                                            <!--                                            <button formaction="/follow" class="btn btn-primary">Follow</button>-->
+                                            <button th:if="${!user.getUsername().equals(#authentication.getName())}"
+                                                    formaction="/message" class="btn btn-outline-primary">Message
+                                            </button>
+                                            <button th:if="${user.getUsername().equals(#authentication.getName())}"
+                                                    th:formaction="'/users/edit/'+${user.getUsername()}" type="submit"
                                                     class="btn btn-outline-warning">Edit
                                             </button>
                                         </form>
