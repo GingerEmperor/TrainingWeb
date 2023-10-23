@@ -1,14 +1,6 @@
 package org.example.services;
 
-import java.io.File;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
-
+import lombok.RequiredArgsConstructor;
 import org.example.exeptions.AlreadyExistsException;
 import org.example.exeptions.CanNotCreateException;
 import org.example.exeptions.NotFoundException;
@@ -23,7 +15,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.RequiredArgsConstructor;
+import java.io.File;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 @Service
@@ -185,6 +184,12 @@ public class UserService {
     }
 
     public void sendActivationEmailTo(User userToSendActivationCode) {
+
+        if (!mailSender.isEnable()) {
+            System.out.println("Mail was not send because it not is enable");
+            return;
+        }
+
         String message = String.format(
                 "Hello, %s! \n"
                         + "Welcome to FitnessWeb."

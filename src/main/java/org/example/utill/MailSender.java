@@ -1,15 +1,19 @@
 package org.example.utill;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
+@Getter
 @RequiredArgsConstructor
 public class MailSender {
+
+    @Value("${mailSender.enable}")
+    private boolean enable;
 
     @Value("${spring.mail.username}")
     private String username;

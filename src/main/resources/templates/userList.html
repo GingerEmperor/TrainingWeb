@@ -47,20 +47,26 @@
                             <div class="btn-group d-flex justify-content-between align-items-center">
                                 <button type="submit" class="btn btn-outline-warning mt-2">Submit</button>
 
-                                <form th:action="'/users/'+${user.getUsername()}">
-                                    <button type="submit" class="btn btn-outline-success mt-2">View</button>
-                                </form>
-                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}" th:formaction="'/admin/users/'+${user.getId()}+'/ban'" type="submit"
+                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('ACTIVE')}"
+                                        th:formaction="'/admin/users/'+${user.getId()}+'/ban'" type="submit"
                                         class="btn btn-outline-danger mt-2">Ban
                                 </button>
-                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}" th:formaction="'/admin/users/'+${user.getId()}+'/unban'" type="submit"
+                                <button th:if="${user.getStatus()==allStatus.get(0).valueOf('BANNED')}"
+                                        th:formaction="'/admin/users/'+${user.getId()}+'/unban'" type="submit"
                                         class="btn btn-outline-danger mt-2">UnBan
                                 </button>
                             </div>
 
                         </form>
+                        <form>
+                            <button th:method="GET" th:formaction="'/users/'+${user.getUsername()}" type="submit"
+                                    class="btn btn-outline-success mt-2">Viewasdas!!
+                            </button>
+                        </form>
                         <form th:method="DELETE" th:action="'/admin/users/'+${user.getId()}">
-                            <button type="button" class="btn btn-outline-danger mt-2" data-toggle="modal" th:data-target="'#myModal'+${user.getId()}">Delete</button>
+                            <button type="button" class="btn btn-outline-danger mt-2" data-toggle="modal"
+                                    th:data-target="'#myModal'+${user.getId()}">Delete
+                            </button>
                             <div class="modal fade" th:id="'myModal'+${user.getId()}" role="dialog">
                                 <div class="modal-dialog ">
 
